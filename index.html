@@ -1179,7 +1179,8 @@ async function getToken() {
 async function fetchProyectosFromExcel(token) {
   if (!token || !SP_CONFIG.driveItemId) return null;
   try {
-    const url = `https://graph.microsoft.com/v1.0/drives/${SP_CONFIG.driveId}/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetName)}')/usedRange`;
+    // Para OneDrive personal usar /me/drive; para SharePoint de equipo usar /drives/{driveId}
+  const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetName)}')/usedRange`;
     const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     if (!r.ok) throw new Error(r.statusText);
     const data = await r.json();
@@ -1254,7 +1255,10 @@ async function fetchOverridesFromSP(token) {
     const r = await fetch(url, {
       headers: { Authorization: `Bearer ${token}`, Accept: 'application/json;odata=nometadata' }
     });
-    if (!r.ok) return {};
+    if (!r.ok) {
+      console.warn(`Overrides list not found (${r.status}) — usando memoria local. Crea la lista AEI_Overrides en SharePoint para persistir cambios.`);
+      return {};
+    }
     const data = await r.json();
     const result = {};
     (data.value || []).forEach(row => {
@@ -1518,7 +1522,7 @@ function renderGeneral() {
   }
 
   // Carga total ponderada de una célula en una semana
-  function cargaCelulaEnSemana(celId, wIdx) {
+  function cargaCelulaEnSemana(celId, wIdx, activos) {
     const { ini: iniW, fin: finW } = WEEKS[wIdx];
     return activos
       .filter(p => p.celula === celId)
@@ -1526,7 +1530,7 @@ function renderGeneral() {
   }
 
   // Lista de proyectos que siguen activos en una semana (para simulador)
-  function proyectosActivosEnSemana(celId, wIdx) {
+  function proyectosActivosEnSemana(celId, wIdx, activos, activos) {
     const { ini: iniW, fin: finW } = WEEKS[wIdx];
     return activos.filter(p => {
       if (p.celula !== celId) return false;
@@ -1567,7 +1571,7 @@ function renderCapacidad(D_) {
 
     const capProyectos = ci.diseñadores.length * DIS_CAP;
     // Weighted load: each project counts × its complexity multiplier
-    const loadPonderada = cargaCelulaEnSemana(celId, sActual);
+    const loadPonderada = cargaCelulaEnSemana(celId, sActual, activos);
     const utilPct = capProyectos > 0 ? Math.round(loadPonderada / capProyectos * 100) : 0;
     const utilColor = utilPct > 100 ? '#e05060' : utilPct > 75 ? '#f09040' : utilPct > 50 ? '#f0c040' : '#40d080';
     const utilLabel = utilPct > 100 ? '🔴 Sobrecargada' : utilPct > 75 ? '🟠 Alta' : utilPct > 50 ? '🟡 Media' : '🟢 Normal';
@@ -2704,7 +2708,7 @@ function renderProyeccion() {
 })();
   // ── KPIs ──────────────────────────────────────────────────────────────────
   const totalActivos = activos.length;
-  const loadPondTotal = CELLS_DEF.reduce((s,cel)=>s+cargaCelulaEnSemana(cel.id, sActual), 0);
+  const loadPondTotal = CELLS_DEF.reduce((s,cel)=>s+cargaCelulaEnSemana(cel.id, sActual, activos), 0);
   const capTotal = CELLS_DEF.reduce((s,c)=>s+c.cap,0);
   const disponibleAhora = Math.max(0, capTotal - loadPondTotal);
 
@@ -2727,7 +2731,7 @@ function renderProyeccion() {
   const datasets = CELLS_DEF.map(cel => ({
     label: cel.label,
     data: WEEKS.map((_,i) => {
-      const load = cargaCelulaEnSemana(cel.id, i);
+      const load = cargaCelulaEnSemana(cel.id, i, activos);
       return +(load / cel.cap * 100).toFixed(1);
     }),
     borderColor: cel.color,
@@ -2814,7 +2818,7 @@ function renderProyeccion() {
   let celHtml = '';
   CELLS_DEF.forEach(cel => {
     const celAct = activos.filter(p=>p.celula===cel.id);
-    const loadAhora = cargaCelulaEnSemana(cel.id, sActual);
+    const loadAhora = cargaCelulaEnSemana(cel.id, sActual, activos);
     const utilAhora = Math.round(loadAhora / cel.cap * 100);
     const utilColor = utilAhora>100?'#e05060':utilAhora>80?'#f09040':utilAhora>50?'#f0c040':'#40d080';
 
@@ -2827,7 +2831,7 @@ function renderProyeccion() {
     // Semana en que baja del 80% (a partir de semana actual)
     let mesBaja80 = null;
     for (let w = sActual; w < 52; w++) {
-      const ld = cargaCelulaEnSemana(cel.id, w);
+      const ld = cargaCelulaEnSemana(cel.id, w, activos);
       if (ld / cel.cap <= 0.8) { mesBaja80 = w; break; }
     }
 
@@ -2844,7 +2848,7 @@ function renderProyeccion() {
       const semsDelMes = WEEKS.map(({ini},i)=>({i,ini})).filter(({ini})=>ini.getMonth()===mesIdx);
       if (semsDelMes.length === 0) return '';
       // Carga promedio del mes
-      const loads = semsDelMes.map(({i}) => cargaCelulaEnSemana(cel.id, i));
+      const loads = semsDelMes.map(({i}) => cargaCelulaEnSemana(cel.id, i, activos));
       const avgLoad = loads.reduce((s,v)=>s+v,0)/loads.length;
       const pct = Math.min(110, avgLoad/cel.cap*100);
       const col = pct>100?'#e05060':pct>80?'#f09040':pct>50?'#f0c040':'#40d080';
@@ -2909,7 +2913,7 @@ function renderProyeccion() {
 
   const candidatas = CELLS_DEF.map(cel => {
     const celAct = activos.filter(p=>p.celula===cel.id);
-    const loadAhora = cargaCelulaEnSemana(cel.id, sActual);
+    const loadAhora = cargaCelulaEnSemana(cel.id, sActual, activos);
     const loadPost = loadAhora + simMult;
     const utilPost = loadPost / cel.cap * 100;
     const cabe = loadPost <= cel.cap;
@@ -2918,7 +2922,7 @@ function renderProyeccion() {
     let mesLibera = null; // índice de semana
     if (!cabe) {
       for (let w = sActual+1; w < 52; w++) {
-        const ld = cargaCelulaEnSemana(cel.id, w);
+        const ld = cargaCelulaEnSemana(cel.id, w, activos);
         if (ld + simMult <= cel.cap) { mesLibera = w; break; }
       }
     }
