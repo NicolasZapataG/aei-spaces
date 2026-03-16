@@ -6,7 +6,6 @@
 <title>Dashboard Diseño AEI Spaces</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"></script>
 <style>
 /* ===== ROOT VARS ===== */
 :root {
@@ -1114,44 +1113,61 @@ const CONN = { ready: false, token: null, lastSync: null, error: null };
 // ── Autenticación MSAL (Microsoft) ────────────────────────────────────────
 // MSAL instance (inicializado una sola vez)
 let _msalInstance = null;
+let _msalLoaded = false;
 
-function getMSAL() {
+// Carga MSAL dinámicamente desde CDN (funciona en browser, no en file://)
+function loadMSAL() {
+  return new Promise((resolve, reject) => {
+    if (typeof msal !== 'undefined') { resolve(); return; }
+    if (_msalLoaded) { reject(new Error('MSAL no cargó')); return; }
+    const s = document.createElement('script');
+    s.src = 'https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js';
+    s.onload = () => { _msalLoaded = true; resolve(); };
+    s.onerror = () => reject(new Error(
+      'No se pudo cargar la librería de autenticación Microsoft (MSAL). ' +
+      'El dashboard necesita estar en un servidor web, no abierto como archivo local. ' +
+      'Súbelo a SharePoint o a un servidor y vuelve a intentarlo.'
+    ));
+    document.head.appendChild(s);
+  });
+}
+
+async function getMSAL() {
+  await loadMSAL();
   if (_msalInstance) return _msalInstance;
   _msalInstance = new msal.PublicClientApplication({
     auth: {
       clientId: SP_CONFIG.clientId,
       authority: `https://login.microsoftonline.com/${SP_CONFIG.tenantId}`,
-      redirectUri: window.location.href.split('?')[0],
+      redirectUri: window.location.href.split('?')[0].split('#')[0],
     },
     cache: { cacheLocation: 'sessionStorage' }
   });
+  await _msalInstance.initialize();
   return _msalInstance;
 }
 
 async function getToken() {
   if (!SP_CONFIG.clientId || !SP_CONFIG.tenantId) return null;
-  const msalApp = getMSAL();
   const scopes = ['Files.Read', 'Files.Read.All', 'Sites.Read.All', 'Sites.ReadWrite.All'];
-
-  // Intentar silenciosamente primero
   try {
-    await msalApp.initialize();
+    const msalApp = await getMSAL();
+    // Intentar silenciosamente primero
     const accounts = msalApp.getAllAccounts();
     if (accounts.length > 0) {
-      const resp = await msalApp.acquireTokenSilent({ scopes, account: accounts[0] });
-      return resp.accessToken;
+      try {
+        const resp = await msalApp.acquireTokenSilent({ scopes, account: accounts[0] });
+        return resp.accessToken;
+      } catch(e) {
+        console.log('Silent token failed, trying popup...', e.message);
+      }
     }
-  } catch(e) {
-    console.log('Silent token failed, trying popup...', e.message);
-  }
-
-  // Si no hay sesión, abrir popup de login
-  try {
+    // Popup de login
     const resp = await msalApp.acquireTokenPopup({ scopes });
     return resp.accessToken;
   } catch(e) {
-    console.error('Token popup error:', e);
-    throw new Error('No se pudo autenticar con Microsoft. Verifica que el popup no fue bloqueado.');
+    console.error('Token error:', e);
+    throw new Error(e.message || 'No se pudo autenticar con Microsoft.');
   }
 }
 
@@ -1465,6 +1481,55 @@ function renderGeneral() {
   // Capacidad instalada
   renderCapacidad(D_);
 }
+
+  // Pesos por etapa — cuánto demanda de diseño activo tiene el proyecto
+  const ETAPA_PESO_SEM = { AE:1.0, EB:1.0, AP:1.0, PC:0.5, IC:0.25, AO:0.1, CS:0.0, '':1.0 };
+
+  // Retorna peso ponderado de un proyecto en una semana dada
+  // Considera: si el proyecto terminó → 0; si avanzó de etapa → peso reducido
+  function pesoEnSemana(p, iniW, finW) {
+    const d = s => s ? new Date(s) : null;
+    const f_ae  = d(p.fecha_ae);
+    const f_eb  = d(p.fecha_eb);
+    const f_ap  = d(p.fecha_ap);
+    const f_pc  = d(p.fecha_pc);
+    const f_ic  = d(p.fecha_ic);
+    const f_fin = d(p.fecha_fin_prog);
+
+    // Proyecto terminado antes de esta semana
+    const finEfectivo = f_fin || f_ic;
+    if (finEfectivo && finEfectivo < iniW) return 0.0;
+
+    // Determinar en qué etapa está esta semana según fechas programadas
+    let etapaSem = '';
+    if      (!f_ae  || iniW <= f_ae)  etapaSem = 'AE';
+    else if (!f_eb  || iniW <= f_eb)  etapaSem = 'EB';
+    else if (!f_ap  || iniW <= f_ap)  etapaSem = 'AP';
+    else if (!f_pc  || iniW <= f_pc)  etapaSem = 'PC';
+    else if (!f_ic  || iniW <= f_ic)  etapaSem = 'IC';
+    else etapaSem = 'AO';
+
+    // Aplicar override de complejidad sobre el peso de etapa
+    return (ETAPA_PESO_SEM[etapaSem] ?? 1.0) * compMult(p);
+  }
+
+  // Carga total ponderada de una célula en una semana
+  function cargaCelulaEnSemana(celId, wIdx) {
+    const { ini: iniW, fin: finW } = WEEKS[wIdx];
+    return activos
+      .filter(p => p.celula === celId)
+      .reduce((s, p) => s + pesoEnSemana(p, iniW, finW), 0);
+  }
+
+  // Lista de proyectos que siguen activos en una semana (para simulador)
+  function proyectosActivosEnSemana(celId, wIdx) {
+    const { ini: iniW, fin: finW } = WEEKS[wIdx];
+    return activos.filter(p => {
+      if (p.celula !== celId) return false;
+      return pesoEnSemana(p, iniW, finW) > 0;
+    });
+  }
+
 
 // ===================== CAPACIDAD INSTALADA =====================
 function renderCapacidad(D_) {
@@ -2639,53 +2704,6 @@ function renderProyeccion() {
     return `${mes} ${ini.getDate()}`;
   });
 
-  // Pesos por etapa — cuánto demanda de diseño activo tiene el proyecto
-  const ETAPA_PESO_SEM = { AE:1.0, EB:1.0, AP:1.0, PC:0.5, IC:0.25, AO:0.1, CS:0.0, '':1.0 };
-
-  // Retorna peso ponderado de un proyecto en una semana dada
-  // Considera: si el proyecto terminó → 0; si avanzó de etapa → peso reducido
-  function pesoEnSemana(p, iniW, finW) {
-    const d = s => s ? new Date(s) : null;
-    const f_ae  = d(p.fecha_ae);
-    const f_eb  = d(p.fecha_eb);
-    const f_ap  = d(p.fecha_ap);
-    const f_pc  = d(p.fecha_pc);
-    const f_ic  = d(p.fecha_ic);
-    const f_fin = d(p.fecha_fin_prog);
-
-    // Proyecto terminado antes de esta semana
-    const finEfectivo = f_fin || f_ic;
-    if (finEfectivo && finEfectivo < iniW) return 0.0;
-
-    // Determinar en qué etapa está esta semana según fechas programadas
-    let etapaSem = '';
-    if      (!f_ae  || iniW <= f_ae)  etapaSem = 'AE';
-    else if (!f_eb  || iniW <= f_eb)  etapaSem = 'EB';
-    else if (!f_ap  || iniW <= f_ap)  etapaSem = 'AP';
-    else if (!f_pc  || iniW <= f_pc)  etapaSem = 'PC';
-    else if (!f_ic  || iniW <= f_ic)  etapaSem = 'IC';
-    else etapaSem = 'AO';
-
-    // Aplicar override de complejidad sobre el peso de etapa
-    return (ETAPA_PESO_SEM[etapaSem] ?? 1.0) * compMult(p);
-  }
-
-  // Carga total ponderada de una célula en una semana
-  function cargaCelulaEnSemana(celId, wIdx) {
-    const { ini: iniW, fin: finW } = WEEKS[wIdx];
-    return activos
-      .filter(p => p.celula === celId)
-      .reduce((s, p) => s + pesoEnSemana(p, iniW, finW), 0);
-  }
-
-  // Lista de proyectos que siguen activos en una semana (para simulador)
-  function proyectosActivosEnSemana(celId, wIdx) {
-    const { ini: iniW, fin: finW } = WEEKS[wIdx];
-    return activos.filter(p => {
-      if (p.celula !== celId) return false;
-      return pesoEnSemana(p, iniW, finW) > 0;
-    });
-  }
 
   // Índice de la semana actual (corte 09 Mar 2026)
   const semanaActualIdx = WEEKS.findIndex(({ini,fin}) => hoy >= ini && hoy <= fin);
