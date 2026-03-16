@@ -841,33 +841,44 @@ body::after {
 
 <script>
 // ===================== CONFIGURACIÓN SHAREPOINT =====================
-// Cuando tengas el Client ID de Azure AD, llena estos valores.
-// Mientras tanto el dashboard usa los datos locales (RAW).
 const SP_CONFIG = {
-  // 'local'      → usa datos hardcodeados (RAW), overrides en memoria
-  // 'sharepoint' → lee Excel de OneDrive, overrides en SharePoint List
   mode: 'local',
-
-  // ── Credenciales Azure AD ─────────────────────────────────────────────────
   clientId:    '14096b1d-9f7e-4b6a-b7d4-3f6371017d82',
   tenantId:    'bd1250f8-7cb0-4150-939d-bc46b711cbbd',
-
-  // ── OneDrive ──────────────────────────────────────────────────────────────
   driveId:     'b!jW1N82v1qEOLl6V-jRb-D51HQ-ULd0xIhSsXcVU3KzwHZwA5Qby4T4Grkq0e2oJ8',
   driveItemId: '01D6FN4ZNH7EAPDXEXIRC2EG34TDGP6Q62',
   sheetName:   'Análisis de ocupación',
-
-  // ── SharePoint List para overrides ────────────────────────────────────────
   siteUrl:     'https://aeicol-my.sharepoint.com/personal/nzapata_aeispaces_com',
   listName:    'AEI_Overrides',
-
-  // ── Refresco automático (minutos, 0 = desactivado) ────────────────────────
   refreshInterval: 15,
-}
+};
 
 // ===================== DATA =====================
 // Fecha de hoy — se recalcula cada vez que se abre el dashboard
 const CORTE = new Date().toISOString().substring(0, 10);
+
+// Semanas del año 2026 — global, construido una vez al cargar
+const WEEKS = [];
+const WEEK_LABELS = [];
+const WEEK_LABELS_SHORT = [];
+(function() {
+  const ini2026 = new Date(2026, 0, 5);
+  for (let w = 0; w < 52; w++) {
+    const iniW = new Date(ini2026.getTime() + w * 7 * 86400000);
+    const finW = new Date(iniW.getTime() + 6 * 86400000);
+    WEEKS.push({ ini: iniW, fin: finW, w });
+    const mes = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][iniW.getMonth()];
+    const semDelMes = Math.ceil(iniW.getDate()/7);
+    WEEK_LABELS.push(`S${semDelMes} ${mes}`);
+    WEEK_LABELS_SHORT.push(`S${w+1}`);
+  }
+})();
+let sActual = (() => {
+  const hoy = new Date(CORTE);
+  const idx = WEEKS.findIndex(({ini,fin}) => hoy >= ini && hoy <= fin);
+  return idx >= 0 ? idx : 9;
+})();
+
 
 const RAW = [
   {"item": 1, "año": 2025, "proyecto": "Evergreen Panama", "estado": "CERRADO", "m2": 2284.0, "celula": "SIN CÉLULA", "coordinador": "SANTIAGO VILLADA", "dias_ae": 1.0, "dias_eb": 1.0, "dias_ap": 1.0, "dias_pc": 1.0, "dias_c": 1.0, "dias_ac": 32.0, "fecha_inicio": "2025-01-01", "fecha_ae": "2025-01-02", "fecha_eb": "2025-01-03", "fecha_ap": "2025-01-04", "fecha_pc": "2025-01-05", "fecha_ic": "2025-01-06", "fecha_fin_prog": "2025-02-07", "dias_ae_r": 1.0, "dias_eb_r": 1.0, "dias_ap_r": 1.0, "dias_pc_r": 1.0, "dias_c_r": 1.0, "dias_ac_r": 32.0, "fecha_inicio_r": "2025-01-01", "fecha_ae_r": "2025-01-02", "fecha_eb_r": "2025-01-03", "fecha_ap_r": "2025-01-04", "fecha_pc_r": "2025-01-05", "fecha_ic_r": "2025-01-06", "fecha_fin_real": "2025-02-07", "etapa": "AO", "n_etapa": 7, "m2_dia_prog": 0, "m2_dia_real": 0},
@@ -1127,12 +1138,30 @@ async function getToken() {
   // Usar token cacheado si sigue vigente (con 5 min de margen)
   if (_cachedToken && Date.now() < _tokenExpiry - 300000) return _cachedToken;
 
+  // Verificar si venimos de un redirect con token en el fragment
+  const hash = window.location.hash;
+  if (hash.includes('access_token')) {
+    const params = new URLSearchParams(hash.replace('#',''));
+    const token = params.get('access_token');
+    const state = params.get('state');
+    if (token && state === sessionStorage.getItem('pkce_state')) {
+      _cachedToken = token;
+      _tokenExpiry = Date.now() + (parseInt(params.get('expires_in') || '3600') * 1000);
+      sessionStorage.removeItem('pkce_state');
+      // Limpiar el fragment de la URL sin recargar
+      history.replaceState(null, '', window.location.pathname);
+      return _cachedToken;
+    }
+  }
+
   const scopes = 'Files.Read Files.Read.All Sites.Read.All Sites.ReadWrite.All';
-  const redirectUri = window.location.href.split('?')[0].split('#')[0];
+  const redirectUri = window.location.origin + window.location.pathname;
   const state = Math.random().toString(36).substring(2);
   sessionStorage.setItem('pkce_state', state);
+  // Guardar que queremos conectar tras el redirect
+  sessionStorage.setItem('sp_connect', '1');
 
-  // Construir URL de autorización
+  // Redirigir a Microsoft login (misma pestaña — más confiable que popup)
   const authUrl = `https://login.microsoftonline.com/${SP_CONFIG.tenantId}/oauth2/v2.0/authorize?` +
     `client_id=${SP_CONFIG.clientId}` +
     `&response_type=token` +
@@ -1141,52 +1170,9 @@ async function getToken() {
     `&state=${state}` +
     `&prompt=select_account`;
 
-  // Abrir popup de login
-  return new Promise((resolve, reject) => {
-    const popup = window.open(authUrl, 'msauth', 'width=480,height=640,left=200,top=100');
-    if (!popup) { reject(new Error('El popup fue bloqueado. Permite popups para este sitio e intenta de nuevo.')); return; }
-
-    // Escuchar el redirect de vuelta con el código
-    const timer = setInterval(async () => {
-      try {
-        if (popup.closed) {
-          clearInterval(timer);
-          reject(new Error('El popup fue cerrado sin completar la autenticación.'));
-          return;
-        }
-        const popupUrl = popup.location.href;
-        if (!popupUrl.includes(redirectUri.split('/').pop())) return;
-
-        clearInterval(timer);
-        popup.close();
-
-        // Implicit flow: token viene en el fragment (#) de la URL
-        const hash = popup.location.hash || '';
-        const params = new URLSearchParams(hash.replace('#',''));
-        const token = params.get('access_token');
-        const retState = params.get('state');
-        const error = params.get('error');
-
-        if (error) { reject(new Error(params.get('error_description') || error)); return; }
-        if (!token) { reject(new Error('No se recibió token de acceso.')); return; }
-        if (retState !== sessionStorage.getItem('pkce_state')) { reject(new Error('State mismatch.')); return; }
-
-        _cachedToken = token;
-        _tokenExpiry = Date.now() + (parseInt(params.get('expires_in') || '3600') * 1000);
-        sessionStorage.removeItem('pkce_state');
-        resolve(_cachedToken);
-      } catch(e) {
-        // popup.location.href throws cross-origin until redirect completes — ignorar
-      }
-    }, 500);
-
-    // Timeout de 3 minutos
-    setTimeout(() => {
-      clearInterval(timer);
-      if (!popup.closed) popup.close();
-      reject(new Error('Timeout de autenticación — intenta de nuevo.'));
-    }, 180000);
-  });
+  window.location.href = authUrl;
+  // La página se recarga al volver — el token se captura arriba
+  return null;
 }
 
 // ── Leer proyectos del Excel via Graph API ────────────────────────────────
@@ -2703,36 +2689,19 @@ function renderProyeccion() {
 
   // ── Semanas 2026 ─────────────────────────────────────────────────────────
   // Generar todas las semanas del año desde Ene 1 hasta Dic 28
-  const WEEKS = [];
-  const WEEK_LABELS = [];
-  const ini2026 = new Date(2026, 0, 5); // primer lunes del año
+// Construir semanas del año 2026 al cargar — usado en múltiples renders
+(function() {
+  const ini2026 = new Date(2026, 0, 5);
   for (let w = 0; w < 52; w++) {
     const iniW = new Date(ini2026.getTime() + w * 7 * 86400000);
     const finW = new Date(iniW.getTime() + 6 * 86400000);
     WEEKS.push({ ini: iniW, fin: finW, w });
-    // Etiqueta: "S1 Ene", "S5 Feb", etc. — solo mostrar cuando cambia el mes
     const mes = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][iniW.getMonth()];
     const semDelMes = Math.ceil(iniW.getDate()/7);
-    WEEK_LABELS.push(`S${w+1}`); // etiqueta corta para el eje
+    WEEK_LABELS.push(`S${semDelMes} ${mes}`);
+    WEEK_LABELS_SHORT.push(`S${w+1}`);
   }
-
-  // Semana actual — variable global usada en múltiples renders
-  let sActual = (() => {
-    const hoy = new Date(CORTE);
-    const idx = WEEKS.findIndex(({ini,fin}) => hoy >= ini && hoy <= fin);
-    return idx >= 0 ? idx : 9;
-  })();
-
-  // Labels con mes para tooltip
-  const WEEK_FULL_LABELS = WEEKS.map(({ini}) => {
-    const mes = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][ini.getMonth()];
-    return `${mes} ${ini.getDate()}`;
-  });
-
-
-  // Índice de la semana actual (corte 09 Mar 2026)
-  // sActual es variable global definida al construir WEEKS
-
+})();
   // ── KPIs ──────────────────────────────────────────────────────────────────
   const totalActivos = activos.length;
   const loadPondTotal = CELLS_DEF.reduce((s,cel)=>s+cargaCelulaEnSemana(cel.id, sActual), 0);
@@ -3081,8 +3050,14 @@ function saveConfig() {
 
 // ===================== INIT =====================
 renderAll();
-// Iniciar conexión SharePoint (en modo 'local' solo muestra el badge)
-initConnection();
+// Si venimos de un redirect de Microsoft, reconectar automáticamente
+if (sessionStorage.getItem('sp_connect') === '1' || window.location.hash.includes('access_token')) {
+  sessionStorage.removeItem('sp_connect');
+  SP_CONFIG.mode = 'sharepoint';
+  initConnection();
+} else {
+  initConnection(); // solo actualiza badge en modo local
+}
 </script>
 
 <!-- CONFIG PANEL (solo visible al activarlo) -->
