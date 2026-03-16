@@ -1697,8 +1697,8 @@ function renderGantt() {
     let endKey = isReal ? (p.fecha_fin_real||p.fecha_ic_r||p.fecha_pc_r||p.fecha_ap_r||p.fecha_eb_r||p.fecha_ae_r) : (p.fecha_fin_prog||p.fecha_ic||p.fecha_pc||p.fecha_ap||p.fecha_eb||p.fecha_ae);
     if (!endKey) {
       // estimate from today
-      const todayPct = pct('2026-02-26');
-      endKey = '2026-02-26';
+      const todayPct = pct(CORTE);
+      endKey = CORTE;
     }
     const endPct = pct(endKey);
     if (startPct===null||endPct===null) return null;
@@ -1715,7 +1715,7 @@ function renderGantt() {
     return `<div class="gbar ${isReal?'real':'prog'} " style="left:${startPct}%;width:${totalW}%;display:flex;" title="${isReal?'Real':'Programado'}">` + segsHtml + `</div>`;
   }
 
-  const todayPct = pct('2026-02-26');
+  const todayPct = pct(CORTE);
   let html=`<div class="gantt-header-row">
     <div class="gcol-label">Proyecto</div>
     <div class="gcol-time">${months.map(m=>`<div class="gmonth">${m.label}</div>`).join('')}</div>
