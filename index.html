@@ -477,7 +477,7 @@ body::after {
   <div class="header-inner">
     <div class="header-brand">
       <div class="brand-title">Dashboard Diseño<br>AEI Spaces</div>
-      <div class="brand-sub">Equipo de Diseño · Corte 09 Mar 2026</div>
+      <div class="brand-sub">Equipo de Diseño</div>
       <div id="sync-badge" style="font-size:10px;font-family:'DM Sans',sans-serif;border:1px solid #6b749455;border-radius:20px;padding:3px 10px;color:#6b7494;display:inline-flex;align-items:center;gap:5px;margin-top:6px">
         <span>💾</span> Datos locales
       </div>
@@ -866,6 +866,9 @@ const SP_CONFIG = {
 }
 
 // ===================== DATA =====================
+// Fecha de hoy — se recalcula cada vez que se abre el dashboard
+const CORTE = new Date().toISOString().substring(0, 10);
+
 const RAW = [
   {"item": 1, "año": 2025, "proyecto": "Evergreen Panama", "estado": "CERRADO", "m2": 2284.0, "celula": "SIN CÉLULA", "coordinador": "SANTIAGO VILLADA", "dias_ae": 1.0, "dias_eb": 1.0, "dias_ap": 1.0, "dias_pc": 1.0, "dias_c": 1.0, "dias_ac": 32.0, "fecha_inicio": "2025-01-01", "fecha_ae": "2025-01-02", "fecha_eb": "2025-01-03", "fecha_ap": "2025-01-04", "fecha_pc": "2025-01-05", "fecha_ic": "2025-01-06", "fecha_fin_prog": "2025-02-07", "dias_ae_r": 1.0, "dias_eb_r": 1.0, "dias_ap_r": 1.0, "dias_pc_r": 1.0, "dias_c_r": 1.0, "dias_ac_r": 32.0, "fecha_inicio_r": "2025-01-01", "fecha_ae_r": "2025-01-02", "fecha_eb_r": "2025-01-03", "fecha_ap_r": "2025-01-04", "fecha_pc_r": "2025-01-05", "fecha_ic_r": "2025-01-06", "fecha_fin_real": "2025-02-07", "etapa": "AO", "n_etapa": 7, "m2_dia_prog": 0, "m2_dia_real": 0},
   {"item": 2, "año": 2024, "proyecto": "Pronobis Ecuador", "estado": "CERRADO", "m2": 1796.0, "celula": "SIN CÉLULA", "coordinador": "CAMILA BAUTISTA", "dias_ae": 15.0, "dias_eb": 28.0, "dias_ap": 17.0, "dias_pc": 36.0, "dias_c": 9.0, "dias_ac": 0, "fecha_inicio": "2024-11-28", "fecha_ae": "2024-12-13", "fecha_eb": "2025-01-10", "fecha_ap": "2025-01-27", "fecha_pc": "2025-03-04", "fecha_ic": "2025-03-13", "fecha_fin_prog": "", "dias_ae_r": 75.0, "dias_eb_r": 115.0, "dias_ap_r": 0, "dias_pc_r": 0, "dias_c_r": 0, "dias_ac_r": 0, "fecha_inicio_r": "2024-11-28", "fecha_ae_r": "2025-02-11", "fecha_eb_r": "2025-06-06", "fecha_ap_r": "", "fecha_pc_r": "", "fecha_ic_r": "", "fecha_fin_real": "", "etapa": "EB", "n_etapa": 3, "m2_dia_prog": 119.73, "m2_dia_real": 79.82},
@@ -930,7 +933,7 @@ const RAW = [
   {"item": 60, "año": 2026, "proyecto": "PLATZI", "estado": "ACTIVO", "m2": 310.0, "celula": "PePeCe", "coordinador": "DELFIN RIVERA", "dias_ae": 9.0, "dias_eb": 10.0, "dias_ap": 10.0, "dias_pc": 25.0, "dias_c": 3.0, "dias_ac": 0.0, "fecha_inicio": "2026-02-25", "fecha_ae": "2026-03-06", "fecha_eb": "2026-03-16", "fecha_ap": "2026-03-26", "fecha_pc": "2026-04-20", "fecha_ic": "2026-04-23", "fecha_fin_prog": "2026-04-23", "dias_ae_r": 9.0, "dias_eb_r": 0, "dias_ap_r": 0, "dias_pc_r": 0, "dias_c_r": 0, "dias_ac_r": 0, "fecha_inicio_r": "2026-02-25", "fecha_ae_r": "2026-03-06", "fecha_eb_r": "", "fecha_ap_r": "", "fecha_pc_r": "", "fecha_ic_r": "", "fecha_fin_real": "", "etapa": "", "n_etapa": 0, "m2_dia_prog": 0, "m2_dia_real": 0}];
 
 // ===================== STATE =====================
-const TODAY = new Date('2026-02-26');
+const TODAY = new Date();
 const PALETA = ['#f0c040','#4de0c0','#5080f0','#f09040','#40d080','#e05060','#a060f0','#e84f8c','#60d0f0','#f06040'];
 const ETAPA_COLOR = { AE:'#5080f0', EB:'#f0c040', AP:'#4de0c0', PC:'#f09040', C:'#40d080', AC:'#a060f0' };
 const ETAPA_LABEL = { AE:'Análisis', EB:'Esquema Básico', AP:'Anteproyecto', PC:'Constructivos', C:'Items/Cant', AC:'Acompañamiento' };
@@ -2687,7 +2690,7 @@ function setSim(v) {
 function renderProyeccion() {
   const data = filtered();
   const activos = data.filter(p => estadoEfectivo(p) === 'ACTIVO');
-  const hoy = new Date('2026-03-09');
+  const hoy = new Date();
 
   // ── Definición células ────────────────────────────────────────────────────
   const CELLS_DEF = [
