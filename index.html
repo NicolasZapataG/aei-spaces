@@ -1132,66 +1132,137 @@ const CONN = { ready: false, token: null, lastSync: null, error: null };
 let _cachedToken = null;
 let _tokenExpiry = 0;
 
+async function generatePKCE() {
+  const verifier = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32))))
+    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+  const enc = new TextEncoder().encode(verifier);
+  const hash = await crypto.subtle.digest('SHA-256', enc);
+  const challenge = btoa(String.fromCharCode(...new Uint8Array(hash)))
+    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+  return { verifier, challenge };
+}
+
 async function getToken() {
   if (!SP_CONFIG.clientId || !SP_CONFIG.tenantId) return null;
 
   // Token cacheado en memoria
   if (_cachedToken && Date.now() < _tokenExpiry - 300000) return _cachedToken;
 
-  // Token guardado en sessionStorage (sobrevive recargas)
+  // Token en sessionStorage
   const saved = sessionStorage.getItem('aei_token');
   const savedExpiry = parseInt(sessionStorage.getItem('aei_token_expiry') || '0');
   if (saved && Date.now() < savedExpiry - 300000) {
-    _cachedToken = saved;
-    _tokenExpiry = savedExpiry;
-    return _cachedToken;
+    _cachedToken = saved; _tokenExpiry = savedExpiry; return _cachedToken;
   }
 
-  const scopes = 'Files.Read Files.Read.All Sites.Read.All Sites.ReadWrite.All';
-  const redirectUri = window.location.origin + window.location.pathname;
+  const { verifier, challenge } = await generatePKCE();
   const state = Math.random().toString(36).substring(2);
+  const redirectUri = window.location.origin + window.location.pathname;
+  const scopes = 'Files.Read Files.Read.All Sites.Read.All Sites.ReadWrite.All offline_access';
+
+  sessionStorage.setItem('pkce_verifier', verifier);
   sessionStorage.setItem('pkce_state', state);
 
   const authUrl = 'https://login.microsoftonline.com/' + SP_CONFIG.tenantId + '/oauth2/v2.0/authorize?' +
     'client_id=' + SP_CONFIG.clientId +
-    '&response_type=token' +
+    '&response_type=code' +
     '&redirect_uri=' + encodeURIComponent(redirectUri) +
     '&scope=' + encodeURIComponent(scopes) +
     '&state=' + state +
+    '&code_challenge=' + challenge +
+    '&code_challenge_method=S256' +
     '&prompt=select_account';
 
   return new Promise((resolve, reject) => {
     const popup = window.open(authUrl, 'msauth', 'width=500,height=650,left=200,top=80');
     if (!popup) {
-      reject(new Error('Popup bloqueado. Permite popups para este sitio en la barra del navegador.'));
+      reject(new Error('Popup bloqueado. Permite popups para este sitio.'));
       return;
     }
+
+    // Escuchar mensaje del popup via postMessage
+    const onMessage = async (event) => {
+      if (event.origin !== window.location.origin) return;
+      if (!event.data || event.data.type !== 'aei_auth_code') return;
+      window.removeEventListener('message', onMessage);
+      clearInterval(timer);
+
+      const { code, state: retState, error } = event.data;
+      if (error) { reject(new Error(event.data.error_description || error)); return; }
+      if (retState !== sessionStorage.getItem('pkce_state')) { reject(new Error('State mismatch.')); return; }
+
+      // Intercambiar code por token
+      try {
+        const resp = await fetch('https://login.microsoftonline.com/' + SP_CONFIG.tenantId + '/oauth2/v2.0/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            client_id: SP_CONFIG.clientId,
+            grant_type: 'authorization_code',
+            code,
+            redirect_uri: redirectUri,
+            code_verifier: sessionStorage.getItem('pkce_verifier'),
+            scope: scopes,
+          })
+        });
+        const data = await resp.json();
+        if (data.error) { reject(new Error(data.error_description || data.error)); return; }
+        _cachedToken = data.access_token;
+        _tokenExpiry = Date.now() + (data.expires_in * 1000);
+        sessionStorage.setItem('aei_token', _cachedToken);
+        sessionStorage.setItem('aei_token_expiry', String(_tokenExpiry));
+        sessionStorage.removeItem('pkce_verifier');
+        sessionStorage.removeItem('pkce_state');
+        resolve(_cachedToken);
+      } catch(e) { reject(e); }
+    };
+    window.addEventListener('message', onMessage);
+
+    // Detectar cuando el popup llega a nuestro origen y leer el code
     const timer = setInterval(() => {
       try {
-        if (popup.closed) {
-          clearInterval(timer);
-          reject(new Error('Login cancelado.'));
-          return;
-        }
+        if (popup.closed) { clearInterval(timer); window.removeEventListener('message', onMessage); reject(new Error('Login cancelado.')); return; }
         const href = popup.location.href;
-        if (!href.includes('access_token') && !href.includes('error')) return;
-        clearInterval(timer);
-        const hash = popup.location.hash || '';
-        popup.close();
-        const params = new URLSearchParams(hash.replace('#', ''));
-        const token = params.get('access_token');
+        if (!href.startsWith(redirectUri)) return;
+        // Popup llegó a nuestra página — leer params y enviar via postMessage
+        const params = new URLSearchParams(popup.location.search);
+        const code = params.get('code');
+        const state = params.get('state');
         const error = params.get('error');
+        popup.close();
+        clearInterval(timer);
+        window.removeEventListener('message', onMessage);
         if (error) { reject(new Error(params.get('error_description') || error)); return; }
-        if (!token) { reject(new Error('No se recibio token.')); return; }
-        _cachedToken = token;
-        _tokenExpiry = Date.now() + (parseInt(params.get('expires_in') || '3600') * 1000);
-        sessionStorage.setItem('aei_token', token);
-        sessionStorage.setItem('aei_token_expiry', String(_tokenExpiry));
-        resolve(token);
-      } catch(e) { /* cross-origin while Microsoft processes */ }
+        if (!code) { reject(new Error('No se recibio codigo.')); return; }
+        if (state !== sessionStorage.getItem('pkce_state')) { reject(new Error('State mismatch.')); return; }
+        // Exchange code directly
+        fetch('https://login.microsoftonline.com/' + SP_CONFIG.tenantId + '/oauth2/v2.0/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            client_id: SP_CONFIG.clientId,
+            grant_type: 'authorization_code',
+            code,
+            redirect_uri: redirectUri,
+            code_verifier: sessionStorage.getItem('pkce_verifier'),
+            scope: scopes,
+          })
+        }).then(r => r.json()).then(data => {
+          if (data.error) { reject(new Error(data.error_description || data.error)); return; }
+          _cachedToken = data.access_token;
+          _tokenExpiry = Date.now() + (data.expires_in * 1000);
+          sessionStorage.setItem('aei_token', _cachedToken);
+          sessionStorage.setItem('aei_token_expiry', String(_tokenExpiry));
+          sessionStorage.removeItem('pkce_verifier');
+          sessionStorage.removeItem('pkce_state');
+          resolve(_cachedToken);
+        }).catch(reject);
+      } catch(e) { /* cross-origin mientras Microsoft carga */ }
     }, 300);
+
     setTimeout(() => {
       clearInterval(timer);
+      window.removeEventListener('message', onMessage);
       if (!popup.closed) popup.close();
       reject(new Error('Timeout. Intenta de nuevo.'));
     }, 120000);
