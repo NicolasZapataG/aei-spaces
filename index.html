@@ -1135,47 +1135,70 @@ let _tokenExpiry = 0;
 async function getToken() {
   if (!SP_CONFIG.clientId || !SP_CONFIG.tenantId) return null;
 
-  // Usar token cacheado si sigue vigente (con 5 min de margen)
+  // Token cacheado en memoria
   if (_cachedToken && Date.now() < _tokenExpiry - 300000) return _cachedToken;
 
-  // Verificar si venimos de un redirect con token en el fragment
-  const hash = window.location.hash;
-  if (hash.includes('access_token')) {
-    const params = new URLSearchParams(hash.replace('#',''));
-    const token = params.get('access_token');
-    const state = params.get('state');
-    if (token && state === sessionStorage.getItem('pkce_state')) {
-      _cachedToken = token;
-      _tokenExpiry = Date.now() + (parseInt(params.get('expires_in') || '3600') * 1000);
-      sessionStorage.removeItem('pkce_state');
-      // Limpiar el fragment de la URL sin recargar
-      history.replaceState(null, '', window.location.pathname);
-      return _cachedToken;
-    }
+  // Token guardado en sessionStorage (sobrevive recargas)
+  const saved = sessionStorage.getItem('aei_token');
+  const savedExpiry = parseInt(sessionStorage.getItem('aei_token_expiry') || '0');
+  if (saved && Date.now() < savedExpiry - 300000) {
+    _cachedToken = saved;
+    _tokenExpiry = savedExpiry;
+    return _cachedToken;
   }
 
   const scopes = 'Files.Read Files.Read.All Sites.Read.All Sites.ReadWrite.All';
   const redirectUri = window.location.origin + window.location.pathname;
   const state = Math.random().toString(36).substring(2);
   sessionStorage.setItem('pkce_state', state);
-  // Guardar que queremos conectar tras el redirect
-  sessionStorage.setItem('sp_connect', '1');
 
-  // Redirigir a Microsoft login (misma pestaña — más confiable que popup)
-  const authUrl = `https://login.microsoftonline.com/${SP_CONFIG.tenantId}/oauth2/v2.0/authorize?` +
-    `client_id=${SP_CONFIG.clientId}` +
-    `&response_type=token` +
-    `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-    `&scope=${encodeURIComponent(scopes)}` +
-    `&state=${state}` +
-    `&prompt=select_account`;
+  const authUrl = 'https://login.microsoftonline.com/' + SP_CONFIG.tenantId + '/oauth2/v2.0/authorize?' +
+    'client_id=' + SP_CONFIG.clientId +
+    '&response_type=token' +
+    '&redirect_uri=' + encodeURIComponent(redirectUri) +
+    '&scope=' + encodeURIComponent(scopes) +
+    '&state=' + state +
+    '&prompt=select_account';
 
-  window.location.href = authUrl;
-  // La página se recarga al volver — el token se captura arriba
-  return null;
+  return new Promise((resolve, reject) => {
+    const popup = window.open(authUrl, 'msauth', 'width=500,height=650,left=200,top=80');
+    if (!popup) {
+      reject(new Error('Popup bloqueado. Permite popups para este sitio en la barra del navegador.'));
+      return;
+    }
+    const timer = setInterval(() => {
+      try {
+        if (popup.closed) {
+          clearInterval(timer);
+          reject(new Error('Login cancelado.'));
+          return;
+        }
+        const href = popup.location.href;
+        if (!href.includes('access_token') && !href.includes('error')) return;
+        clearInterval(timer);
+        const hash = popup.location.hash || '';
+        popup.close();
+        const params = new URLSearchParams(hash.replace('#', ''));
+        const token = params.get('access_token');
+        const error = params.get('error');
+        if (error) { reject(new Error(params.get('error_description') || error)); return; }
+        if (!token) { reject(new Error('No se recibio token.')); return; }
+        _cachedToken = token;
+        _tokenExpiry = Date.now() + (parseInt(params.get('expires_in') || '3600') * 1000);
+        sessionStorage.setItem('aei_token', token);
+        sessionStorage.setItem('aei_token_expiry', String(_tokenExpiry));
+        resolve(token);
+      } catch(e) { /* cross-origin while Microsoft processes */ }
+    }, 300);
+    setTimeout(() => {
+      clearInterval(timer);
+      if (!popup.closed) popup.close();
+      reject(new Error('Timeout. Intenta de nuevo.'));
+    }, 120000);
+  });
 }
 
-// ── Leer proyectos del Excel via Graph API ────────────────────────────────
+
 async function fetchProyectosFromExcel(token) {
   if (!token || !SP_CONFIG.driveItemId) return null;
   try {
@@ -3054,14 +3077,7 @@ function saveConfig() {
 
 // ===================== INIT =====================
 renderAll();
-// Si venimos de un redirect de Microsoft, reconectar automáticamente
-if (sessionStorage.getItem('sp_connect') === '1' || window.location.hash.includes('access_token')) {
-  sessionStorage.removeItem('sp_connect');
-  SP_CONFIG.mode = 'sharepoint';
-  initConnection();
-} else {
-  initConnection(); // solo actualiza badge en modo local
-}
+initConnection();
 </script>
 
 <!-- CONFIG PANEL (solo visible al activarlo) -->
