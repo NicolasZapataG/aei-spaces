@@ -1118,20 +1118,6 @@ const CONN = { ready: false, token: null, lastSync: null, error: null };
 let _cachedToken = null;
 let _tokenExpiry = 0;
 
-// Genera un code verifier aleatorio para PKCE
-function generateCodeVerifier() {
-  const arr = new Uint8Array(32);
-  crypto.getRandomValues(arr);
-  return btoa(String.fromCharCode(...arr)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
-}
-
-// Genera el code challenge SHA-256 para PKCE
-async function generateCodeChallenge(verifier) {
-  const enc = new TextEncoder().encode(verifier);
-  const hash = await crypto.subtle.digest('SHA-256', enc);
-  return btoa(String.fromCharCode(...new Uint8Array(hash))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
-}
-
 async function getToken() {
   if (!SP_CONFIG.clientId || !SP_CONFIG.tenantId) return null;
 
@@ -1140,23 +1126,16 @@ async function getToken() {
 
   const scopes = 'Files.Read Files.Read.All Sites.Read.All Sites.ReadWrite.All';
   const redirectUri = window.location.href.split('?')[0].split('#')[0];
-  const codeVerifier = generateCodeVerifier();
-  const codeChallenge = await generateCodeChallenge(codeVerifier);
   const state = Math.random().toString(36).substring(2);
-
-  // Guardar verifier en sessionStorage para recuperarlo tras el redirect
-  sessionStorage.setItem('pkce_verifier', codeVerifier);
   sessionStorage.setItem('pkce_state', state);
 
   // Construir URL de autorización
   const authUrl = `https://login.microsoftonline.com/${SP_CONFIG.tenantId}/oauth2/v2.0/authorize?` +
     `client_id=${SP_CONFIG.clientId}` +
-    `&response_type=code` +
+    `&response_type=token` +
     `&redirect_uri=${encodeURIComponent(redirectUri)}` +
     `&scope=${encodeURIComponent(scopes)}` +
     `&state=${state}` +
-    `&code_challenge=${codeChallenge}` +
-    `&code_challenge_method=S256` +
     `&prompt=select_account`;
 
   // Abrir popup de login
@@ -1178,33 +1157,19 @@ async function getToken() {
         clearInterval(timer);
         popup.close();
 
-        const params = new URLSearchParams(popup.location.search || new URL(popupUrl).search);
-        const code = params.get('code');
+        // Implicit flow: token viene en el fragment (#) de la URL
+        const hash = popup.location.hash || '';
+        const params = new URLSearchParams(hash.replace('#',''));
+        const token = params.get('access_token');
         const retState = params.get('state');
+        const error = params.get('error');
 
-        if (!code) { reject(new Error('No se recibió código de autorización.')); return; }
-        if (retState !== sessionStorage.getItem('pkce_state')) { reject(new Error('State mismatch — posible ataque CSRF.')); return; }
+        if (error) { reject(new Error(params.get('error_description') || error)); return; }
+        if (!token) { reject(new Error('No se recibió token de acceso.')); return; }
+        if (retState !== sessionStorage.getItem('pkce_state')) { reject(new Error('State mismatch.')); return; }
 
-        // Intercambiar código por token
-        const tokenResp = await fetch(`https://login.microsoftonline.com/${SP_CONFIG.tenantId}/oauth2/v2.0/token`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({
-            client_id: SP_CONFIG.clientId,
-            grant_type: 'authorization_code',
-            code,
-            redirect_uri: redirectUri,
-            code_verifier: sessionStorage.getItem('pkce_verifier'),
-            scope: scopes,
-          })
-        });
-
-        const tokenData = await tokenResp.json();
-        if (tokenData.error) { reject(new Error(tokenData.error_description || tokenData.error)); return; }
-
-        _cachedToken = tokenData.access_token;
-        _tokenExpiry = Date.now() + (tokenData.expires_in * 1000);
-        sessionStorage.removeItem('pkce_verifier');
+        _cachedToken = token;
+        _tokenExpiry = Date.now() + (parseInt(params.get('expires_in') || '3600') * 1000);
         sessionStorage.removeItem('pkce_state');
         resolve(_cachedToken);
       } catch(e) {
@@ -2748,6 +2713,13 @@ function renderProyeccion() {
     WEEK_LABELS.push(`S${w+1}`); // etiqueta corta para el eje
   }
 
+  // Semana actual — variable global usada en múltiples renders
+  let sActual = (() => {
+    const hoy = new Date(CORTE);
+    const idx = WEEKS.findIndex(({ini,fin}) => hoy >= ini && hoy <= fin);
+    return idx >= 0 ? idx : 9;
+  })();
+
   // Labels con mes para tooltip
   const WEEK_FULL_LABELS = WEEKS.map(({ini}) => {
     const mes = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][ini.getMonth()];
@@ -2756,8 +2728,7 @@ function renderProyeccion() {
 
 
   // Índice de la semana actual (corte 09 Mar 2026)
-  const semanaActualIdx = WEEKS.findIndex(({ini,fin}) => hoy >= ini && hoy <= fin);
-  const sActual = semanaActualIdx >= 0 ? semanaActualIdx : 9;
+  // sActual es variable global definida al construir WEEKS
 
   // ── KPIs ──────────────────────────────────────────────────────────────────
   const totalActivos = activos.length;
