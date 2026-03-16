@@ -1111,64 +1111,114 @@ function compMult(p) {
 const CONN = { ready: false, token: null, lastSync: null, error: null };
 
 // ── Autenticación MSAL (Microsoft) ────────────────────────────────────────
-// MSAL instance (inicializado una sola vez)
-let _msalInstance = null;
-let _msalLoaded = false;
+// ── Autenticación OAuth2 sin dependencias externas ───────────────────────
+// Implementación directa del flujo Authorization Code con PKCE
+// No requiere MSAL ni ninguna librería externa
 
-// Carga MSAL dinámicamente desde CDN (funciona en browser, no en file://)
-function loadMSAL() {
-  return new Promise((resolve, reject) => {
-    if (typeof msal !== 'undefined') { resolve(); return; }
-    if (_msalLoaded) { reject(new Error('MSAL no cargó')); return; }
-    const s = document.createElement('script');
-    s.src = 'https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js';
-    s.onload = () => { _msalLoaded = true; resolve(); };
-    s.onerror = () => reject(new Error(
-      'No se pudo cargar la librería de autenticación Microsoft (MSAL). ' +
-      'El dashboard necesita estar en un servidor web, no abierto como archivo local. ' +
-      'Súbelo a SharePoint o a un servidor y vuelve a intentarlo.'
-    ));
-    document.head.appendChild(s);
-  });
+let _cachedToken = null;
+let _tokenExpiry = 0;
+
+// Genera un code verifier aleatorio para PKCE
+function generateCodeVerifier() {
+  const arr = new Uint8Array(32);
+  crypto.getRandomValues(arr);
+  return btoa(String.fromCharCode(...arr)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
 }
 
-async function getMSAL() {
-  await loadMSAL();
-  if (_msalInstance) return _msalInstance;
-  _msalInstance = new msal.PublicClientApplication({
-    auth: {
-      clientId: SP_CONFIG.clientId,
-      authority: `https://login.microsoftonline.com/${SP_CONFIG.tenantId}`,
-      redirectUri: window.location.href.split('?')[0].split('#')[0],
-    },
-    cache: { cacheLocation: 'sessionStorage' }
-  });
-  await _msalInstance.initialize();
-  return _msalInstance;
+// Genera el code challenge SHA-256 para PKCE
+async function generateCodeChallenge(verifier) {
+  const enc = new TextEncoder().encode(verifier);
+  const hash = await crypto.subtle.digest('SHA-256', enc);
+  return btoa(String.fromCharCode(...new Uint8Array(hash))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
 }
 
 async function getToken() {
   if (!SP_CONFIG.clientId || !SP_CONFIG.tenantId) return null;
-  const scopes = ['Files.Read', 'Files.Read.All', 'Sites.Read.All', 'Sites.ReadWrite.All'];
-  try {
-    const msalApp = await getMSAL();
-    // Intentar silenciosamente primero
-    const accounts = msalApp.getAllAccounts();
-    if (accounts.length > 0) {
+
+  // Usar token cacheado si sigue vigente (con 5 min de margen)
+  if (_cachedToken && Date.now() < _tokenExpiry - 300000) return _cachedToken;
+
+  const scopes = 'Files.Read Files.Read.All Sites.Read.All Sites.ReadWrite.All';
+  const redirectUri = window.location.href.split('?')[0].split('#')[0];
+  const codeVerifier = generateCodeVerifier();
+  const codeChallenge = await generateCodeChallenge(codeVerifier);
+  const state = Math.random().toString(36).substring(2);
+
+  // Guardar verifier en sessionStorage para recuperarlo tras el redirect
+  sessionStorage.setItem('pkce_verifier', codeVerifier);
+  sessionStorage.setItem('pkce_state', state);
+
+  // Construir URL de autorización
+  const authUrl = `https://login.microsoftonline.com/${SP_CONFIG.tenantId}/oauth2/v2.0/authorize?` +
+    `client_id=${SP_CONFIG.clientId}` +
+    `&response_type=code` +
+    `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+    `&scope=${encodeURIComponent(scopes)}` +
+    `&state=${state}` +
+    `&code_challenge=${codeChallenge}` +
+    `&code_challenge_method=S256` +
+    `&prompt=select_account`;
+
+  // Abrir popup de login
+  return new Promise((resolve, reject) => {
+    const popup = window.open(authUrl, 'msauth', 'width=480,height=640,left=200,top=100');
+    if (!popup) { reject(new Error('El popup fue bloqueado. Permite popups para este sitio e intenta de nuevo.')); return; }
+
+    // Escuchar el redirect de vuelta con el código
+    const timer = setInterval(async () => {
       try {
-        const resp = await msalApp.acquireTokenSilent({ scopes, account: accounts[0] });
-        return resp.accessToken;
+        if (popup.closed) {
+          clearInterval(timer);
+          reject(new Error('El popup fue cerrado sin completar la autenticación.'));
+          return;
+        }
+        const popupUrl = popup.location.href;
+        if (!popupUrl.includes(redirectUri.split('/').pop())) return;
+
+        clearInterval(timer);
+        popup.close();
+
+        const params = new URLSearchParams(popup.location.search || new URL(popupUrl).search);
+        const code = params.get('code');
+        const retState = params.get('state');
+
+        if (!code) { reject(new Error('No se recibió código de autorización.')); return; }
+        if (retState !== sessionStorage.getItem('pkce_state')) { reject(new Error('State mismatch — posible ataque CSRF.')); return; }
+
+        // Intercambiar código por token
+        const tokenResp = await fetch(`https://login.microsoftonline.com/${SP_CONFIG.tenantId}/oauth2/v2.0/token`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            client_id: SP_CONFIG.clientId,
+            grant_type: 'authorization_code',
+            code,
+            redirect_uri: redirectUri,
+            code_verifier: sessionStorage.getItem('pkce_verifier'),
+            scope: scopes,
+          })
+        });
+
+        const tokenData = await tokenResp.json();
+        if (tokenData.error) { reject(new Error(tokenData.error_description || tokenData.error)); return; }
+
+        _cachedToken = tokenData.access_token;
+        _tokenExpiry = Date.now() + (tokenData.expires_in * 1000);
+        sessionStorage.removeItem('pkce_verifier');
+        sessionStorage.removeItem('pkce_state');
+        resolve(_cachedToken);
       } catch(e) {
-        console.log('Silent token failed, trying popup...', e.message);
+        // popup.location.href throws cross-origin until redirect completes — ignorar
       }
-    }
-    // Popup de login
-    const resp = await msalApp.acquireTokenPopup({ scopes });
-    return resp.accessToken;
-  } catch(e) {
-    console.error('Token error:', e);
-    throw new Error(e.message || 'No se pudo autenticar con Microsoft.');
-  }
+    }, 500);
+
+    // Timeout de 3 minutos
+    setTimeout(() => {
+      clearInterval(timer);
+      if (!popup.closed) popup.close();
+      reject(new Error('Timeout de autenticación — intenta de nuevo.'));
+    }, 180000);
+  });
 }
 
 // ── Leer proyectos del Excel via Graph API ────────────────────────────────
@@ -1563,7 +1613,7 @@ function renderCapacidad(D_) {
 
     const capProyectos = ci.diseñadores.length * DIS_CAP;
     // Weighted load: each project counts × its complexity multiplier
-    const loadPonderada = cargaCelulaEnSemana(cel.id, sActual);
+    const loadPonderada = cargaCelulaEnSemana(celId, sActual);
     const utilPct = capProyectos > 0 ? Math.round(loadPonderada / capProyectos * 100) : 0;
     const utilColor = utilPct > 100 ? '#e05060' : utilPct > 75 ? '#f09040' : utilPct > 50 ? '#f0c040' : '#40d080';
     const utilLabel = utilPct > 100 ? '🔴 Sobrecargada' : utilPct > 75 ? '🟠 Alta' : utilPct > 50 ? '🟡 Media' : '🟢 Normal';
