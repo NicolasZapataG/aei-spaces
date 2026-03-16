@@ -1149,8 +1149,8 @@ async function getToken() {
   if (_cachedToken && Date.now() < _tokenExpiry - 300000) return _cachedToken;
 
   // Token en sessionStorage
-  const saved = sessionStorage.getItem('aei_token');
-  const savedExpiry = parseInt(sessionStorage.getItem('aei_token_expiry') || '0');
+  const saved = localStorage.getItem('aei_token');
+  const savedExpiry = parseInt(localStorage.getItem('aei_token_expiry') || '0');
   if (saved && Date.now() < savedExpiry - 300000) {
     _cachedToken = saved; _tokenExpiry = savedExpiry; return _cachedToken;
   }
@@ -1209,8 +1209,8 @@ async function getToken() {
         if (data.error) { reject(new Error(data.error_description || data.error)); return; }
         _cachedToken = data.access_token;
         _tokenExpiry = Date.now() + (data.expires_in * 1000);
-        sessionStorage.setItem('aei_token', _cachedToken);
-        sessionStorage.setItem('aei_token_expiry', String(_tokenExpiry));
+        localStorage.setItem('aei_token', _cachedToken);
+        localStorage.setItem('aei_token_expiry', String(_tokenExpiry));
         sessionStorage.removeItem('pkce_verifier');
         sessionStorage.removeItem('pkce_state');
         resolve(_cachedToken);
@@ -1251,8 +1251,8 @@ async function getToken() {
           if (data.error) { reject(new Error(data.error_description || data.error)); return; }
           _cachedToken = data.access_token;
           _tokenExpiry = Date.now() + (data.expires_in * 1000);
-          sessionStorage.setItem('aei_token', _cachedToken);
-          sessionStorage.setItem('aei_token_expiry', String(_tokenExpiry));
+          localStorage.setItem('aei_token', _cachedToken);
+          localStorage.setItem('aei_token_expiry', String(_tokenExpiry));
           sessionStorage.removeItem('pkce_verifier');
           sessionStorage.removeItem('pkce_state');
           resolve(_cachedToken);
@@ -3148,6 +3148,14 @@ function saveConfig() {
 
 // ===================== INIT =====================
 renderAll();
+// Auto-reconectar si hay token válido guardado
+(function() {
+  const saved = localStorage.getItem('aei_token');
+  const expiry = parseInt(localStorage.getItem('aei_token_expiry') || '0');
+  if (saved && Date.now() < expiry - 300000) {
+    SP_CONFIG.mode = 'sharepoint';
+  }
+})();
 initConnection();
 </script>
 
