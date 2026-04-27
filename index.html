@@ -139,6 +139,7 @@ body::after {
 
 /* ===== HEADER ===== */
 .header {
+  position:sticky; top:0; z-index:200;
   background:rgba(10,13,20,.95);
   backdrop-filter:blur(16px);
 }
@@ -527,8 +528,7 @@ body::after {
 /* ── INNOVACIÓN CSS ──────────────────────────────────────────────── */
 
 :root{--bg:#0a0d14;--bg2:#0f1421;--bg3:#161c2e;--accent:#f0c040;--accent2:#4de0c0;--accent3:#e05080;--accent4:#5080f0;--text:#e8eaf0;--muted:#6b7494;--border:rgba(240,192,64,0.15);--card:rgba(255,255,255,0.03);--green:#40d080;--red:#e05060;--orange:#f09040;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(240,192,64,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(240,192,64,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
 .wrapper{position:relative;z-index:1;max-width:1500px;margin:0 auto;padding:28px 24px;}
 header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px;padding-bottom:22px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:16px;}
@@ -681,273 +681,47 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
 
 
 
-/* ── PYGs CSS (scoped) ──────────────────────────────────────────── */
+/* === PYGs (scoped to #db-pygs) === */
 
-:root {
-  --bg:     #0a0d14;
-  --bg2:    #0f1421;
-  --bg3:    #141929;
-  --border: rgba(255,255,255,.07);
-  --text:   #e8eaf0;
-  --muted:  #6b7494;
-  --muted2: #8b90a8;
-  --yellow: #f0c040;
-  --cyan:   #4de0c0;
-  --green:  #40d080;
-  --red:    #e05060;
-  --blue:   #5080f0;
-  --orange: #f09040;
-  --purple: #a060f0;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
 
 /* ── HEADER ── */
-.pygs-header{background:var(--bg2);border-bottom:1px solid rgba(240,192,64,.2);padding:16px 24px;display:flex;align-items:center;gap:16px;}
-.pygs-header-brand{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--yellow);}
-.pygs-header-sub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;}
-.pygs-header-kpis{display:flex;gap:24px;margin-left:auto;}
-.pygs-hkpi{text-align:center;}
-.pygs-hkpi-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;}
-.pygs-hkpi-val{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}
-.pygs-hkpi-val.y{color:var(--yellow);}
-.pygs-hkpi-val.g{color:var(--green);}
-.pygs-hkpi-val.r{color:var(--red);}
-.pygs-hkpi-val.c{color:var(--cyan);}
-.pygs-hkpi-sub{font-size:9px;color:var(--muted);}
+.header{background:var(--bg2);border-bottom:1px solid rgba(240,192,64,.2);padding:16px 24px;display:flex;align-items:center;gap:16px;}#db-pygs .header-brand {font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--yellow);}#db-pygs .header-sub {font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;}#db-pygs .header-kpis {display:flex;gap:24px;margin-left:auto;}#db-pygs .hkpi {text-align:center;}#db-pygs .hkpi-label {font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;}#db-pygs .hkpi-val {font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}#db-pygs .hkpi-val.y {color:var(--yellow);}#db-pygs .hkpi-val.g {color:var(--green);}#db-pygs .hkpi-val.r {color:var(--red);}#db-pygs .hkpi-val.c {color:var(--cyan);}#db-pygs .hkpi-sub {font-size:9px;color:var(--muted);}
 
 /* ── TABS ── */
-.pygs-tabs-bar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;gap:0;padding:0 24px;overflow-x:auto;}
-.pygs-tab-btn{height:44px;padding:0 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s;}
-.pygs-tab-btn:hover{color:var(--text);}
-.pygs-tab-btn.active{color:var(--yellow);border-bottom-color:var(--yellow);}
-.pygs-tab-panel{display:none;padding:24px;}
-.pygs-tab-panel.active{display:block;}
+.tabs-bar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;gap:0;padding:0 24px;overflow-x:auto;}#db-pygs .tab-btn {height:44px;padding:0 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s;}#db-pygs .tab-btn:hover {color:var(--text);}#db-pygs .tab-btn.active {color:var(--yellow);border-bottom-color:var(--yellow);}#db-pygs .tab-panel {display:none;padding:24px;}#db-pygs .tab-panel.active {display:block;}
 
 /* ── GRID ── */
-.pygs-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.pygs-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
-.pygs-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}#db-pygs .grid-3 {display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}#db-pygs .grid-4 {display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
 
 /* ── CARDS ── */
-.pygs-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;}
-.pygs-card-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.pygs-card-title .pygs-dot{width:6px;height:6px;border-radius:50%;display:inline-block;}
-.pygs-chart-wrap{position:relative;height:220px;width:100%;}
-.chart-wrap-sm{position:relative;height:160px;width:100%;}
-.pygs-chart-wrap-lg{position:relative;height:300px;width:100%;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;}#db-pygs .card-title {font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}#db-pygs .card-title .dot {width:6px;height:6px;border-radius:50%;display:inline-block;}#db-pygs .chart-wrap {position:relative;height:220px;width:100%;}#db-pygs .chart-wrap-sm {position:relative;height:160px;width:100%;}#db-pygs .chart-wrap-lg {position:relative;height:300px;width:100%;}
 
 /* ── KPI CARDS ── */
-.pygs-kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;}
-.pygs-kpi-card.y{border-left:3px solid var(--yellow);}
-.pygs-kpi-card.g{border-left:3px solid var(--green);}
-.pygs-kpi-card.r{border-left:3px solid var(--red);}
-.pygs-kpi-card.c{border-left:3px solid var(--cyan);}
-.pygs-kpi-card.o{border-left:3px solid var(--orange);}
-.pygs-kpi-card.b{border-left:3px solid var(--blue);}
-.pygs-kpi-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;}
-.pygs-kpi-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1;}
-.pygs-kpi-sub{font-size:10px;color:var(--muted2);margin-top:4px;}
+.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;}#db-pygs .kpi-card.y {border-left:3px solid var(--yellow);}#db-pygs .kpi-card.g {border-left:3px solid var(--green);}#db-pygs .kpi-card.r {border-left:3px solid var(--red);}#db-pygs .kpi-card.c {border-left:3px solid var(--cyan);}#db-pygs .kpi-card.o {border-left:3px solid var(--orange);}#db-pygs .kpi-card.b {border-left:3px solid var(--blue);}#db-pygs .kpi-label {font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;}#db-pygs .kpi-val {font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1;}#db-pygs .kpi-sub {font-size:10px;color:var(--muted2);margin-top:4px;}
 
 /* ── TABLE ── */
-.pygs-tbl{width:100%;border-collapse:collapse;font-size:11px;}
-.pygs-tbl th{text-align:left;padding:8px 12px;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border);}
-.pygs-tbl td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--muted2);}
-.pygs-tbl tr:hover td{background:rgba(255,255,255,.02);}
+.tbl{width:100%;border-collapse:collapse;font-size:11px;}#db-pygs .tbl th {text-align:left;padding:8px 12px;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border);}#db-pygs .tbl td {padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--muted2);}#db-pygs .tbl tr:hover td {background:rgba(255,255,255,.02);}
 
 /* ── BADGES ── */
-.pygs-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
-.pygs-badge-g{background:rgba(64,208,128,.15);color:#40d080;}
-.pygs-badge-r{background:rgba(224,80,96,.15);color:#e05060;}
-.pygs-badge-y{background:rgba(240,192,64,.15);color:#f0c040;}
-.pygs-badge-b{background:rgba(80,128,240,.15);color:#5080f0;}
-.pygs-badge-o{background:rgba(240,144,64,.15);color:#f09040;}
-.pygs-badge-m{background:rgba(107,116,148,.15);color:#6b7494;}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}#db-pygs .badge-g {background:rgba(64,208,128,.15);color:#40d080;}#db-pygs .badge-r {background:rgba(224,80,96,.15);color:#e05060;}#db-pygs .badge-y {background:rgba(240,192,64,.15);color:#f0c040;}#db-pygs .badge-b {background:rgba(80,128,240,.15);color:#5080f0;}#db-pygs .badge-o {background:rgba(240,144,64,.15);color:#f09040;}#db-pygs .badge-m {background:rgba(107,116,148,.15);color:#6b7494;}
 
 /* ── SECTION TITLE ── */
-.pygs-section-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--muted2);margin:0 0 12px;display:flex;align-items:center;gap:8px;}
-.pygs-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--muted2);margin:0 0 12px;display:flex;align-items:center;gap:8px;}#db-pygs .section-title::after {content:'';flex:1;height:1px;background:var(--border);}
 
 /* ── PIPELINE ROWS ── */
-.pygs-pipe-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg3);border-radius:8px;margin-bottom:6px;}
-.pygs-pipe-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.pygs-pipe-cod{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);min-width:60px;}
-.pygs-pipe-name{flex:1;font-size:11px;color:var(--text);}
-.pygs-pipe-dir{font-size:10px;color:var(--muted);min-width:130px;}
-.pygs-pipe-val{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--yellow);min-width:80px;text-align:right;}
-.pygs-pipe-tipo{min-width:80px;text-align:right;}
+.pipe-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg3);border-radius:8px;margin-bottom:6px;}#db-pygs .pipe-dot {width:8px;height:8px;border-radius:50%;flex-shrink:0;}#db-pygs .pipe-cod {font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);min-width:60px;}#db-pygs .pipe-name {flex:1;font-size:11px;color:var(--text);}#db-pygs .pipe-dir {font-size:10px;color:var(--muted);min-width:130px;}#db-pygs .pipe-val {font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--yellow);min-width:80px;text-align:right;}#db-pygs .pipe-tipo {min-width:80px;text-align:right;}
 
 /* ── RADAR CHART LEGEND ── */
-.radar-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
-.radar-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted2);}
-.radar-dot{width:8px;height:8px;border-radius:50%;}
-
-
-:root {
-  --bg:     #0a0d14;
-  --bg2:    #0f1421;
-  --bg3:    #141929;
-  --border: rgba(255,255,255,.07);
-  --text:   #e8eaf0;
-  --muted:  #6b7494;
-  --muted2: #8b90a8;
-  --yellow: #f0c040;
-  --cyan:   #4de0c0;
-  --green:  #40d080;
-  --red:    #e05060;
-  --blue:   #5080f0;
-  --orange: #f09040;
-  --purple: #a060f0;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
-
-/* ── HEADER ── */
-.header{background:var(--bg2);border-bottom:1px solid rgba(240,192,64,.2);padding:16px 24px;display:flex;align-items:center;gap:16px;}
-.header-brand{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--yellow);}
-.header-sub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;}
-.header-kpis{display:flex;gap:24px;margin-left:auto;}
-.hkpi{text-align:center;}
-.hkpi-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;}
-.hkpi-val{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}
-.hkpi-val.y{color:var(--yellow);}
-.hkpi-val.g{color:var(--green);}
-.hkpi-val.r{color:var(--red);}
-.hkpi-val.c{color:var(--cyan);}
-.hkpi-sub{font-size:9px;color:var(--muted);}
-
-/* ── TABS ── */
-.tabs-bar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;gap:0;padding:0 24px;overflow-x:auto;}
-.tab-btn{height:44px;padding:0 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s;}
-.tab-btn:hover{color:var(--text);}
-.tab-btn.active{color:var(--yellow);border-bottom-color:var(--yellow);}
-.tab-panel{display:none;padding:24px;}
-.tab-panel.active{display:block;}
-
-/* ── GRID ── */
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
-.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
-
-/* ── CARDS ── */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;}
-.card-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.card-title .dot{width:6px;height:6px;border-radius:50%;display:inline-block;}
-.chart-wrap{position:relative;height:220px;width:100%;}
-.chart-wrap-sm{position:relative;height:160px;width:100%;}
-.chart-wrap-lg{position:relative;height:300px;width:100%;}
-
-/* ── KPI CARDS ── */
-.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;}
-.kpi-card.y{border-left:3px solid var(--yellow);}
-.kpi-card.g{border-left:3px solid var(--green);}
-.kpi-card.r{border-left:3px solid var(--red);}
-.kpi-card.c{border-left:3px solid var(--cyan);}
-.kpi-card.o{border-left:3px solid var(--orange);}
-.kpi-card.b{border-left:3px solid var(--blue);}
-.kpi-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;}
-.kpi-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1;}
-.kpi-sub{font-size:10px;color:var(--muted2);margin-top:4px;}
-
-/* ── TABLE ── */
-.tbl{width:100%;border-collapse:collapse;font-size:11px;}
-.tbl th{text-align:left;padding:8px 12px;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border);}
-.tbl td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--muted2);}
-.tbl tr:hover td{background:rgba(255,255,255,.02);}
-
-/* ── BADGES ── */
-.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
-.badge-g{background:rgba(64,208,128,.15);color:#40d080;}
-.badge-r{background:rgba(224,80,96,.15);color:#e05060;}
-.badge-y{background:rgba(240,192,64,.15);color:#f0c040;}
-.badge-b{background:rgba(80,128,240,.15);color:#5080f0;}
-.badge-o{background:rgba(240,144,64,.15);color:#f09040;}
-.badge-m{background:rgba(107,116,148,.15);color:#6b7494;}
-
-/* ── SECTION TITLE ── */
-.section-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--muted2);margin:0 0 12px;display:flex;align-items:center;gap:8px;}
-.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
-
-/* ── PIPELINE ROWS ── */
-.pipe-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg3);border-radius:8px;margin-bottom:6px;}
-.pipe-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.pipe-cod{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);min-width:60px;}
-.pipe-name{flex:1;font-size:11px;color:var(--text);}
-.pipe-dir{font-size:10px;color:var(--muted);min-width:130px;}
-.pipe-val{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--yellow);min-width:80px;text-align:right;}
-.pipe-tipo{min-width:80px;text-align:right;}
-
-/* ── RADAR CHART LEGEND ── */
-.radar-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
-.radar-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted2);}
-.radar-dot{width:8px;height:8px;border-radius:50%;}
-
-
-/* ── INGENIERÍA CSS ──────────────────────────────────────────────── */
-
-:root{--bg:#0a0d14;--bg2:#0f1421;--bg3:#141929;--border:rgba(255,255,255,.07);--text:#e8eaf0;--muted:#6b7494;--muted2:#8b90a8;--yellow:#f0c040;--cyan:#4de0c0;--green:#40d080;--red:#e05060;--blue:#5080f0;--orange:#f09040;--purple:#a060f0;}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
-.ing-header{background:var(--bg2);border-bottom:1px solid rgba(77,224,192,.2);padding:16px 24px;display:flex;align-items:center;gap:16px;}
-.ing-brand{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--cyan);}
-.ing-sub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;}
-.ing-kpis{display:flex;gap:24px;margin-left:auto;}
-.hkpi{text-align:center;}
-.hkpi-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;}
-.hkpi-val{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}
-.hkpi-sub{font-size:9px;color:var(--muted);}
-.tabs-bar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;padding:0 24px;overflow-x:auto;}
-.ing-tab-btn{height:44px;padding:0 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s;}
-.ing-tab-btn:hover{color:var(--text);}
-.ing-tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan);}
-.ing-panel{display:none;padding:24px;}
-.ing-panel.active{display:block;}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
-.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
-.ing-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;}
-.card-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.card-dot{width:6px;height:6px;border-radius:50%;display:inline-block;}
-.chart-wrap{position:relative;height:220px;}
-.chart-wrap-lg{position:relative;height:300px;}
-.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;}
-.kpi-card.c{border-left:3px solid var(--cyan);}
-.kpi-card.g{border-left:3px solid var(--green);}
-.kpi-card.y{border-left:3px solid var(--yellow);}
-.kpi-card.r{border-left:3px solid var(--red);}
-.kpi-card.o{border-left:3px solid var(--orange);}
-.kpi-card.b{border-left:3px solid var(--blue);}
-.kpi-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;}
-.kpi-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1;}
-.kpi-sub{font-size:10px;color:var(--muted2);margin-top:4px;}
-.sec-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--muted2);margin:0 0 12px;display:flex;align-items:center;gap:8px;}
-.sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
-.tbl{width:100%;border-collapse:collapse;font-size:11px;}
-.tbl th{text-align:left;padding:8px 12px;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border);}
-.tbl td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--muted2);}
-.tbl tr:hover td{background:rgba(255,255,255,.02);}
-.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
-.badge-g{background:rgba(64,208,128,.15);color:#40d080;}
-.badge-r{background:rgba(224,80,96,.15);color:#e05060;}
-.badge-y{background:rgba(240,192,64,.15);color:#f0c040;}
-.badge-b{background:rgba(80,128,240,.15);color:#5080f0;}
-.badge-o{background:rgba(240,144,64,.15);color:#f09040;}
-.badge-m{background:rgba(107,116,148,.15);color:#6b7494;}
-.badge-c{background:rgba(77,224,192,.15);color:#4de0c0;}
+.radar-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}#db-pygs .radar-item {display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted2);}#db-pygs .radar-dot {width:8px;height:8px;border-radius:50%;}
+/* === ING (scoped to #db-ing) === */
+#db-ing .ing-header {background:var(--bg2);border-bottom:1px solid rgba(77,224,192,.2);padding:16px 24px;display:flex;align-items:center;gap:16px;}#db-ing .ing-brand {font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--cyan);}#db-ing .ing-sub {font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;}#db-ing .ing-kpis {display:flex;gap:24px;margin-left:auto;}#db-ing .hkpi {text-align:center;}#db-ing .hkpi-label {font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;}#db-ing .hkpi-val {font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}#db-ing .hkpi-sub {font-size:9px;color:var(--muted);}#db-ing .tabs-bar {background:var(--bg2);border-bottom:1px solid var(--border);display:flex;padding:0 24px;overflow-x:auto;}#db-ing .ing-tab-btn {height:44px;padding:0 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s;}#db-ing .ing-tab-btn:hover {color:var(--text);}#db-ing .ing-tab-btn.active {color:var(--cyan);border-bottom-color:var(--cyan);}#db-ing .ing-panel {display:none;padding:24px;}#db-ing .ing-panel.active {display:block;}#db-ing .grid-2 {display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}#db-ing .grid-3 {display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}#db-ing .grid-4 {display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}#db-ing .ing-card {background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;}#db-ing .card-title {font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}#db-ing .card-dot {width:6px;height:6px;border-radius:50%;display:inline-block;}#db-ing .chart-wrap {position:relative;height:220px;}#db-ing .chart-wrap-lg {position:relative;height:300px;}#db-ing .kpi-card {background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;}#db-ing .kpi-card.c {border-left:3px solid var(--cyan);}#db-ing .kpi-card.g {border-left:3px solid var(--green);}#db-ing .kpi-card.y {border-left:3px solid var(--yellow);}#db-ing .kpi-card.r {border-left:3px solid var(--red);}#db-ing .kpi-card.o {border-left:3px solid var(--orange);}#db-ing .kpi-card.b {border-left:3px solid var(--blue);}#db-ing .kpi-label {font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;}#db-ing .kpi-val {font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1;}#db-ing .kpi-sub {font-size:10px;color:var(--muted2);margin-top:4px;}#db-ing .sec-title {font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--muted2);margin:0 0 12px;display:flex;align-items:center;gap:8px;}#db-ing .sec-title::after {content:'';flex:1;height:1px;background:var(--border);}#db-ing .tbl {width:100%;border-collapse:collapse;font-size:11px;}#db-ing .tbl th {text-align:left;padding:8px 12px;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border);}#db-ing .tbl td {padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--muted2);}#db-ing .tbl tr:hover td {background:rgba(255,255,255,.02);}#db-ing .badge {display:inline-block;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}#db-ing .badge-g {background:rgba(64,208,128,.15);color:#40d080;}#db-ing .badge-r {background:rgba(224,80,96,.15);color:#e05060;}#db-ing .badge-y {background:rgba(240,192,64,.15);color:#f0c040;}#db-ing .badge-b {background:rgba(80,128,240,.15);color:#5080f0;}#db-ing .badge-o {background:rgba(240,144,64,.15);color:#f09040;}#db-ing .badge-m {background:rgba(107,116,148,.15);color:#6b7494;}#db-ing .badge-c {background:rgba(77,224,192,.15);color:#4de0c0;}
 /* Activos cards */
-.activo-card{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:10px;padding:14px 16px;margin-bottom:8px;}
-.activo-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;}
-.activo-meta{display:flex;flex-wrap:wrap;gap:8px;font-size:10px;color:var(--muted2);}
-.activo-tag{background:rgba(255,255,255,.05);border-radius:4px;padding:2px 7px;}
+.activo-card{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:10px;padding:14px 16px;margin-bottom:8px;}#db-ing .activo-name {font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;}#db-ing .activo-meta {display:flex;flex-wrap:wrap;gap:8px;font-size:10px;color:var(--muted2);}#db-ing .activo-tag {background:rgba(255,255,255,.05);border-radius:4px;padding:2px 7px;}
 /* Especialidades matrix */
-.spec-matrix{overflow-x:auto;}
-.spec-tbl{border-collapse:collapse;font-size:9px;white-space:nowrap;}
-.spec-tbl th{padding:6px 8px;color:var(--muted);border-bottom:1px solid var(--border);text-align:center;}
-.spec-tbl th.proj{text-align:left;min-width:140px;}
-.spec-tbl td{padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.03);text-align:center;}
-.spec-tbl td.proj{text-align:left;color:var(--text);font-weight:500;}
-.spec-dot{width:16px;height:16px;border-radius:4px;display:inline-block;margin:0 auto;}
+.spec-matrix{overflow-x:auto;}#db-ing .spec-tbl {border-collapse:collapse;font-size:9px;white-space:nowrap;}#db-ing .spec-tbl th {padding:6px 8px;color:var(--muted);border-bottom:1px solid var(--border);text-align:center;}#db-ing .spec-tbl th.proj {text-align:left;min-width:140px;}#db-ing .spec-tbl td {padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.03);text-align:center;}#db-ing .spec-tbl td.proj {text-align:left;color:var(--text);font-weight:500;}#db-ing .spec-dot {width:16px;height:16px;border-radius:4px;display:inline-block;margin:0 auto;}
 
+.ing-filter-btn{padding:4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:transparent;color:var(--muted);font-size:10px;cursor:pointer;transition:all .2s;font-family:"DM Sans",sans-serif;}
+.ing-filter-btn.active{background:rgba(77,224,192,.15);border-color:var(--cyan);color:var(--cyan);}
 </style>
 </head>
 <body>
@@ -1050,8 +824,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 <div class="tabs-bar">
   <button class="tab-btn active" onclick="showTab('general',this)">General</button>
   <button class="tab-btn" onclick="showTab('intel',this)">⚡ Inteligencia</button>
-  <button class="tab-btn" onclick="showTab('cargabilidad',this)">Cargabilidad</button>
+  <button class="tab-btn" onclick="showTab('cargabilidad',this)">Diseño</button>
+  <button class="tab-btn" onclick="showTab('carg_bim',this)">BIM</button>
+  <button class="tab-btn" onclick="showTab('carg_pmo',this)">PMO</button>
+  <button class="tab-btn" onclick="showTab('carg_ing',this)">Ingeniería</button>
   <button class="tab-btn" onclick="showTab('gantt',this)">Cronograma Gantt</button>
+  <button class="tab-btn" onclick="showTab('exp',this)">🧩 EXP</button>
   <button class="tab-btn" onclick="showTab('equipos',this)">Equipos</button>
   <button class="tab-btn" onclick="showTab('celulas',this)">Células</button>
   <button class="tab-btn" onclick="showTab('proyectos',this)">Proyectos</button>
@@ -1147,6 +925,44 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 </div>
 
 <!-- ============ TAB GANTT ============ -->
+
+<!-- TAB CARGABILIDAD BIM -->
+<!-- TAB CARGABILIDAD BIM -->
+<div id="tab-carg_bim" class="tab-panel">
+  <div class="kpi-grid" id="kpis-bim"></div>
+  <div class="section-title">👤 Perfil de cargabilidad BIM</div>
+  <div id="bim-profiles"></div>
+  <div class="section-title" style="margin-top:20px">🏢 Cargabilidad Contratistas de Ingeniería</div>
+  <div id="contractor-load"></div>
+</div>
+
+<!-- TAB CARGABILIDAD PMO -->
+<div id="tab-carg_pmo" class="tab-panel">
+  <div class="kpi-grid" id="kpis-pmo"></div>
+  <div class="section-title">👤 Perfil de cargabilidad PMO</div>
+  <div id="pmo-profiles"></div>
+</div>
+
+<!-- TAB CARGABILIDAD INGENIERÍA -->
+<div id="tab-carg_ing" class="tab-panel">
+  <div class="kpi-grid" id="kpis-carg-ing"></div>
+  <div class="section-title">⚡ Ing. Eléctrico — carga por persona</div>
+  <div id="ing-elec-profiles"></div>
+  <div class="section-title" style="margin-top:20px">🔧 Ing. Mecánico — carga por persona</div>
+  <div id="ing-mec-profiles"></div>
+</div>
+
+<!-- TAB EXP: EQUIPO POR PROYECTO -->
+<div id="tab-exp" class="tab-panel">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+    <span style="font-size:11px;color:var(--muted)">Proyecto:</span>
+    <select id="exp-select" onchange="renderEXP()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:12px;font-family:'DM Sans',sans-serif">
+      <option value="">— Selecciona un proyecto activo —</option>
+    </select>
+  </div>
+  <div id="exp-content"></div>
+</div>
+
 <div id="tab-gantt" class="tab-panel">
   <div class="kpi-grid" id="kpis-gantt"></div>
   <div class="card">
@@ -1337,7 +1153,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <button class="dp-close" onclick="closeDetail()">✕</button>
   </div>
   <div id="dp-body"></div>
-</div>
 </div>
 
 <!-- ══ INNOVACIÓN DASHBOARD ═════════════════════════════════════════ -->
@@ -2573,179 +2388,180 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 </div><!-- /wrapper -->
 </div>
 
-<!-- ══ PYGs DASHBOARD ══════════════════════════════════════════════ -->
+</div>
+<!-- PYGs -->
 <div class="db-wrapper" id="db-pygs">
 <!-- HEADER -->
-<div class="pygs-header">
+<div class="header">
   <div>
-    <div class="pygs-header-brand">AEI · PYGs 2026</div>
-    <div class="pygs-header-sub">Dashboard de Cotizaciones · Actualizado al corte de datos</div>
+    <div class="header-brand">AEI · PYGs 2026</div>
+    <div class="header-sub">Dashboard de Cotizaciones · Actualizado al corte de datos</div>
   </div>
-  <div class="pygs-header-kpis">
-    <div class="pygs-hkpi"><div class="pygs-hkpi-label">Total PYGs</div><div class="pygs-hkpi-val y" id="hk-total">—</div><div class="pygs-hkpi-sub">registros</div></div>
-    <div class="pygs-hkpi"><div class="pygs-hkpi-label">Valor Cotizado</div><div class="pygs-hkpi-val c" id="hk-valor">—</div><div class="pygs-hkpi-sub">COP total</div></div>
-    <div class="pygs-hkpi"><div class="pygs-hkpi-label">En Revisión</div><div class="pygs-hkpi-val r" id="hk-revision">—</div><div class="pygs-hkpi-sub">pipeline pygs-activo</div></div>
-    <div class="pygs-hkpi"><div class="pygs-hkpi-label">Días Promedio</div><div class="pygs-hkpi-val g" id="hk-dias">—</div><div class="pygs-hkpi-sub">por cotización</div></div>
-    <div class="pygs-hkpi"><div class="pygs-hkpi-label">Versiones Avg</div><div class="pygs-hkpi-val o" id="hk-ver">—</div><div class="pygs-hkpi-sub">iteraciones</div></div>
+  <div class="header-kpis">
+    <div class="hkpi"><div class="hkpi-label">Total PYGs</div><div class="hkpi-val y" id="hk-total">—</div><div class="hkpi-sub">registros</div></div>
+    <div class="hkpi"><div class="hkpi-label">Valor Cotizado</div><div class="hkpi-val c" id="hk-valor">—</div><div class="hkpi-sub">COP total</div></div>
+    <div class="hkpi"><div class="hkpi-label">En Revisión</div><div class="hkpi-val r" id="hk-revision">—</div><div class="hkpi-sub">pipeline activo</div></div>
+    <div class="hkpi"><div class="hkpi-label">Días Promedio</div><div class="hkpi-val g" id="hk-dias">—</div><div class="hkpi-sub">por cotización</div></div>
+    <div class="hkpi"><div class="hkpi-label">Versiones Avg</div><div class="hkpi-val o" id="hk-ver">—</div><div class="hkpi-sub">iteraciones</div></div>
   </div>
 </div>
 
 <!-- TABS -->
-<div class="pygs-tabs-bar">
-  <button class="pygs-tab-btn active" onclick="showTab('pipeline',this)">📊 Pipeline</button>
-  <button class="pygs-tab-btn" onclick="showTab('financiero',this)">💰 Financiero</button>
-  <button class="pygs-tab-btn" onclick="showTab('eficiencia',this)">⚡ Eficiencia</button>
-  <button class="pygs-tab-btn" onclick="showTab('directores',this)">👤 Directores</button>
-  <button class="pygs-tab-btn" onclick="showTab('mercado',this)">🗺 Mercado</button>
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="pygs_showTab('pipeline',this)">📊 Pipeline</button>
+  <button class="tab-btn" onclick="pygs_showTab('financiero',this)">💰 Financiero</button>
+  <button class="tab-btn" onclick="pygs_showTab('eficiencia',this)">⚡ Eficiencia</button>
+  <button class="tab-btn" onclick="pygs_showTab('comerciales',this)">Comerciales</button>
+  <button class="tab-btn" onclick="pygs_showTab('mercado',this)">🗺 Mercado</button>
 </div>
 
 <!-- TAB PIPELINE -->
-<div class="pygs-tab-panel active" id="pygs-tab-pipeline">
-  <div class="pygs-grid-4">
-    <div class="pygs-kpi-card g"><div class="pygs-kpi-label">Ganados</div><div class="pygs-kpi-val" id="kpi-ganados" style="color:var(--green)">—</div><div class="pygs-kpi-sub" id="kpi-ganados-val">—</div></div>
-    <div class="pygs-kpi-card r"><div class="pygs-kpi-label">Perdidos</div><div class="pygs-kpi-val" id="kpi-perdidos" style="color:var(--red)">—</div><div class="pygs-kpi-sub" id="kpi-perdidos-val">—</div></div>
-    <div class="pygs-kpi-card y"><div class="pygs-kpi-label">En Revisión</div><div class="pygs-kpi-val" id="kpi-revision" style="color:var(--yellow)">—</div><div class="pygs-kpi-sub" id="kpi-revision-val">—</div></div>
-    <div class="pygs-kpi-card c"><div class="pygs-kpi-label">Entregados</div><div class="pygs-kpi-val" id="kpi-entregados" style="color:var(--cyan)">—</div><div class="pygs-kpi-sub">total entregados</div></div>
+<div class="tab-panel active" id="tab-pipeline">
+  <div class="grid-4">
+    <div class="kpi-card g"><div class="kpi-label">Ganados</div><div class="kpi-val" id="kpi-ganados" style="color:var(--green)">—</div><div class="kpi-sub" id="kpi-ganados-val">—</div></div>
+    <div class="kpi-card r"><div class="kpi-label">Perdidos</div><div class="kpi-val" id="kpi-perdidos" style="color:var(--red)">—</div><div class="kpi-sub" id="kpi-perdidos-val">—</div></div>
+    <div class="kpi-card y"><div class="kpi-label">En Revisión</div><div class="kpi-val" id="kpi-revision" style="color:var(--yellow)">—</div><div class="kpi-sub" id="kpi-revision-val">—</div></div>
+    <div class="kpi-card c"><div class="kpi-label">Entregados</div><div class="kpi-val" id="kpi-entregados" style="color:var(--cyan)">—</div><div class="kpi-sub">total entregados</div></div>
   </div>
 
-  <div class="pygs-grid-2">
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--yellow)"></span>Embudo de resultados — Valor en COP</div>
-      <div class="pygs-chart-wrap"><canvas id="ch-embudo"></canvas></div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Embudo de resultados — Valor en COP</div>
+      <div class="chart-wrap"><canvas id="ch-embudo"></canvas></div>
     </div>
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--cyan)"></span>Distribución por tipo de cotización</div>
-      <div class="pygs-chart-wrap"><canvas id="ch-tipos-pie"></canvas></div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--cyan)"></span>Distribución por tipo de cotización</div>
+      <div class="chart-wrap"><canvas id="ch-tipos-pie"></canvas></div>
     </div>
   </div>
 
-  <div class="pygs-section-title">🔴 Pipeline pygs-activo — PYGs en revisión ordenados por valor</div>
-  <div class="pygs-card">
+  <div class="section-title">🔴 Pipeline activo — PYGs en revisión ordenados por valor</div>
+  <div class="card">
     <div id="pipeline-list"></div>
   </div>
 </div>
 
 <!-- TAB FINANCIERO -->
-<div class="pygs-tab-panel" id="pygs-tab-financiero">
-  <div class="pygs-grid-4">
-    <div class="pygs-kpi-card y"><div class="pygs-kpi-label">Valor Total</div><div class="pygs-kpi-val" id="kpi-fin-total" style="color:var(--yellow)">—</div><div class="pygs-kpi-sub">COP cotizados</div></div>
-    <div class="pygs-kpi-card c"><div class="pygs-kpi-label">Ticket Promedio</div><div class="pygs-kpi-val" id="kpi-fin-avg" style="color:var(--cyan)">—</div><div class="pygs-kpi-sub">por PYG</div></div>
-    <div class="pygs-kpi-card g"><div class="pygs-kpi-label">Mayor Ticket</div><div class="pygs-kpi-val" id="kpi-fin-max" style="color:var(--green)">—</div><div class="pygs-kpi-sub" id="kpi-fin-max-name">—</div></div>
-    <div class="pygs-kpi-card o"><div class="pygs-kpi-label">Precio/m² Prom</div><div class="pygs-kpi-val" id="kpi-fin-pm2" style="color:var(--orange)">—</div><div class="pygs-kpi-sub">promedio general</div></div>
+<div class="tab-panel" id="tab-financiero">
+  <div class="grid-4">
+    <div class="kpi-card y"><div class="kpi-label">Valor Total</div><div class="kpi-val" id="kpi-fin-total" style="color:var(--yellow)">—</div><div class="kpi-sub">COP cotizados</div></div>
+    <div class="kpi-card c"><div class="kpi-label">Ticket Promedio</div><div class="kpi-val" id="kpi-fin-avg" style="color:var(--cyan)">—</div><div class="kpi-sub">por PYG</div></div>
+    <div class="kpi-card g"><div class="kpi-label">Mayor Ticket</div><div class="kpi-val" id="kpi-fin-max" style="color:var(--green)">—</div><div class="kpi-sub" id="kpi-fin-max-name">—</div></div>
+    <div class="kpi-card o"><div class="kpi-label">Precio/m² Prom</div><div class="kpi-val" id="kpi-fin-pm2" style="color:var(--orange)">—</div><div class="kpi-sub">promedio general</div></div>
   </div>
 
-  <div class="pygs-grid-2">
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--yellow)"></span>Evolución mensual por tipo — valor cotizado</div>
-      <div class="pygs-chart-wrap-lg"><canvas id="ch-mensual-tipo"></canvas></div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Evolución mensual por tipo — valor cotizado</div>
+      <div class="chart-wrap-lg"><canvas id="ch-mensual-tipo"></canvas></div>
     </div>
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--cyan)"></span>Valor cotizado por sector</div>
-      <div class="pygs-chart-wrap-lg"><canvas id="ch-sector-valor"></canvas></div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--cyan)"></span>Valor cotizado por sector</div>
+      <div class="chart-wrap-lg"><canvas id="ch-sector-valor"></canvas></div>
     </div>
   </div>
 
-  <div class="pygs-grid-2">
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--orange)"></span>Precio/m² por sector × tipo — heatmap</div>
-      <div class="pygs-chart-wrap-lg"><canvas id="ch-pm2-heatmap"></canvas></div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--orange)"></span>Precio/m² por sector × tipo — heatmap</div>
+      <div class="chart-wrap-lg"><canvas id="ch-pm2-heatmap"></canvas></div>
     </div>
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--green)"></span>Distribución m² cotizados por complejidad</div>
-      <div class="pygs-chart-wrap-lg"><canvas id="ch-m2-comp"></canvas></div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Distribución m² cotizados por complejidad</div>
+      <div class="chart-wrap-lg"><canvas id="ch-m2-comp"></canvas></div>
     </div>
   </div>
 </div>
 
 <!-- TAB EFICIENCIA -->
-<div class="pygs-tab-panel" id="pygs-tab-eficiencia">
-  <div class="pygs-grid-4">
-    <div class="pygs-kpi-card y"><div class="pygs-kpi-label">Días Prom General</div><div class="pygs-kpi-val" id="kpi-ef-dias" style="color:var(--yellow)">—</div><div class="pygs-kpi-sub">calendar por PYG</div></div>
-    <div class="pygs-kpi-card r"><div class="pygs-kpi-label">Más Rápido</div><div class="pygs-kpi-val" id="kpi-ef-min" style="color:var(--green)">—</div><div class="pygs-kpi-sub">días mínimo</div></div>
-    <div class="pygs-kpi-card o"><div class="pygs-kpi-label">Más Lento</div><div class="pygs-kpi-val" id="kpi-ef-max" style="color:var(--red)">—</div><div class="pygs-kpi-sub">días máximo</div></div>
-    <div class="pygs-kpi-card c"><div class="pygs-kpi-label">Renders Prom</div><div class="pygs-kpi-val" id="kpi-ef-renders" style="color:var(--cyan)">—</div><div class="pygs-kpi-sub">por cotización</div></div>
+<div class="tab-panel" id="tab-eficiencia">
+  <div class="grid-4">
+    <div class="kpi-card y"><div class="kpi-label">Días Prom General</div><div class="kpi-val" id="kpi-ef-dias" style="color:var(--yellow)">—</div><div class="kpi-sub">calendar por PYG</div></div>
+    <div class="kpi-card r"><div class="kpi-label">Más Rápido</div><div class="kpi-val" id="kpi-ef-min" style="color:var(--green)">—</div><div class="kpi-sub">días mínimo</div></div>
+    <div class="kpi-card o"><div class="kpi-label">Más Lento</div><div class="kpi-val" id="kpi-ef-max" style="color:var(--red)">—</div><div class="kpi-sub">días máximo</div></div>
+    <div class="kpi-card c"><div class="kpi-label">Renders Prom</div><div class="kpi-val" id="kpi-ef-renders" style="color:var(--cyan)">—</div><div class="kpi-sub">por cotización</div></div>
   </div>
 
-  <div class="pygs-grid-2">
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--yellow)"></span>Velocidad de cotización por complejidad — días reales</div>
-      <div class="pygs-chart-wrap"><canvas id="ch-vel-comp"></canvas></div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Velocidad de cotización por complejidad — días reales</div>
+      <div class="chart-wrap"><canvas id="ch-vel-comp"></canvas></div>
     </div>
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--orange)"></span>Iteraciones (versiones) por tipo de cotización</div>
-      <div class="pygs-chart-wrap"><canvas id="ch-iters-tipo"></canvas></div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--orange)"></span>Iteraciones (versiones) por tipo de cotización</div>
+      <div class="chart-wrap"><canvas id="ch-iters-tipo"></canvas></div>
     </div>
   </div>
 
-  <div class="pygs-grid-2">
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--cyan)"></span>Renders × complejidad × días — burbuja</div>
-      <div class="pygs-chart-wrap-lg"><canvas id="ch-renders-bubble"></canvas></div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--cyan)"></span>Renders × complejidad × días — burbuja</div>
+      <div class="chart-wrap-lg"><canvas id="ch-renders-bubble"></canvas></div>
     </div>
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--green)"></span>Días de cotización vs valor del PYG — scatter</div>
-      <div class="pygs-chart-wrap-lg"><canvas id="ch-dias-precio-scatter"></canvas></div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Días de cotización vs valor del PYG — scatter</div>
+      <div class="chart-wrap-lg"><canvas id="ch-dias-precio-scatter"></canvas></div>
     </div>
   </div>
 </div>
 
 <!-- TAB DIRECTORES -->
-<div class="pygs-tab-panel" id="pygs-tab-directores">
-  <div class="pygs-grid-2">
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--yellow)"></span>Ranking directores — volumen y valor cotizado</div>
-      <div class="pygs-chart-wrap-lg"><canvas id="ch-dir-ranking"></canvas></div>
+<div class="tab-panel" id="tab-comerciales">
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Ranking directores — volumen y valor cotizado</div>
+      <div class="chart-wrap-lg"><canvas id="ch-dir-ranking"></canvas></div>
     </div>
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--cyan)"></span>Mix de tipos por director</div>
-      <div class="pygs-chart-wrap-lg"><canvas id="ch-dir-tipos"></canvas></div>
-    </div>
-  </div>
-
-  <div class="pygs-grid-2">
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--orange)"></span>Complejidad promedio por director — días y renders</div>
-      <div class="pygs-chart-wrap-lg"><canvas id="ch-dir-eficiencia"></canvas></div>
-    </div>
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--green)"></span>Resultados por director — ganado vs perdido vs revisión</div>
-      <div class="pygs-chart-wrap-lg"><canvas id="ch-dir-resultados"></canvas></div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--cyan)"></span>Mix de tipos por director</div>
+      <div class="chart-wrap-lg"><canvas id="ch-dir-tipos"></canvas></div>
     </div>
   </div>
 
-  <div class="pygs-section-title">📋 Tabla detallada por director</div>
-  <div class="pygs-card" style="overflow-x:auto">
-    <table class="pygs-tbl" id="tbl-directores"></table>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--orange)"></span>Complejidad promedio por director — días y renders</div>
+      <div class="chart-wrap-lg"><canvas id="ch-dir-eficiencia"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Resultados por director — ganado vs perdido vs revisión</div>
+      <div class="chart-wrap-lg"><canvas id="ch-dir-resultados"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section-title">📋 Tabla detallada por director</div>
+  <div class="card" style="overflow-x:auto">
+    <table class="tbl" id="tbl-directores"></table>
   </div>
 </div>
 
 <!-- TAB MERCADO -->
-<div class="pygs-tab-panel" id="pygs-tab-mercado">
-  <div class="pygs-grid-2">
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--yellow)"></span>Top ciudades — volumen y valor cotizado</div>
-      <div class="pygs-chart-wrap-lg"><canvas id="ch-ciudades"></canvas></div>
+<div class="tab-panel" id="tab-mercado">
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Top ciudades — volumen y valor cotizado</div>
+      <div class="chart-wrap-lg"><canvas id="ch-ciudades"></canvas></div>
     </div>
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--cyan)"></span>Precio/m² por sector — comparativa</div>
-      <div class="pygs-chart-wrap-lg"><canvas id="ch-sector-pm2"></canvas></div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--cyan)"></span>Precio/m² por sector — comparativa</div>
+      <div class="chart-wrap-lg"><canvas id="ch-sector-pm2"></canvas></div>
     </div>
   </div>
 
-  <div class="pygs-grid-2">
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--orange)"></span>Distribución geográfica por sector</div>
-      <div class="pygs-chart-wrap-lg"><canvas id="ch-geo-sector"></canvas></div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--orange)"></span>Distribución geográfica por sector</div>
+      <div class="chart-wrap-lg"><canvas id="ch-geo-sector"></canvas></div>
     </div>
-    <div class="pygs-card">
-      <div class="pygs-card-title"><span class="pygs-dot" style="background:var(--purple)"></span>Valor cotizado — Colombia vs Internacional</div>
-      <div class="pygs-chart-wrap-lg"><canvas id="ch-intl"></canvas></div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Valor cotizado — Colombia vs Internacional</div>
+      <div class="chart-wrap-lg"><canvas id="ch-intl"></canvas></div>
     </div>
   </div>
 </div>
 </div>
 
-<!-- ══ INGENIERÍA DASHBOARD ════════════════════════════════════════ -->
+<!-- ING -->
 <div class="db-wrapper" id="db-ing">
 <div class="ing-header">
   <div>
@@ -2761,39 +2577,43 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 </div>
 
 <div class="tabs-bar">
-  <button class="ing-tab-btn active" onclick="ingShowTab('activos',this)">⚡ Activos</button>
-  <button class="ing-tab-btn" onclick="ingShowTab('portafolio',this)">📊 Portafolio</button>
+  <button class="ing-tab-btn" onclick="ingShowTab('proyectos',this)">⚡ Proyectos</button>
+  <button class="ing-tab-btn" onclick="ingShowTab('estrategia',this)">📊 Estrategia</button>
   <button class="ing-tab-btn" onclick="ingShowTab('equipo',this)">👤 Equipo</button>
   <button class="ing-tab-btn" onclick="ingShowTab('especialidades',this)">🔧 Especialidades</button>
   <button class="ing-tab-btn" onclick="ingShowTab('timeline',this)">📅 Timeline</button>
 </div>
 
-<!-- TAB ACTIVOS -->
-<div class="ing-panel active" id="ing-tab-activos">
-  <div class="grid-4">
-    <div class="kpi-card c"><div class="kpi-label">Activos</div><div class="kpi-val" style="color:var(--cyan)" id="ing-kpi-act">—</div><div class="kpi-sub">en ejecución ahora</div></div>
-    <div class="kpi-card g"><div class="kpi-label">En Diseño</div><div class="kpi-val" style="color:var(--green)" id="ing-kpi-diseno">—</div><div class="kpi-sub">fase actual</div></div>
-    <div class="kpi-card o"><div class="kpi-label">En Construcción</div><div class="kpi-val" style="color:var(--orange)" id="ing-kpi-const">—</div><div class="kpi-sub">fase actual</div></div>
-    <div class="kpi-card y"><div class="kpi-label">D+C Simultáneo</div><div class="kpi-val" style="color:var(--yellow)" id="ing-kpi-dyc">—</div><div class="kpi-sub">diseño y construcción</div></div>
+<!-- TAB PROYECTOS -->
+<div class="ing-panel" id="ing-tab-proyectos">
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;align-items:center">
+    <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Estado:</span>
+    <button class="ing-filter-btn active" data-filter="estado" data-val="TODOS" onclick="ingFilter(this)">Todos</button>
+    <button class="ing-filter-btn" data-filter="estado" data-val="ACTIVO" onclick="ingFilter(this)">Activos</button>
+    <button class="ing-filter-btn" data-filter="estado" data-val="HOLD" onclick="ingFilter(this)">Hold</button>
+    <button class="ing-filter-btn" data-filter="estado" data-val="CERRADO" onclick="ingFilter(this)">Cerrados</button>
+    <div style="width:1px;height:20px;background:rgba(255,255,255,.1);margin:0 4px"></div>
+    <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Fase:</span>
+    <button class="ing-filter-btn active" data-filter="fase" data-val="TODOS" onclick="ingFilter(this)">Todas</button>
+    <button class="ing-filter-btn" data-filter="fase" data-val="DISENO" onclick="ingFilter(this)">Diseno</button>
+    <button class="ing-filter-btn" data-filter="fase" data-val="CONSTRUCCION" onclick="ingFilter(this)">Construccion</button>
+    <button class="ing-filter-btn" data-filter="fase" data-val="DYC" onclick="ingFilter(this)">D+C</button>
   </div>
-
-  <div class="grid-2">
-    <div class="ing-card">
-      <div class="card-title"><span class="card-dot" style="background:var(--cyan)"></span>Activos por fase actual</div>
-      <div class="chart-wrap"><canvas id="ing-ch-activos-fase"></canvas></div>
-    </div>
-    <div class="ing-card">
-      <div class="card-title"><span class="card-dot" style="background:var(--green)"></span>Activos por tipo de proyecto</div>
-      <div class="chart-wrap"><canvas id="ing-ch-activos-tipo"></canvas></div>
-    </div>
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="kpi-card c"><div class="kpi-label">Proyectos</div><div class="kpi-val" id="ing-f-count" style="color:var(--cyan)">—</div><div class="kpi-sub">mostrados</div></div>
+    <div class="kpi-card g"><div class="kpi-label">Activos</div><div class="kpi-val" id="ing-f-activos" style="color:var(--green)">—</div><div class="kpi-sub">en ejecucion</div></div>
+    <div class="kpi-card y"><div class="kpi-label">Hold</div><div class="kpi-val" id="ing-f-hold" style="color:var(--yellow)">—</div><div class="kpi-sub">en pausa</div></div>
+    <div class="kpi-card o"><div class="kpi-label">Alta complejidad</div><div class="kpi-val" id="ing-f-alta" style="color:var(--orange)">—</div><div class="kpi-sub">proyectos ALTA</div></div>
   </div>
-
-  <div class="sec-title">🟢 Proyectos activos en ejecución</div>
-  <div id="ing-activos-list"></div>
+  <div class="grid-2" style="margin-bottom:16px">
+    <div class="ing-card"><div class="card-title"><span class="card-dot" style="background:var(--cyan)"></span>Por fase actual</div><div class="chart-wrap"><canvas id="ing-ch-activos-fase"></canvas></div></div>
+    <div class="ing-card"><div class="card-title"><span class="card-dot" style="background:var(--orange)"></span>Por tipo</div><div class="chart-wrap"><canvas id="ing-ch-activos-tipo"></canvas></div></div>
+  </div>
+  <div class="ing-card" style="padding:0;overflow-x:auto"><table class="tbl" id="ing-tbl-proyectos"></table></div>
 </div>
 
 <!-- TAB PORTAFOLIO -->
-<div class="ing-panel" id="ing-tab-portafolio">
+<div class="ing-panel" id="ing-tab-estrategia">
   <div class="grid-4">
     <div class="kpi-card c"><div class="kpi-label">Total Proyectos</div><div class="kpi-val" style="color:var(--cyan)" id="ing-kpi-total">—</div><div class="kpi-sub">histórico completo</div></div>
     <div class="kpi-card g"><div class="kpi-label">Cerrados</div><div class="kpi-val" style="color:var(--green)" id="ing-kpi-cerrados">—</div><div class="kpi-sub">completados</div></div>
@@ -2889,56 +2709,30 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 <div class="ing-panel" id="ing-tab-timeline">
   <div class="grid-2">
     <div class="ing-card">
-      <div class="card-title"><span class="card-dot" style="background:var(--cyan)"></span>Proyectos activos con fechas programadas</div>
+      <div class="card-title"><span class="card-dot" style="background:var(--cyan)"></span>Activos con fechas programadas</div>
       <div class="chart-wrap-lg"><canvas id="ing-ch-gantt"></canvas></div>
     </div>
     <div class="ing-card">
-      <div class="card-title"><span class="card-dot" style="background:var(--yellow)"></span>Hold — proyectos en pausa por sub-estado</div>
+      <div class="card-title"><span class="card-dot" style="background:var(--yellow)"></span>Hold por sub-estado</div>
       <div class="chart-wrap-lg"><canvas id="ing-ch-hold"></canvas></div>
     </div>
   </div>
-
-  <div class="sec-title">📅 Proyectos Hold — detalle</div>
+  <div class="sec-title" style="padding:16px 0 8px">📅 Proyectos Hold — detalle</div>
   <div class="ing-card" style="overflow-x:auto;padding:0">
     <table class="tbl" id="ing-tbl-hold"></table>
   </div>
 </div>
-</div>
 
-<!-- ══ CONFIG PANEL (shared) ════════════════════════════════════════ -->
-<div id="config-overlay" onclick="toggleConfig()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000"></div>
-<div id="config-panel" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0f1421;border:1px solid rgba(240,192,64,.3);border-radius:16px;padding:32px;width:560px;max-width:95vw;z-index:2001;max-height:90vh;overflow-y:auto">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#f0c040">⚙ Conectar a SharePoint</div>
-    <button onclick="toggleConfig()" style="background:transparent;border:none;color:#6b7494;font-size:18px;cursor:pointer">✕</button>
-  </div>
-  <div style="display:grid;gap:10px;margin-bottom:20px">
-    <div><div style="font-size:9px;color:#6b7494;margin-bottom:4px">Client ID de Azure AD</div>
-    <input id="cfg-clientId" type="text" style="width:100%;background:#161c2e;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:7px 10px;color:#e8eaf0;font-family:'DM Sans',sans-serif;font-size:11px;box-sizing:border-box"></div>
-    <div><div style="font-size:9px;color:#6b7494;margin-bottom:4px">Tenant ID de Azure AD</div>
-    <input id="cfg-tenantId" type="text" style="width:100%;background:#161c2e;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:7px 10px;color:#e8eaf0;font-family:'DM Sans',sans-serif;font-size:11px;box-sizing:border-box"></div>
-    <div><div style="font-size:9px;color:#6b7494;margin-bottom:4px">URL del sitio SharePoint</div>
-    <input id="cfg-siteUrl" type="text" style="width:100%;background:#161c2e;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:7px 10px;color:#e8eaf0;font-family:'DM Sans',sans-serif;font-size:11px;box-sizing:border-box"></div>
-    <div><div style="font-size:9px;color:#6b7494;margin-bottom:4px">ID del archivo Excel</div>
-    <input id="cfg-driveItemId" type="text" style="width:100%;background:#161c2e;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:7px 10px;color:#e8eaf0;font-family:'DM Sans',sans-serif;font-size:11px;box-sizing:border-box"></div>
-  </div>
-  <div style="display:flex;gap:10px">
-    <button onclick="saveConfig()" style="flex:1;padding:10px;background:#f0c040;color:#0a0d14;border:none;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer">CONECTAR</button>
-    <button onclick="toggleConfig()" style="padding:10px 20px;background:transparent;color:#6b7494;border:1px solid rgba(255,255,255,.1);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">Cancelar</button>
-  </div>
 </div>
 
 <script>
-
-
-// ══════════
 // ══════════════════════════════════════════════════════════════════
 // RIBBON — navegación entre dashboards
 // ══════════════════════════════════════════════════════════════════
 let _currentDB = 'diseno';
-let _innovInit = false;
-let _pygsInit = false;
-let _ingInit = false;
+let _innovInit=false;
+let _pygsInit=false;
+let _ingInit=false;
 
 function switchDashboard(id) {
   document.querySelectorAll('.db-wrapper').forEach(el => el.classList.remove('db-active'));
@@ -2953,42 +2747,19 @@ function switchDashboard(id) {
   }
   if (id === 'innov' && !_innovInit) {
     setTimeout(() => { try { innovRefresh(); } catch(e) { console.warn('innov init:', e); } }, 50);
-    _innovInit = true;
+    _innovInit=true;
   }
-  if (id === 'pygs' && !_pygsInit) {
-    setTimeout(() => { try {
-      pygs_renderHeader();
-      // Activate first tab
-      const wrap = document.getElementById('db-pygs');
-      if (wrap) {
-        wrap.querySelectorAll('.pygs-tab-panel').forEach(p => p.classList.remove('pygs-active'));
-        wrap.querySelectorAll('.pygs-tab-btn').forEach(b => b.classList.remove('pygs-active'));
-        const firstPanel = wrap.querySelector('.pygs-tab-panel');
-        const firstBtn   = wrap.querySelector('.pygs-tab-btn');
-        if (firstPanel) firstPanel.classList.add('pygs-active');
-        if (firstBtn)   firstBtn.classList.add('pygs-active');
-      }
-      pygs_renderPipeline();
-    } catch(e) { console.warn('pygs:', e); } }, 50);
-    _pygsInit = true;
+  if(id==='pygs'&&!_pygsInit){
+    setTimeout(()=>{try{pygs_renderHeader();const w=document.getElementById('db-pygs');if(w){const fp=w.querySelector('.pygs-tab-panel');const fb=w.querySelector('.pygs-tab-btn');if(fp)fp.classList.add('pygs-active');if(fb)fb.classList.add('pygs-active');}pygs_renderPipeline();}catch(e){console.warn('pygs:',e);}},50);
+    _pygsInit=true;
   }
-  if (id === 'ing' && !_ingInit) {
-    setTimeout(() => { try {
-      ingRenderHeader();
-      const ingWrap2 = document.getElementById('db-ing');
-      if (ingWrap2) {
-        ingWrap2.querySelectorAll('.ing-panel').forEach(p=>p.classList.remove('active'));
-        ingWrap2.querySelectorAll('.ing-tab-btn').forEach(b=>b.classList.remove('active'));
-        const fp = ingWrap2.querySelector('.ing-panel');
-        const fb = ingWrap2.querySelector('.ing-tab-btn');
-        if (fp) fp.classList.add('active');
-        if (fb) fb.classList.add('active');
-      }
-      ingRenderActivos();
-    } catch(e) { console.warn('ing:', e); } }, 50);
-    _ingInit = true;
+  if(id==='ing'&&!_ingInit){
+    setTimeout(()=>{try{ingRenderHeader();const w=document.getElementById('db-ing');if(w){const fp=w.querySelector('.ing-panel');const fb=w.querySelector('.ing-tab-btn');if(fp)fp.classList.add('active');if(fb)fb.classList.add('active');}ingRenderProyectos();}catch(e){console.warn('ing:',e);}},50);
+    _ingInit=true;
   }
 }
+
+
 
 // Sync the ribbon badge with the spaces badge
 function updateSyncBadge(status, lastSync) {
@@ -3023,10 +2794,10 @@ const SP_CONFIG = {
   tenantId:    'bd1250f8-7cb0-4150-939d-bc46b711cbbd',
   driveId:     'b!jW1N82v1qEOLl6V-jRb-D51HQ-ULd0xIhSsXcVU3KzwHZwA5Qby4T4Grkq0e2oJ8',
   driveItemId: '01D6FN4ZNH7EAPDXEXIRC2EG34TDGP6Q62',
-  sheetName:   'Analisis ocupación',    // Diseño
-  sheetNamePYGs: 'Seguimiento PYGS',       // PYGs
-  sheetNameInnov: 'Seguimiento Innovacion',
-  sheetNameIng:   'ING-BASE DE DATOS', // Innovación (próximamente)
+  sheetName:'Analisis ocupación',
+  sheetNamePYGs:'Seguimiento PYGS',
+  sheetNameInnov:'Seguimiento Innovacion',
+  sheetNameIng:'ING-BASE DE DATOS',
   siteUrl:     'https://aeicol-my.sharepoint.com/personal/nzapata_aeispaces_com',
   listName:    'AEI_Overrides',
   refreshInterval: 15,
@@ -3515,6 +3286,59 @@ function parseExcelRows(rows) {
       n_etapa:      cleanNum(row[50]),
       m2_dia_prog:  cleanNum(row[56]),
       m2_dia_real:  cleanNum(row[63]),
+      alcance:      row[64] ? row[64].toString().trim() : '',
+      complejidad_excel: row[65] ? row[65].toString().trim() : '',
+      tipo_proyecto: row[66] ? row[66].toString().trim() : '',
+      pm:           row[85] ? row[85].toString().trim().replace('N/A','') : '',
+      bim:          row[86] ? row[86].toString().trim().replace('N/A','') : '',
+      ing_mecanico: row[87] ? row[87].toString().trim().replace('N/A','') : '',
+      ing_electrico:row[88] ? row[88].toString().trim().replace('N/A','') : '',
+    });
+  }
+  return result.length > 0 ? result : null;
+}
+
+// ── Leer Innovación del Excel ────────────────────────────────────────────
+async function fetchInnovFromExcel(token) {
+  if (!token || !SP_CONFIG.driveItemId || !SP_CONFIG.sheetNameInnov) return null;
+  try {
+    const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetNameInnov)}')/usedRange`;
+    const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!r.ok) throw new Error(r.statusText);
+    return parseInnovRows((await r.json()).values);
+  } catch(e) { console.warn('Innov fetch:', e); return null; }
+}
+
+function parseInnovRows(rows) {
+  if (!rows || rows.length < 2) return null;
+  const result = [];
+  const headers = rows[0].map(h => (h||'').toString().toUpperCase().trim());
+  const get = (row, key) => {
+    const i = headers.indexOf(key);
+    return i >= 0 ? (row[i]||'').toString().trim() : '';
+  };
+  const cn = v => { const n = parseFloat(v.toString().replace(',','.')); return isNaN(n) ? 0 : n; };
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+    const anio = parseInt(get(row,'AÑO')||get(row,'ANIO')||'0');
+    if (!anio || anio < 2020) continue;
+    const mesStr = (get(row,'MES')||'').toLowerCase();
+    const mesNum = {enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,octubre:10,noviembre:11,diciembre:12}[mesStr] || 0;
+    result.push({
+      anio, mes: mesNum,
+      dir:        get(row,'COMERCIAL')||get(row,'DIRECTOR'),
+      equipo:     get(row,'EQUIPO_DISEÑO')||get(row,'EQUIPO_DISENO')||get(row,'EQUIPO'),
+      tipo:       get(row,'TIPO'),
+      resultado:  get(row,'RESULTADO'),
+      precio:     cn(get(row,'PRECIO_COP')||get(row,'PRECIO')),
+      dias:       cn(get(row,'DIAS')),
+      dis:        cn(get(row,'NUM_DISENADORES')||'1') || 1,
+      fi:         get(row,'FECHA_INICIO'),
+      ff:         get(row,'FECHA_FIN'),
+      proy:       get(row,'PROYECTO'),
+      m2:         cn(get(row,'AREA_M2')||get(row,'M2')),
+      sector:     get(row,'SECTOR')||'CORPORATIVO',
+      pais:       get(row,'PAIS')||'Colombia',
     });
   }
   return result.length > 0 ? result : null;
@@ -3544,103 +3368,10 @@ async function fetchOverridesFromSP(token) {
   } catch(e) { return {}; }
 }
 
-// ── Leer PYGs del Excel via Graph API ────────────────────────────
-async function fetchPYGsFromExcel(token) {
-  if (!token || !SP_CONFIG.driveItemId) return null;
-  try {
-    const sheet = encodeURIComponent(SP_CONFIG.sheetNamePYGs || 'Seguimiento PYGS');
-    const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${sheet}')/usedRange`;
-    const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-    if (!r.ok) throw new Error(r.statusText);
-    const data = await r.json();
-    return parsePYGsRows(data.values);
-  } catch(e) {
-    console.warn('PYGs Excel fetch error:', e);
-    return null;
-  }
-}
-
-// ── Parsear filas de PYGs al mismo formato que RAW_PYGS ──────────────
-function parsePYGsRows(rows) {
-  if (!rows || rows.length < 9) return null;
-  // Header is at row index 8 (fila 9 en Excel)
-  const result = [];
-  const cleanNum = v => { const n = parseFloat(String(v).replace(/[$.]/g,'').replace(',','.')); return isNaN(n) ? 0 : n; };
-  const cleanDate = v => { if (!v) return ''; return String(v).trim(); };
-  for (let i = 9; i < rows.length; i++) {
-    const row = rows[i];
-    const cod = row[0] ? String(row[0]).trim() : '';
-    if (!cod.startsWith('PYG')) continue;
-    result.push({
-      cod,
-      año:        String(row[1]||'').trim(),
-      mes:        String(row[2]||'').trim().toLowerCase(),
-      version:    parseInt(String(row[3]||'1').replace(/[^0-9]/g,'')) || 1,
-      cliente:    String(row[4]||'').trim(),
-      proyecto:   String(row[5]||'').trim(),
-      ciudad:     String(row[6]||'').trim(),
-      pais:       String(row[7]||'').trim(),
-      estado:     String(row[8]||'').trim(),
-      f_ini:      cleanDate(row[9]),
-      f_fin:      cleanDate(row[10]),
-      tipo:       String(row[11]||'').trim(),
-      sector:     String(row[12]||'').trim(),
-      alcance:    String(row[14]||'').trim(),
-      complejidad:String(row[15]||'').trim(),
-      renders:    cleanNum(row[16]),
-      m2:         cleanNum(String(row[17]||'').replace('m2','')),
-      precio:     cleanNum(row[18]),
-      arq:        cleanNum(row[19]),
-      imp_arq:    cleanNum(row[20]),
-      tec:        cleanNum(row[21]),
-      imp_tec:    cleanNum(row[22]),
-      precio_m2:  cleanNum(row[23]),
-      dias:       cleanNum(row[24]),
-      director:   String(row[25]||'').trim(),
-      resultado:  String(row[26]||'').trim(),
-      dias_real:  cleanNum(row[24]),
-    });
-  }
-  return result.length > 0 ? result : null;
-}
-
-// ── Leer Ingeniería del Excel ─────────────────────────────────────
-async function fetchIngFromExcel(token) {
-  if (!token || !SP_CONFIG.driveItemId) return null;
-  try {
-    const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetNameIng||'ING-BASE DE DATOS')}')/usedRange`;
-    const r = await fetch(url, {headers:{Authorization:`Bearer ${token}`}});
-    if (!r.ok) throw new Error(r.statusText);
-    const d = await r.json();
-    return parseIngRows(d.values);
-  } catch(e) { console.warn('ING fetch:', e); return null; }
-}
-
-function parseIngRows(rows) {
-  if (!rows || rows.length < 3) return null;
-  const result = [];
-  const cs = v => String(v||'').trim();
-  const na = v => ['N/A','NA','n/a',''].includes(cs(v)) ? '' : cs(v);
-  const cn = v => { const n=parseFloat(String(v||'').replace(',','.')); return isNaN(n)?0:n; };
-  const especCols = ['electrico','control_acc','voz_datos','cctv','deteccion','ayv','mecanico','hidrosanitario','rci','iluminacion','gases_med','estructural'];
-  for (let i = 2; i < rows.length; i++) {
-    const r = rows[i];
-    const nombre = cs(r[0]);
-    if (!nombre || nombre === 'PROYECTO') continue;
-    const espec = {};
-    especCols.forEach((ec,j) => { espec[ec] = na(r[21+j])||''; });
-    result.push({ proyecto:nombre, m2:cn(r[1]),
-      complejidad:cs(r[3]).replace(/[0-9]-\s*/,''),
-      fase_actual:na(r[4]), fase:na(r[5]), tipo:na(r[6]),
-      f_licitacion:na(r[8]), f_diseno:na(r[9]), f_construccion:na(r[10]),
-      estado:na(r[11]), sub_estado:na(r[12]),
-      pm:na(r[13]), comercial:na(r[14]), coord_diseno:na(r[15]),
-      disenador:na(r[16]), ing_electrico:na(r[17]), ing_hvac:na(r[18]), bim:na(r[19]),
-      n_especialidades:Object.values(espec).filter(Boolean).length, ...espec });
-  }
-  return result.length > 0 ? result : null;
-}
-
+async function fetchPYGsFromExcel(t){try{const u=`https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetNamePYGs||'Seguimiento PYGS')}')/usedRange`;const r=await fetch(u,{headers:{Authorization:`Bearer ${t}`}});if(!r.ok)throw r;return parsePYGsRows((await r.json()).values);}catch(e){return null;}}
+function parsePYGsRows(rows){if(!rows||rows.length<9)return null;const cn=v=>{const n=parseFloat(String(v||'').replace(/[$. ]/g,'').replace(',','.'));return isNaN(n)?0:n;};const res=[];for(let i=9;i<rows.length;i++){const row=rows[i],cod=String(row[0]||'').trim();if(!cod.startsWith('PYG'))continue;res.push({cod,año:String(row[1]||''),mes:String(row[2]||'').toLowerCase(),version:parseInt(String(row[3]||'1').replace(/[^0-9]/g,''))||1,cliente:String(row[4]||''),proyecto:String(row[5]||''),ciudad:String(row[6]||''),pais:String(row[7]||''),estado:String(row[8]||''),f_ini:String(row[9]||''),f_fin:String(row[10]||''),tipo:String(row[11]||''),sector:String(row[12]||''),alcance:String(row[14]||''),complejidad:String(row[15]||''),renders:cn(row[16]),m2:cn(String(row[17]||'').replace('m2','')),precio:cn(row[18]),arq:cn(row[19]),imp_arq:cn(row[20]),tec:cn(row[21]),imp_tec:cn(row[22]),precio_m2:cn(row[23]),dias:cn(row[24]),director:String(row[25]||''),resultado:String(row[26]||''),dias_real:cn(row[24])});}return res.length?res:null;}
+async function fetchIngFromExcel(t){try{const u=`https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetNameIng||'ING-BASE DE DATOS')}')/usedRange`;const r=await fetch(u,{headers:{Authorization:`Bearer ${t}`}});if(!r.ok)throw r;return parseIngRows((await r.json()).values);}catch(e){return null;}}
+function parseIngRows(rows){if(!rows||rows.length<3)return null;const cs=v=>String(v||'').trim();const na=v=>['N/A','NA','n/a',''].includes(cs(v))?'':cs(v);const cn=v=>{const n=parseFloat(cs(v).replace(',','.'));return isNaN(n)?0:n;};const eC=['electrico','control_acc','voz_datos','cctv','deteccion','ayv','mecanico','hidrosanitario','rci','iluminacion','gases_med','estructural'];const res=[];for(let i=2;i<rows.length;i++){const r=rows[i],n=cs(r[0]);if(!n||n==='PROYECTO')continue;const e={};eC.forEach((ec,j)=>{e[ec]=na(r[21+j])||'';});res.push({proyecto:n,m2:cn(r[1]),complejidad:cs(r[3]).replace(/[0-9]- */,''),fase_actual:na(r[4]),fase:na(r[5]),tipo:na(r[6]),f_licitacion:na(r[8]),f_diseno:na(r[9]),f_construccion:na(r[10]),estado:na(r[11]),sub_estado:na(r[12]),pm:na(r[13]),comercial:na(r[14]),coord_diseno:na(r[15]),disenador:na(r[16]),ing_electrico:na(r[17]),ing_hvac:na(r[18]),bim:na(r[19]),n_especialidades:Object.values(e).filter(Boolean).length,...e});}return res.length?res:null;}
 // ── Guardar override en SharePoint List ──────────────────────────────────
 async function saveOverrideToSP(itemId, override) {
   if (SP_CONFIG.mode !== 'sharepoint' || !CONN.token) return;
@@ -3697,16 +3428,15 @@ async function initConnection() {
     const ovs = await fetchOverridesFromSP(token);
     Object.assign(OVERRIDES, ovs);
 
-    // También cargar PYGs desde Excel
-    const pygsData = await fetchPYGsFromExcel(token);
-    if (pygsData && pygsData.length > 0) {
-      RAW_PYGS.length = 0;
-      pygsData.forEach(p => RAW_PYGS.push(p));
-      PYGS_DATA.length = 0;
-      RAW_PYGS.filter(p => p.cod && p.proyecto).forEach(p => PYGS_DATA.push(p));
-      if (_pygsInit) { pygs_renderHeader(); pygs_renderPipeline(); }
+    // Fetch Innovación data from Excel
+    const iNv = await fetchInnovFromExcel(token);
+    if (iNv && iNv.length > 0) {
+      INNOV_RAW.length = 0;
+      iNv.forEach(p => INNOV_RAW.push(p));
+      if (_innovInit) { try { innovRefresh(); } catch(e) { console.warn('innov refresh:', e); } }
     }
-
+    const pL=await fetchPYGsFromExcel(token);if(pL&&pL.length){RAW_PYGS.length=0;pL.forEach(p=>RAW_PYGS.push(p));PYGS_DATA.length=0;RAW_PYGS.filter(p=>p.cod&&p.proyecto).forEach(p=>PYGS_DATA.push(p));if(_pygsInit){Object.keys(PYGS__rendered).forEach(k=>delete PYGS__rendered[k]);pygs_renderHeader();pygs_renderPipeline();}}
+    const iL=await fetchIngFromExcel(token);if(iL&&iL.length){ING_RAW.length=0;iL.forEach(p=>ING_RAW.push(p));ING_DATA.length=0;ING_ACTIVOS.length=0;ING_HOLD.length=0;ING_RAW.filter(p=>p.proyecto).forEach(p=>{ING_DATA.push(p);if(p.estado==='ACTIVO')ING_ACTIVOS.push(p);if(p.estado==='HOLD')ING_HOLD.push(p);});if(_ingInit){Object.keys(_ingRendered).forEach(k=>delete _ingRendered[k]);ingRenderHeader();ingRenderProyectos();}}
     CONN.ready = true;
     CONN.lastSync = new Date();
     updateSyncBadge('live', CONN.lastSync);
@@ -3716,14 +3446,6 @@ async function initConnection() {
       setInterval(async () => {
         const ps = await fetchProyectosFromExcel(CONN.token);
         if (ps) { RAW.length = 0; ps.forEach(p => RAW.push(p)); renderAll(); }
-        // Refresh PYGs too
-        const pygsRefreshData = await fetchPYGsFromExcel(CONN.token);
-        if (pygsRefreshData && pygsRefreshData.length > 0) {
-          RAW_PYGS.length = 0;
-          pygsRefreshData.forEach(p => RAW_PYGS.push(p));
-          PYGS_DATA.length = 0;
-          RAW_PYGS.filter(p => p.cod && p.proyecto).forEach(p => PYGS_DATA.push(p));
-        }
         CONN.lastSync = new Date();
         updateSyncBadge('live', CONN.lastSync);
       }, SP_CONFIG.refreshInterval * 60000);
@@ -3737,7 +3459,7 @@ async function initConnection() {
 }
 
 // ── Badge de estado de conexión en el header ──────────────────────────────
-// updateSyncBadge: ver definición en ribbon
+// updateSyncBadge: defined in ribbon section
 
 
 // ── Patch OVERRIDES setters para guardar en SP cuando está conectado ──────
@@ -5427,6 +5149,338 @@ function saveConfig() {
     alert('Completa todos los campos para conectar. Si solo quieres guardar parcialmente, cancela y edita el código.');
   }
 }
+
+
+// ── Render helpers for BIM/PMO/ING cargabilidad ──────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+// ════════════════════════════════════════════════════════════════
+// EXP & CARGABILIDAD — datos del análisis de ocupación
+// ════════════════════════════════════════════════════════════════
+
+// Helper: profile card for a person with their projects
+function mkProfileCard(name, projs, color, roleLabel) {
+  const totalM2 = projs.reduce((s,p)=>s+(p.m2||0),0);
+  const etapas  = projs.map(p=>p.etapa||'—').filter(Boolean);
+  const rows = projs.map(p=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+      <div>
+        <div style="font-size:11px;color:var(--text);font-weight:500">${p.nombre}</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:2px">${p.celula||''} ${p.tipo?'· '+p.tipo:''} ${p.alcance?'· '+p.alcance:''}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:12px">
+        <div style="font-size:10px;color:${color}">${p.etapa||'—'}</div>
+        <div style="font-size:9px;color:var(--muted)">${p.m2?N(p.m2)+' m²':'—'}</div>
+      </div>
+    </div>`).join('');
+  return `<div class="card" style="margin-bottom:12px;border-left:3px solid ${color}">
+    <div class="card-header">
+      <div class="card-title" style="color:${color}">${name}
+        <span style="color:var(--muted);font-size:10px;font-weight:400;margin-left:8px">${projs.length} proyectos · ${N(totalM2)} m²</span>
+      </div>
+      <div style="font-size:9px;color:var(--muted);margin-top:2px">${roleLabel}</div>
+    </div>
+    ${rows}
+  </div>`;
+}
+
+// Helper: contractor card
+function mkContractorCard(name, projs, color) {
+  const espSet = new Set();
+  projs.forEach(p => {
+    const ESP_NAMES = {estructural:'Estructural',rci:'RCI',hidro:'Hidrosanitario',gas:'Gas',
+      iluminacion:'Iluminación',electrico:'Eléctrico',voz_datos:'Voz y Datos',
+      deteccion:'Detección',cctv:'CCTV',ayv:'AyV',acustico:'Acústico',
+      seg_humana:'Seguridad Humana',bms:'BMS',hvac:'HVAC',gases_med:'Gases Medicinales',
+      enfermeria:'Enfermería',asesoria_salud:'Asesoría Salud',curaduria:'Curaduría'};
+    Object.keys(ESP_NAMES).forEach(k=>{if(p[k]===name) espSet.add(ESP_NAMES[k]);});
+  });
+  const rows = projs.map(p=>`
+    <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:10px">
+      <span style="color:var(--text)">${p.nombre}</span>
+      <span style="color:var(--muted)">${p.m2?N(p.m2)+' m²':'—'}</span>
+    </div>`).join('');
+  return `<div class="card" style="margin-bottom:10px;border-left:3px solid ${color}">
+    <div class="card-header">
+      <div class="card-title" style="font-size:13px">${name}
+        <span style="color:var(--muted);font-size:10px;margin-left:8px">${projs.length} proyectos</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">
+        ${[...espSet].map(e=>`<span style="font-size:9px;background:${color}22;color:${color};padding:1px 6px;border-radius:10px">${e}</span>`).join('')}
+      </div>
+    </div>
+    ${rows}
+  </div>`;
+}
+
+// ── renderCargBIM ──────────────────────────────────────────────────────────
+function renderCargBIM() {
+  const activos = filtered().filter(p=>estadoEfectivo(p)==='ACTIVO');
+  const COLORS  = ['#4de0c0','#f0c040','#5080f0','#40d080','#f09040'];
+
+  // BIM profiles
+  const byBIM = {};
+  activos.forEach(p=>{if(p.bim&&p.bim!=='N/A'){if(!byBIM[p.bim])byBIM[p.bim]=[];byBIM[p.bim].push(p);}});
+  const bimNames = Object.keys(byBIM).sort((a,b)=>byBIM[b].length-byBIM[a].length);
+  const totalBIM = Object.values(byBIM).reduce((s,v)=>s+v.length,0);
+
+  const kpiEl = document.getElementById('kpis-bim');
+  if(kpiEl) kpiEl.innerHTML = `
+    <div class="kpi-card"><div class="kpi-label">Responsables BIM</div><div class="kpi-value" style="color:var(--cyan)">${bimNames.length}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Proyectos con BIM</div><div class="kpi-value" style="color:var(--yellow)">${totalBIM}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Prom proyectos/BIM</div><div class="kpi-value" style="color:var(--green)">${bimNames.length?(totalBIM/bimNames.length).toFixed(1):0}</div></div>
+    <div class="kpi-card"><div class="kpi-label">M² total BIM activo</div><div class="kpi-value" style="color:var(--orange)">${N(Object.values(byBIM).flat().reduce((s,p)=>s+(p.m2||0),0))} m²</div></div>
+  `;
+
+  const profileEl = document.getElementById('bim-profiles');
+  if(profileEl) profileEl.innerHTML = `<div class="grid2">${bimNames.map((n,i)=>mkProfileCard(n,byBIM[n],COLORS[i%COLORS.length],'BIM Manager')).join('')}</div>`;
+
+  // Contractor load
+  const ESP_NAMES = {estructural:'Estructural',rci:'RCI',hidro:'Hidrosanitario',gas:'Gas',
+    iluminacion:'Iluminación',electrico:'Eléctrico',voz_datos:'Voz y Datos',
+    deteccion:'Detección',cctv:'CCTV',ayv:'AyV',acustico:'Acústico',
+    seg_humana:'Seguridad Humana',bms:'BMS',hvac:'HVAC',gases_med:'Gases Med.',
+    enfermeria:'Enfermería',asesoria_salud:'Asesoría Salud',curaduria:'Curaduría'};
+
+  const byFirm = {};
+  activos.forEach(p=>{
+    Object.keys(ESP_NAMES).forEach(k=>{
+      const firm = p[k];
+      if(firm&&firm!=='SIN ASIGNAR'){
+        if(!byFirm[firm]) byFirm[firm]=[];
+        byFirm[firm].push(p);
+      }
+    });
+  });
+
+  // Deduplicate projects per firm
+  Object.keys(byFirm).forEach(f=>{
+    const seen=new Set();
+    byFirm[f]=byFirm[f].filter(p=>{if(seen.has(p.proyecto))return false;seen.add(p.proyecto);return true;});
+  });
+
+  const firms = Object.keys(byFirm).sort((a,b)=>byFirm[b].length-byFirm[a].length);
+  const FIRM_COLORS = ['#f0c040','#4de0c0','#f09040','#5080f0','#40d080','#e05060','#a060f0'];
+
+  const contractorEl = document.getElementById('contractor-load');
+  if(contractorEl) {
+    const heavyLoad = firms.filter(f=>byFirm[f].length>=5);
+    const medLoad   = firms.filter(f=>byFirm[f].length>=2&&byFirm[f].length<5);
+    const lightLoad = firms.filter(f=>byFirm[f].length<2);
+    contractorEl.innerHTML = `
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        <span style="font-size:10px;color:var(--muted)">Carga:</span>
+        <span style="font-size:10px;background:#e0506022;color:#e05060;padding:2px 8px;border-radius:10px">🔴 Alta (5+ proyectos)</span>
+        <span style="font-size:10px;background:#f0c04022;color:#f0c040;padding:2px 8px;border-radius:10px">🟡 Media (2-4)</span>
+        <span style="font-size:10px;background:#40d08022;color:#40d080;padding:2px 8px;border-radius:10px">🟢 Baja (1)</span>
+      </div>
+      <div class="grid2">
+        ${firms.map((f,i)=>{
+          const load = byFirm[f].length>=5?'#e05060':byFirm[f].length>=2?'#f0c040':'#40d080';
+          return mkContractorCard(f, byFirm[f], load);
+        }).join('')}
+      </div>`;
+  }
+}
+
+// ── renderCargPMO ──────────────────────────────────────────────────────────
+function renderCargPMO() {
+  const activos = filtered().filter(p=>estadoEfectivo(p)==='ACTIVO');
+  const COLORS  = ['#f09040','#f0c040','#40d080','#4de0c0','#5080f0','#a060f0','#e05060'];
+
+  const byPM = {};
+  activos.forEach(p=>{if(p.pm&&p.pm!=='N/A'){if(!byPM[p.pm])byPM[p.pm]=[];byPM[p.pm].push(p);}});
+  const pmNames = Object.keys(byPM).sort((a,b)=>byPM[b].length-byPM[a].length);
+  const totalPM = Object.values(byPM).reduce((s,v)=>s+v.length,0);
+
+  const kpiEl = document.getElementById('kpis-pmo');
+  if(kpiEl) kpiEl.innerHTML = `
+    <div class="kpi-card"><div class="kpi-label">PMs activos</div><div class="kpi-value" style="color:var(--orange)">${pmNames.length}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Proyectos con PM</div><div class="kpi-value" style="color:var(--yellow)">${totalPM}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Prom proyectos/PM</div><div class="kpi-value" style="color:var(--green)">${pmNames.length?(totalPM/pmNames.length).toFixed(1):0}</div></div>
+    <div class="kpi-card"><div class="kpi-label">M² bajo PMO</div><div class="kpi-value" style="color:var(--cyan)">${N(Object.values(byPM).flat().reduce((s,p)=>s+(p.m2||0),0))} m²</div></div>
+  `;
+
+  const profileEl = document.getElementById('pmo-profiles');
+  if(profileEl) profileEl.innerHTML = `<div class="grid2">${pmNames.map((n,i)=>mkProfileCard(n,byPM[n],COLORS[i%COLORS.length],'Project Manager')).join('')}</div>`;
+}
+
+// ── renderCargIngenieria ───────────────────────────────────────────────────
+function renderCargIngenieria() {
+  const activos = filtered().filter(p=>estadoEfectivo(p)==='ACTIVO');
+
+  // Ing Eléctrico
+  const byElec = {};
+  activos.forEach(p=>{if(p.ing_electrico&&p.ing_electrico!=='N/A'){if(!byElec[p.ing_electrico])byElec[p.ing_electrico]=[];byElec[p.ing_electrico].push(p);}});
+  const elecNames = Object.keys(byElec).sort((a,b)=>byElec[b].length-byElec[a].length);
+
+  // Ing Mecánico
+  const byMec = {};
+  activos.forEach(p=>{if(p.ing_mecanico&&p.ing_mecanico!=='N/A'){if(!byMec[p.ing_mecanico])byMec[p.ing_mecanico]=[];byMec[p.ing_mecanico].push(p);}});
+  const mecNames = Object.keys(byMec).sort((a,b)=>byMec[b].length-byMec[a].length);
+
+  const allProjs = Object.values(byElec).flat().concat(Object.values(byMec).flat());
+  const totalM2  = [...new Set(allProjs.map(p=>p.proyecto))].reduce((s,n)=>{const p=activos.find(x=>x.proyecto===n);return s+(p?.m2||0);},0);
+
+  const kpiEl = document.getElementById('kpis-carg-ing');
+  if(kpiEl) kpiEl.innerHTML = `
+    <div class="kpi-card"><div class="kpi-label">Ing. Eléctricos</div><div class="kpi-value" style="color:var(--blue)">${elecNames.length}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Ing. Mecánicos</div><div class="kpi-value" style="color:var(--cyan)">${mecNames.length}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Proyectos Elec.</div><div class="kpi-value" style="color:var(--yellow)">${Object.values(byElec).reduce((s,v)=>s+v.length,0)}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Proyectos Mec.</div><div class="kpi-value" style="color:var(--green)">${Object.values(byMec).reduce((s,v)=>s+v.length,0)}</div></div>
+  `;
+
+  const ELEC_COLORS = ['#5080f0','#a060f0'];
+  const MEC_COLORS  = ['#4de0c0','#40d080'];
+
+  const elecEl = document.getElementById('ing-elec-profiles');
+  if(elecEl) elecEl.innerHTML = `<div class="grid2">${elecNames.map((n,i)=>mkProfileCard(n,byElec[n],ELEC_COLORS[i%ELEC_COLORS.length],'Ingeniero Eléctrico')).join('')}</div>`;
+
+  const mecEl = document.getElementById('ing-mec-profiles');
+  if(mecEl) mecEl.innerHTML = `<div class="grid2">${mecNames.map((n,i)=>mkProfileCard(n,byMec[n],MEC_COLORS[i%MEC_COLORS.length],'Ingeniero Mecánico')).join('')}</div>`;
+}
+
+// ── renderEXP — Equipo por Proyecto ───────────────────────────────────────
+function renderEXP() {
+  const activos = filtered().filter(p=>estadoEfectivo(p)==='ACTIVO');
+  const sel = document.getElementById('exp-select');
+  const content = document.getElementById('exp-content');
+  if(!sel||!content) return;
+
+  // Populate selector on first run
+  if(sel.options.length<=1) {
+    activos.sort((a,b)=>a.proyecto.localeCompare(b.proyecto)).forEach(p=>{
+      const opt=document.createElement('option');
+      opt.value=p.proyecto; opt.textContent=p.proyecto;
+      sel.appendChild(opt);
+    });
+  }
+
+  const proyName = sel.value;
+  if(!proyName) { content.innerHTML=''; return; }
+
+  const p = activos.find(x=>x.proyecto===proyName);
+  if(!p) return;
+
+  const ESP_LABELS = {estructural:'Estructural',rci:'RCI',hidro:'Hidrosanitario',gas:'Gas',
+    iluminacion:'Iluminación',electrico:'Eléctrico',voz_datos:'Voz y Datos',
+    deteccion:'Detección',cctv:'CCTV',ayv:'AyV',acustico:'Acústico',
+    seg_humana:'Seguridad Humana',bms:'BMS',hvac:'HVAC',gases_med:'Gases Med.',
+    enfermeria:'Enfermería',asesoria_salud:'Asesoría Salud',curaduria:'Curaduría'};
+
+  // Contratistas en este proyecto
+  const contratistas = Object.entries(ESP_LABELS)
+    .map(([k,label])=>({esp:label,firma:p[k]||''}))
+    .filter(x=>x.firma&&x.firma!=='SIN ASIGNAR');
+
+  // Etapa actual
+  const ETAPAS = ['AE','EB','AP','PC','C','AC'];
+  const ETAPA_LABELS = {AE:'Análisis y Entendimiento',EB:'Esquema Básico',AP:'Anteproyecto',PC:'Planos Constructivos',C:'Construcción',AC:'Acompañamiento'};
+  const etapaActual = p.etapa || '';
+
+  // Gantt data
+  const ganttPhases = [
+    {key:'AE', label:'Análisis', f_p:p.f_ae_p, f_r:p.f_ae_r, d_p:p.dias_ae_p, d_r:p.dias_ae_r},
+    {key:'EB', label:'Esquema',  f_p:p.f_eb_p, f_r:p.f_eb_r, d_p:p.dias_eb_p, d_r:p.dias_eb_r},
+    {key:'AP', label:'Anteproyecto', f_p:p.f_ap_p, f_r:p.f_ap_r, d_p:p.dias_ap_p, d_r:p.dias_ap_r},
+    {key:'PC', label:'Constructivos', f_p:p.f_pc_p, f_r:p.f_pc_r, d_p:p.dias_pc_p, d_r:p.dias_pc_r},
+    {key:'AC', label:'Acompañamiento', f_p:p.f_ac_p, f_r:p.f_ac_r, d_p:p.dias_ac_p, d_r:p.dias_ac_r},
+  ];
+
+  // Build gantt bars (proportional widths based on days)
+  const maxDias = Math.max(...ganttPhases.map(ph=>Math.max(parseFloat(ph.d_p)||0, parseFloat(ph.d_r)||0, 1)));
+
+  const ganttRows = ganttPhases.map(ph=>{
+    const dp = parseFloat(ph.d_p)||0;
+    const dr = parseFloat(ph.d_r)||0;
+    const wP = dp ? (dp/maxDias*100).toFixed(1) : 0;
+    const wR = dr ? (dr/maxDias*100).toFixed(1) : 0;
+    const isActive = ph.key === etapaActual;
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+        <span style="font-size:10px;color:${isActive?'var(--yellow)':'var(--muted2)'};font-weight:${isActive?700:400}">${ph.label} ${isActive?'← actual':''}</span>
+        <span style="font-size:9px;color:var(--muted)">${ph.f_p||'—'} ${dp?'('+dp+' d)':''}</span>
+      </div>
+      <div style="height:10px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;margin-bottom:3px" title="Programado: ${dp} días">
+        <div style="height:100%;width:${wP}%;background:var(--muted);border-radius:4px;opacity:.6"></div>
+      </div>
+      <div style="height:10px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden" title="Real: ${dr} días">
+        <div style="height:100%;width:${wR}%;background:${dr>dp&&dp>0?'var(--red)':'var(--cyan)'};border-radius:4px"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:2px">
+        <span style="font-size:9px;color:var(--muted)">Real: ${ph.f_r||'—'} ${dr?'('+dr+' d)':''}</span>
+        ${dp>0&&dr>0?`<span style="font-size:9px;color:${dr>dp?'var(--red)':'var(--green)'}">${dr>dp?'+'+(dr-dp)+' d atraso':'-'+(dp-dr)+' d adelanto'}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Team chips
+  const teamChip = (label,name,color) => name&&name!=='N/A'?`<div style="background:${color}15;border:1px solid ${color}40;border-radius:8px;padding:8px 12px;min-width:120px">
+    <div style="font-size:9px;color:${color};text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">${label}</div>
+    <div style="font-size:11px;color:var(--text);font-weight:500">${name}</div>
+  </div>`:'';
+
+  const contratistasHtml = contratistas.length ? contratistas.map(ct=>`
+    <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:10px">
+      <span style="color:var(--muted)">${ct.esp}</span>
+      <span style="color:var(--text);font-weight:500">${ct.firma}</span>
+    </div>`).join('') : '<div style="font-size:11px;color:var(--muted)">Sin especialistas contratados</div>';
+
+  content.innerHTML = `
+    <!-- Header del proyecto -->
+    <div class="card" style="margin-bottom:12px;border-left:3px solid var(--yellow)">
+      <div class="card-header">
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <div>
+            <div class="card-title">${p.proyecto}</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:3px">${p.celula||''} · ${p.tipo||''} · ${p.alcance||''} · ${p.m2?N(p.m2)+' m²':'—'}</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap">
+            ${p.etapa?`<span style="background:var(--yellow)22;color:var(--yellow);padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700">${ETAPA_LABELS[p.etapa]||p.etapa}</span>`:''}
+            ${p.pct?`<span style="background:rgba(255,255,255,.06);padding:4px 12px;border-radius:20px;font-size:10px;color:var(--muted2)">${p.pct} completado</span>`:''}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Equipo -->
+    <div class="section-title">👥 Equipo del proyecto</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+      ${teamChip('Coordinador Diseño', p.coordinador, '#f0c040')}
+      ${teamChip('PM', p.pm, '#f09040')}
+      ${teamChip('BIM', p.bim, '#4de0c0')}
+      ${teamChip('Ing. Mecánico', p.ing_mecanico, '#5080f0')}
+      ${teamChip('Ing. Eléctrico', p.ing_electrico, '#a060f0')}
+    </div>
+
+    <!-- Gantt -->
+    <div class="section-title">📅 Cronograma — Programado vs Real</div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;gap:16px;margin-bottom:12px;font-size:9px">
+        <div style="display:flex;align-items:center;gap:5px"><div style="width:20px;height:6px;background:var(--muted);border-radius:3px;opacity:.6"></div> Programado</div>
+        <div style="display:flex;align-items:center;gap:5px"><div style="width:20px;height:6px;background:var(--cyan);border-radius:3px"></div> Real</div>
+        <div style="display:flex;align-items:center;gap:5px"><div style="width:20px;height:6px;background:var(--red);border-radius:3px"></div> Real con atraso</div>
+      </div>
+      ${ganttRows}
+    </div>
+
+    <!-- Especialistas contratados -->
+    <div class="section-title">🏢 Especialistas contratados</div>
+    <div class="card">
+      ${contratistasHtml}
+    </div>
+  `;
+}
+
 
 // ===================== INIT =====================
 renderAll();
@@ -8212,22 +8266,20 @@ function calcScore_disabled(){// removed
 }
 
 
-// ══════════════════════════════════════════════════════════════════
-// PYGs DASHBOARD
-// ══════════════════════════════════════════════════════════════════
+// === PYGs ===
 // ═══════════════════════════════════════════════════════════════
 // PYGS_DATA
 // ═══════════════════════════════════════════════════════════════
 const RAW_PYGS = [{"cod":"PYG-01","año":"2026","mes":"enero","version":1,"cliente":"SURA","proyecto":"SURA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"20/01/26","f_fin":"21/01/26","tipo":"RECOMPRA","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":1,"m2":214.0,"precio":37756783.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":176433.6,"dias":2,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-02","año":"2026","mes":"enero","version":1,"cliente":"DISUIZA","proyecto":"DISUIZA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"22/01/26","f_fin":"23/01/26","tipo":"OTROS","sector":"RETAIL","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":8,"m2":180.0,"precio":41671459.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":231508.1,"dias":2,"director":"OTROS","resultado":"PERDIDO","dias_real":1},{"cod":"PYG-03","año":"2026","mes":"enero","version":1,"cliente":"PLATZI","proyecto":"PLATZI","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"05/01/26","f_fin":"06/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":272.0,"precio":15545631.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":57153.1,"dias":2,"director":"JIMENA CARO","resultado":"PERDIDO","dias_real":1},{"cod":"PYG-04","año":"2026","mes":"enero","version":1,"cliente":"FASECOLDA","proyecto":"FASECOLDA - BAÑOS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"13/01/26","f_fin":"16/01/26","tipo":"RECOMPRA","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":0,"m2":78.0,"precio":15365865.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":196998.3,"dias":4,"director":"ADICIONAL","resultado":"GANADO","dias_real":3},{"cod":"PYG-05","año":"2026","mes":"enero","version":3,"cliente":"CONSTRUCTORA BOLIVAR","proyecto":"MARAWA 2 COSNTRUCTORA BOLIVAR","ciudad":"SANTA MARTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"19/01/26","f_fin":"21/01/26","tipo":"RECOMPRA","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":6,"m2":3251.0,"precio":147871015.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":45484.8,"dias":3,"director":"JIMENA CARO","resultado":"PERDIDO","dias_real":2},{"cod":"PYG-06","año":"2026","mes":"enero","version":2,"cliente":"FITCH  RATINGS","proyecto":"FITCH  RATINGS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"20/01/26","f_fin":"21/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":32.0,"precio":48564549.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":1517642.2,"dias":2,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":1},{"cod":"PYG-07","año":"2026","mes":"enero","version":3,"cliente":"FITCH  RATINGS","proyecto":"FITCH  RATINGS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"20/01/26","f_fin":"21/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":589.0,"precio":96791043.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":164331.1,"dias":2,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-08","año":"2026","mes":"enero","version":3,"cliente":"OMNICOM","proyecto":"OMNICOM","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"20/01/26","f_fin":"21/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":580.0,"precio":65104106.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":112248.5,"dias":2,"director":"JIMENA CARO","resultado":"GANADO","dias_real":1},{"cod":"PYG-09","año":"2026","mes":"enero","version":1,"cliente":"COMFANDI","proyecto":"COMFANDI","ciudad":"CALI","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"19/01/26","f_fin":"02/02/26","tipo":"LICITACION","sector":"EDUCATIVO","alcance":"ARQUITECTURA","complejidad":"ALTA","renders":0,"m2":0,"precio":0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":0,"dias":11,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":14},{"cod":"PYG-10","año":"2025","mes":"diciembre","version":3,"cliente":"HENKEL","proyecto":"HENKEL","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"23/12/25","f_fin":"05/01/26","tipo":"CONCURSO","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":5,"m2":1600.0,"precio":188973777.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":118108.6,"dias":10,"director":"MARIA PAULA MARTINEZ","resultado":"GANADO","dias_real":13},{"cod":"PYG-11","año":"2026","mes":"enero","version":1,"cliente":"KROLL","proyecto":"KROLL","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"14/01/26","f_fin":"21/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":405.0,"precio":34781154.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":85879.4,"dias":6,"director":"MARIA PAULA MARTINEZ","resultado":"EN REVISION","dias_real":7},{"cod":"PYG-12","año":"2026","mes":"enero","version":2,"cliente":"ARTURO CALLE","proyecto":"ARTURO CALLE MANUAL","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"05/01/26","f_fin":"16/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA","complejidad":"MEDIA","renders":0,"m2":0,"precio":153399079.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":0,"dias":10,"director":"MARIA PAULA MARTINEZ","resultado":"PERDIDO","dias_real":11},{"cod":"PYG-13","año":"2026","mes":"enero","version":3,"cliente":"NESPRESSO","proyecto":"NESPRESSO","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"14/01/26","f_fin":"20/01/26","tipo":"CONCURSO","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":456.0,"precio":46530902.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":102041.5,"dias":5,"director":"ROBERTO OJEDA","resultado":"EN REVISION","dias_real":6},{"cod":"PYG-14","año":"2026","mes":"enero","version":1,"cliente":"AVIANCA","proyecto":"AVIANCA COUNTERS RIONEGRO","ciudad":"MEDELLIN","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"19/01/2026","f_fin":"4/02/2026","tipo":"RECOMPRA","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"MEDIA","renders":0,"m2":58012.0,"precio":4446332673.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":76645.1,"dias":13,"director":"","resultado":"EN REVISION","dias_real":16},{"cod":"PYG-15","año":"2026","mes":"enero","version":2,"cliente":"ARTURO CALLE","proyecto":"ARTURO CALLE","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"19/01/26","f_fin":"28/01/26","tipo":"INVITACION","sector":"RETAIL","alcance":"ARQUITECTURA","complejidad":"MEDIA","renders":2,"m2":500.0,"precio":41165622.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":82331.2,"dias":8,"director":"MARIA PAULA MARTINEZ","resultado":"EN REVISION","dias_real":9},{"cod":"PYG-16","año":"2026","mes":"enero","version":1,"cliente":"RECKITT","proyecto":"RECKITT","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"22/01/26","f_fin":"27/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":725.0,"precio":79789722.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":110054.8,"dias":4,"director":"ANGELICA SANDOVAL","resultado":"EN REVISION","dias_real":5},{"cod":"PYG-17","año":"2026","mes":"enero","version":1,"cliente":"PROVE","proyecto":"PROVE FABRICA","ciudad":"SIBERIA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"23/01/26","f_fin":"27/01/26","tipo":"INVITACION","sector":"RETAIL","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":2,"m2":80.0,"precio":28203536.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":352544.2,"dias":3,"director":"ROBERTO OJEDA","resultado":"EN REVISION","dias_real":4},{"cod":"PYG-18","año":"2026","mes":"enero","version":1,"cliente":"EL MACHETAZO","proyecto":"EL MACHETAZO","ciudad":"CIUDAD DE PANAMA","pais":"PANAMA","estado":"ENTREGADO","f_ini":"23/01/26","f_fin":"02/02/26","tipo":"LICITACION","sector":"RETAIL","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ALTA","renders":8,"m2":9900.0,"precio":717796833.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":72504.7,"dias":7,"director":"LINA GUTIERREZ","resultado":"EN REVISION","dias_real":10},{"cod":"PYG-19","año":"2026","mes":"enero","version":1,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BUCARAMANGA","ciudad":"BUCARAMANGA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"27/01/26","f_fin":"30/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":951.0,"precio":134175520.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":141088.9,"dias":4,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":3},{"cod":"PYG-20","año":"2026","mes":"enero","version":1,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - PLAYBOOK","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"27/01/26","f_fin":"30/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":0.0,"precio":12229302.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":0,"dias":4,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":3},{"cod":"PYG-21","año":"2026","mes":"enero","version":1,"cliente":"CLUB EL RANCHO","proyecto":"CLUB EL RANCHO LICENCIA CONSTRUCCION","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"28/01/26","f_fin":"28/01/26","tipo":"RECOMPRA","sector":"HOSPITALITY","alcance":"ARQUITECTURA","complejidad":"MEDIA","renders":0,"m2":288.0,"precio":19992589.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":69418.7,"dias":1,"director":"ANGELICA SANDOVAL","resultado":"EN REVISION","dias_real":0},{"cod":"PYG-22","año":"2026","mes":"enero","version":1,"cliente":"MASTERCARD","proyecto":"MASTERCARD SALA LOUNGE","ciudad":"CIUDAD DE MEXICO","pais":"MEXICO","estado":"ENTREGADO","f_ini":"29/01/26","f_fin":"","tipo":"RECOMPRA","sector":"HOSPITALITY","alcance":"ARQUITECTURA","complejidad":"MEDIA","renders":0,"m2":552.0,"precio":0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":0.0,"dias":0,"director":"","resultado":"GANADO","dias_real":0},{"cod":"PYG-23","año":"2026","mes":"enero","version":1,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BARRANQUILLA","ciudad":"BARRANQUILLA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"27/01/26","f_fin":"30/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":872.0,"precio":125185501.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":143561.4,"dias":4,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":3},{"cod":"PYG-24","año":"2026","mes":"enero","version":1,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BOGOTA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"27/01/26","f_fin":"03/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":380.0,"precio":34867341.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":91756.2,"dias":6,"director":"ROBERTO OJEDA","resultado":"PERDIDO","dias_real":7},{"cod":"PYG-25","año":"2026","mes":"enero","version":2,"cliente":"PWC","proyecto":"PWC FACHADA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"30/01/26","f_fin":"13/03/26","tipo":"CONCURSO","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ALTA","renders":2,"m2":1236.0,"precio":119077961.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":96341.4,"dias":31,"director":"ANGELICA SANDOVAL","resultado":"EN REVISION","dias_real":42},{"cod":"PYG-26","año":"2026","mes":"enero","version":2,"cliente":"DISUIZA","proyecto":"DISUIZA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"30/01/26","f_fin":"02/02/26","tipo":"INVITACION","sector":"RETAIL","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":8,"m2":180.0,"precio":18454893.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":102527.2,"dias":2,"director":"OTROS","resultado":"GANADO","dias_real":3},{"cod":"PYG-27","año":"2026","mes":"febrero","version":1,"cliente":"SURA CALLE 100 CURADURIA","proyecto":"SURA CALLE 100","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"02/02/26","f_fin":"03/02/26","tipo":"RECOMPRA","sector":"SALUD","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":3923.0,"precio":36057817.0,"arq":9445035.0,"imp_arq":627997.0,"tec":18086357.0,"imp_tec":542591.0,"precio_m2":9191.4,"dias":2,"director":"ADICIONAL","resultado":"GANADO","dias_real":1},{"cod":"PYG-28","año":"2026","mes":"febrero","version":1,"cliente":"TRAFIGURA","proyecto":"TRAFIGURA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"03/02/26","f_fin":"04/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":895.0,"precio":95068670.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":106222.0,"dias":2,"director":"JUAN MANUEL CORTES","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-29","año":"2026","mes":"febrero","version":1,"cliente":"ARENA PRIMAVERAS","proyecto":"ARENA PRIMAVERA","ciudad":"MEDELLIN","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"02/02/26","f_fin":"04/02/26","tipo":"INVITACION","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"MEDIA","renders":13,"m2":11470.0,"precio":458635124.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":39985.6,"dias":3,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":2},{"cod":"PYG-30","año":"2026","mes":"febrero","version":1,"cliente":"DISUIZA","proyecto":"DISUIZA","ciudad":"BARRANQUILLA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"04/02/26","f_fin":"04/02/26","tipo":"INVITACION","sector":"RETAIL","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":6,"m2":304.0,"precio":31119458.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":102366.6,"dias":1,"director":"OTROS","resultado":"GANADO","dias_real":0},{"cod":"PYG-31","año":"2026","mes":"febrero","version":2,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BARRANQUILLA","ciudad":"BARRANQUILLA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"03/02/26","f_fin":"04/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":872.0,"precio":132387487.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":151820.5,"dias":2,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":1},{"cod":"PYG-32","año":"2026","mes":"febrero","version":2,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BOGOTA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"03/02/26","f_fin":"04/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":380.0,"precio":76357750.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":200941.4,"dias":2,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":1},{"cod":"PYG-33","año":"2026","mes":"febrero","version":2,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BUCARAMANGA","ciudad":"BUCARAMANGA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"03/02/26","f_fin":"04/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":951.0,"precio":141991145.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":149307.2,"dias":2,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":1},{"cod":"PYG-34","año":"2026","mes":"febrero","version":2,"cliente":"CONFENALCO","proyecto":"CONFENALCO CARTAGENA","ciudad":"CARTAGENA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"03/02/26","f_fin":"04/02/26","tipo":"RECOMPRA","sector":"HOSPITALITY","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":3,"m2":454.0,"precio":50732435.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":111745.5,"dias":2,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-35","año":"2026","mes":"febrero","version":2,"cliente":"OLIMPIA","proyecto":"OLIMPIA ESCALERA + ILUMINACION","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"05/02/26","f_fin":"09/02/26","tipo":"RECOMPRA","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":0,"m2":10.0,"precio":3160224.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":316022.4,"dias":3,"director":"OTROS","resultado":"EN REVISION","dias_real":4},{"cod":"PYG-36","año":"2026","mes":"febrero","version":3,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BARRANQUILLA","ciudad":"BARRANQUILLA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"05/02/26","f_fin":"09/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":872.0,"precio":126503656.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":145073.0,"dias":3,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":4},{"cod":"PYG-37","año":"2026","mes":"febrero","version":3,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BOGOTA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"05/02/26","f_fin":"09/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":380.0,"precio":67593546.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":177877.8,"dias":3,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":4},{"cod":"PYG-38","año":"2026","mes":"febrero","version":3,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BUCARAMANGA","ciudad":"BUCARAMANGA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"05/02/26","f_fin":"09/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":951.0,"precio":137964423.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":145073.0,"dias":3,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":4},{"cod":"PYG-39","año":"2026","mes":"febrero","version":2,"cliente":"COMFENALCO","proyecto":"CONFENALCO CARTAGENA","ciudad":"CARTAGENA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"09/02/26","f_fin":"09/02/26","tipo":"INVITACION","sector":"HOSPITALITY","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":4,"m2":1032.0,"precio":83574557.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":80983.1,"dias":1,"director":"OTROS","resultado":"EN REVISION","dias_real":0},{"cod":"PYG-40","año":"2026","mes":"febrero","version":1,"cliente":"KPMG","proyecto":"KPMG - ASESORIA ACCESIBILIDAD UNIVERSAL","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"03/02/26","f_fin":"12/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":3632.0,"precio":27792446.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":7652.1,"dias":8,"director":"MARIA PAULA MARTINEZ","resultado":"EN REVISION","dias_real":9},{"cod":"PYG-41","año":"2026","mes":"febrero","version":1,"cliente":"CASA 237","proyecto":"CASA 237","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"05/02/26","f_fin":"11/02/26","tipo":"INVITACION","sector":"RESIDENCIAL","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":710.0,"precio":34698728.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":48871.4,"dias":5,"director":"ANGELICA SANDOVAL","resultado":"EN REVISION","dias_real":6},{"cod":"PYG-42","año":"2026","mes":"febrero","version":1,"cliente":"COMPENSAR","proyecto":"COMPENSAR GYMS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"07/02/26","f_fin":"17/02/26","tipo":"CONCURSO","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":8,"m2":2230.0,"precio":178250059.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":79932.8,"dias":7,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":10},{"cod":"PYG-43","año":"2026","mes":"febrero","version":2,"cliente":"PLATZI","proyecto":"PLATZI","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"10/02/26","f_fin":"12/02/26","tipo":"CONCURSO","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":0,"m2":272.0,"precio":13082883.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":48098.8,"dias":3,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":2},{"cod":"PYG-44","año":"2026","mes":"febrero","version":1,"cliente":"DELOITTE","proyecto":"DELOITTE","ciudad":"GUAYAQUIL","pais":"ECUADOR","estado":"ENTREGADO","f_ini":"11/02/26","f_fin":"13/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":500.0,"precio":68636100.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":137272.2,"dias":3,"director":"ROBERTO OJEDA","resultado":"EN REVISION","dias_real":2},{"cod":"PYG-45","año":"2026","mes":"febrero","version":4,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - COMPILADO RANGOS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"11/02/26","f_fin":"13/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":1000.0,"precio":0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":145073.0,"dias":3,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":2},{"cod":"PYG-46","año":"2026","mes":"febrero","version":1,"cliente":"MASTER PLAN BAVARIA","proyecto":"MASTER PLAN BAVARIA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"11/02/26","f_fin":"12/02/26","tipo":"INVITACION","sector":"RETAIL","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":4,"m2":1700.0,"precio":55176114.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":32456.5,"dias":2,"director":"ROBERTO OJEDA","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-47","año":"2026","mes":"febrero","version":4,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - COMPILADO RANGOS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"11/02/26","f_fin":"13/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":2000.0,"precio":0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":122821.0,"dias":3,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":2},{"cod":"PYG-48","año":"2026","mes":"febrero","version":5,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - COMPILADO RANGOS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"16/02/26","f_fin":"17/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":500.0,"precio":0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":177878.0,"dias":2,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-49","año":"2026","mes":"febrero","version":5,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - COMPILADO RANGOS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"16/02/26","f_fin":"17/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":1000.0,"precio":0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":145073.0,"dias":2,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-50","año":"2026","mes":"febrero","version":5,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - COMPILADO RANGOS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"16/02/26","f_fin":"17/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":2000.0,"precio":0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":122821.0,"dias":2,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-51","año":"2026","mes":"febrero","version":3,"cliente":"CONSTRUCTORA BOLIVAR","proyecto":"MARAWA 2 COSNTRUCTORA BOLIVAR","ciudad":"SANTA MARTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"16/02/26","f_fin":"17/02/26","tipo":"RECOMPRA","sector":"HOSPITALITY","alcance":"TECNICO","complejidad":"ESTANDAR","renders":0,"m2":12171.0,"precio":20597077.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":1692.3,"dias":2,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-52","año":"2026","mes":"febrero","version":3,"cliente":"LA CARDIO","proyecto":"LA CARDIO SUITE BENEFACTORES","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"17/02/26","f_fin":"17/02/26","tipo":"RECOMPRA","sector":"SALUD","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":84.0,"precio":25341220.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":301681.2,"dias":1,"director":"ADICIONAL","resultado":"EN REVISION","dias_real":0},{"cod":"PYG-53","año":"2026","mes":"febrero","version":1,"cliente":"CLINICA EL COUNTRY","proyecto":"DESCANSOS MEDICOS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"15/02/26","f_fin":"20/02/26","tipo":"INVITACION","sector":"SALUD","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":2,"m2":219.0,"precio":33932401.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":154942.5,"dias":5,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":5},{"cod":"PYG-54","año":"2026","mes":"febrero","version":2,"cliente":"DELOITTE","proyecto":"DELOITTE","ciudad":"GUAYAQUIL","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"20/02/26","f_fin":"23/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":500.0,"precio":68636100.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":137272.2,"dias":2,"director":"ROBERTO OJEDA","resultado":"EN REVISION","dias_real":3},{"cod":"PYG-55","año":"2026","mes":"febrero","version":1,"cliente":"AON","proyecto":"AON","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"23/02/26","f_fin":"06/03/26","tipo":"CONCURSO","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":5,"m2":3884.0,"precio":225552421.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":58072.2,"dias":10,"director":"MARIA PAULA MARTINEZ","resultado":"PERDIDO","dias_real":11},{"cod":"PYG-56","año":"2026","mes":"febrero","version":1,"cliente":"COLLIERS BROKER","proyecto":"COLLIERS BROKER","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"23/02/2026","f_fin":"25/02/2026","tipo":"PM","sector":"CORPORATIVO","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":150.0,"precio":2933958.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":19559.7,"dias":3,"director":"MARIA PAULA MARTINEZ","resultado":"EN REVISION","dias_real":2},{"cod":"PYG-57","año":"2026","mes":"febrero","version":1,"cliente":"INVERSION COMERCIAL","proyecto":"INVERSION COMERCIAL OFICINAS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"24/02/2026","f_fin":"25/02/2026","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":1,"m2":105.0,"precio":36868643.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":351129.9,"dias":2,"director":"MARIA PAULA MARTINEZ","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-58","año":"2026","mes":"febrero","version":2,"cliente":"ARENA PRIMAVERAS","proyecto":"ARENA PRIMAVERA","ciudad":"MEDELLIN","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"24/02/2026","f_fin":"25/02/2026","tipo":"INVITACION","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"MEDIA","renders":13,"m2":8132.0,"precio":422561125.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":51962.8,"dias":2,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-60","año":"2026","mes":"marzo","version":1,"cliente":"CONSTRUCTORA BOLIVAR","proyecto":"BOSQUES DE LA VICTORIA","ciudad":"IBAGUE","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"3/03/2026","f_fin":"4/03/2026","tipo":"RECOMPRA","sector":"RESIDENCIAL","alcance":"ARQUITECTURA","complejidad":"BAJA","renders":6,"m2":455.0,"precio":51006587.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":112102.4,"dias":2,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-61","año":"2026","mes":"febrero","version":1,"cliente":"FLORMORADO","proyecto":"FLORMORADO OFICINAS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"25/02/2026","f_fin":"4/03/2026","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":1200.0,"precio":117350338.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":97791.9,"dias":6,"director":"ANGELICA SANDOVAL","resultado":"EN REVISION","dias_real":7},{"cod":"PYG-62","año":"2026","mes":"marzo","version":3,"cliente":"ARENA PRIMAVERAS","proyecto":"ARENA PRIMAVERA","ciudad":"MEDELLIN","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"2/03/2026","f_fin":"10/03/2026","tipo":"INVITACION","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"MEDIA","renders":13,"m2":5520.0,"precio":355350014.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":64375.0,"dias":7,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":8},{"cod":"PYG-63","año":"2026","mes":"marzo","version":1,"cliente":"BEATHUB Y BREAKFAST LIVE","proyecto":"BEATHUB Y BREAKFAST LIVE","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"3/03/2026","f_fin":"10/03/2026","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":500.0,"precio":64377840.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":128755.7,"dias":6,"director":"MARIA PAULA MARTINEZ","resultado":"EN REVISION","dias_real":7},{"cod":"PYG-64","año":"2026","mes":"marzo","version":1,"cliente":"BEYOND ONE","proyecto":"BEYONDE ONE","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"9/03/2026","f_fin":"10/03/2026","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":2,"m2":250.0,"precio":39440708.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":157762.8,"dias":2,"director":"ANGELICA SANDOVAL","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-65","año":"2026","mes":"marzo","version":1,"cliente":"OFICINAS DISUIZA","proyecto":"OFICINAS DISUIZA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"8/03/2026","f_fin":"10/03/2026","tipo":"RECOMPRA","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":277.0,"precio":63549570.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":229420.8,"dias":2,"director":"OTROS","resultado":"EN REVISION","dias_real":2},{"cod":"PYG-66","año":"2026","mes":"marzo","version":1,"cliente":"UNIVERSIDAD EAFIT","proyecto":"UNIVERSIDAD EAFIT","ciudad":"MEDELLIN","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"4/03/2026","f_fin":"13/03/2026","tipo":"INVITACION","sector":"EDUCATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ALTA","renders":8,"m2":42341.0,"precio":8012811250.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":189244.7,"dias":8,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":9},{"cod":"PYG-67","año":"2026","mes":"marzo","version":1,"cliente":"AVIANCA","proyecto":"SALA GOLD BOGOTA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"3/03/2026","f_fin":"17/03/2026","tipo":"INVITACION","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"MEDIA","renders":5,"m2":1174.0,"precio":216976281.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":184818.0,"dias":11,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":14},{"cod":"PYG-68","año":"2026","mes":"marzo","version":1,"cliente":"AVIANCA","proyecto":"SALA GOLD SALVADOR","ciudad":"EL SALVADOR","pais":"EL SALVADOR","estado":"ENTREGADO","f_ini":"3/03/2026","f_fin":"17/03/2026","tipo":"INVITACION","sector":"HOSPITALITY","alcance":"ARQUITECTURA","complejidad":"MEDIA","renders":8,"m2":650.0,"precio":99080847.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":152432.1,"dias":11,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":14},{"cod":"PYG-69","año":"2026","mes":"marzo","version":1,"cliente":"AVIANCA","proyecto":"SALA DIAMOND MEDELLIN","ciudad":"MEDELLIN","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"3/03/2026","f_fin":"17/03/2026","tipo":"INVITACION","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"MEDIA","renders":4,"m2":350.0,"precio":150776410.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":430789.7,"dias":11,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":14},{"cod":"PYG-70","año":"2026","mes":"marzo","version":4,"cliente":"FITCH  RATINGS","proyecto":"FITCH  RATINGS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"19/03/2026","f_fin":"24/03/2026","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":500.0,"precio":7039139.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":14078.3,"dias":4,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":5}];
 
-// Filter PYGS_valid projects
+// Filter valid projects
 const PYGS_DATA = RAW_PYGS.filter(p => p.cod && p.proyecto);
 
 // ═══════════════════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════════════════
-const pygs_fmt = PYGS_n => PYGS_n >= 1e9 ? (PYGS_n/1e9).toFixed(1)+'B' : PYGS_n >= 1e6 ? (PYGS_n/1e6).toFixed(0)+'M' : PYGS_n >= 1e3 ? (PYGS_n/1e3).toFixed(0)+'K' : PYGS_n.toFixed(0);
-const pygs_fmtM = PYGS_n => '$' + (PYGS_n/1e6).toFixed(0) + 'M';
+const pygs_fmt = n => n >= 1e9 ? (n/1e9).toFixed(1)+'B' : n >= 1e6 ? (n/1e6).toFixed(0)+'M' : n >= 1e3 ? (n/1e3).toFixed(0)+'K' : n.toFixed(0);
+const pygs_fmtM = n => '$' + (n/1e6).toFixed(0) + 'M';
 const PYGS_COLORS = ['#f0c040','#4de0c0','#40d080','#e05060','#5080f0','#f09040','#a060f0','#e0a040','#40c0e0','#d060a0'];
 const PYGS_TIPO_COLORS = {INVITACION:'#5080f0',RECOMPRA:'#40d080',CONCURSO:'#f0c040',LICITACION:'#e05060',OTROS:'#a060f0',PM:'#6b7494'};
 const PYGS_SECTOR_COLORS = {CORPORATIVO:'#5080f0',HOSPITALITY:'#f0c040',RETAIL:'#e05060',EDUCATIVO:'#4de0c0',SALUD:'#40d080',RESIDENCIAL:'#f09040'};
@@ -8235,21 +8287,21 @@ const PYGS_RES_COLORS = {'GANADO':'#40d080','PERDIDO':'#e05060','EN REVISION':'#
 
 function pygs_groupBy(arr, key, valFn) {
   return arr.reduce((acc, item) => {
-    const PYGS_k = item[key] || '—';
-    if (!acc[PYGS_k]) acc[PYGS_k] = [];
-    acc[PYGS_k].push(valFn ? valFn(item) : item);
+    const k = item[key] || '—';
+    if (!acc[k]) acc[k] = [];
+    acc[k].push(valFn ? valFn(item) : item);
     return acc;
   }, {});
 }
 
 function pygs_sumBy(arr, key) { return arr.reduce((s,p) => s + (p[key]||0), 0); }
 
-let PYGS__charts = {};
+let _pygsCharts = {};
 function pygs_mkChart(id, type, data, options = {}) {
-  if (PYGS__charts[id]) { try { PYGS__charts[id].destroy(); } catch(e) {} }
-  const PYGS_ctx = document.getElementById(id);
-  if (!PYGS_ctx) return;
-  PYGS__charts[id] = new Chart(PYGS_ctx, {
+  if (_pygsCharts[id]) { try { _pygsCharts[id].destroy(); } catch(e) {} }
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  _pygsCharts[id] = new Chart(ctx, {
     type,
     data,
     options: {
@@ -8272,14 +8324,9 @@ function pygs_mkChart(id, type, data, options = {}) {
 // TABS
 // ═══════════════════════════════════════════════════════════════
 function pygs_showTab(id, btn) {
-  const wrap = document.getElementById('db-pygs');
-  if (wrap) {
-    wrap.querySelectorAll('.pygs-tab-panel').forEach(p => p.classList.remove('pygs-active'));
-    wrap.querySelectorAll('.pygs-tab-btn').forEach(b => b.classList.remove('pygs-active'));
-  }
-  const panel = document.getElementById('pygs-tab-' + id);
-  if (panel) panel.classList.add('pygs-active');
-  if (btn) btn.classList.add('pygs-active');
+  const _w=document.getElementById('db-pygs');if(_w){_w.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));_w.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));}
+  document.getElementById('tab-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
   setTimeout(() => pygs_renderTab(id), 50);
 }
 
@@ -8287,22 +8334,22 @@ function pygs_showTab(id, btn) {
 // RENDER HEADER KPIs
 // ═══════════════════════════════════════════════════════════════
 function pygs_renderHeader() {
-  const PYGS_valid = PYGS_DATA.filter(p => p.proyecto);
-  const totalVal = pygs_sumBy(PYGS_valid, 'precio');
-  const enRev = PYGS_valid.filter(p => p.resultado === 'EN REVISION');
-  const diasProm = PYGS_valid.filter(p => p.dias_real > 0 && p.dias_real < 100);
+  const valid = PYGS_DATA.filter(p => p.proyecto);
+  const totalVal = pygs_sumBy(valid, 'precio');
+  const enRev = valid.filter(p => p.resultado === 'EN REVISION');
+  const diasProm = valid.filter(p => p.dias_real > 0 && p.dias_real < 100);
   const diasAvg = diasProm.length > 0 ? (pygs_sumBy(diasProm, 'dias_real') / diasProm.length).toFixed(1) : '—';
 
   // Version average
   const maxVers = {};
-  PYGS_valid.forEach(p => {
-    const PYGS_n = parseInt(p.cod.replace('PYG-','')) || 0;
-    if (!maxVers[PYGS_n] || p.version > maxVers[PYGS_n]) maxVers[PYGS_n] = p.version;
+  valid.forEach(p => {
+    const n = parseInt(p.cod.replace('PYG-','')) || 0;
+    if (!maxVers[n] || p.version > maxVers[n]) maxVers[n] = p.version;
   });
   const verAvg = Object.values(maxVers).length > 0 ?
     (Object.values(maxVers).reduce((s,v) => s+v, 0) / Object.values(maxVers).length).toFixed(1) : '—';
 
-  document.getElementById('hk-total').textContent = PYGS_valid.length;
+  document.getElementById('hk-total').textContent = valid.length;
   document.getElementById('hk-valor').textContent = pygs_fmt(totalVal);
   document.getElementById('hk-revision').textContent = pygs_fmtM(pygs_sumBy(enRev, 'precio'));
   document.getElementById('hk-dias').textContent = diasAvg;
@@ -8341,26 +8388,26 @@ function pygs_renderPipeline() {
     scales: { y: { ticks: { callback: v => '$'+v+'M', color:'#6b7494', font:{size:10} }, grid:{color:'rgba(255,255,255,.04)'} }, x:{ticks:{color:'#6b7494'}, grid:{color:'rgba(255,255,255,.04)'}}}
   });
 
-  // Chart: PYGS_tipos pie
+  // Chart: tipos pie
   const tipoGroups = pygs_groupBy(PYGS_DATA, 'tipo');
-  const tipoLabels = Object.keys(tipoGroups).filter(PYGS_k=>PYGS_k&&PYGS_k!=='—');
-  pygs_mkChart('ch-PYGS_tipos-pie', 'doughnut', {
+  const tipoLabels = Object.keys(tipoGroups).filter(k=>k&&k!=='—');
+  pygs_mkChart('ch-tipos-pie', 'doughnut', {
     labels: tipoLabels,
-    datasets: [{ data: tipoLabels.map(PYGS_t=>tipoGroups[PYGS_t].length), backgroundColor: tipoLabels.map(PYGS_t=>PYGS_TIPO_COLORS[PYGS_t]||'#6b7494'), borderWidth:0, hoverOffset:6 }]
+    datasets: [{ data: tipoLabels.map(t=>tipoGroups[t].length), backgroundColor: tipoLabels.map(t=>PYGS_TIPO_COLORS[t]||'#6b7494'), borderWidth:0, hoverOffset:6 }]
   });
 
   // Pipeline list
   const pipelineEl = document.getElementById('pipeline-list');
-  const PYGS_sorted = [...revision].filter(p=>p.precio>0).sort((a,b)=>b.precio-a.precio);
-  pipelineEl.innerHTML = PYGS_sorted.map(p => {
-    const PYGS_dot = p.precio > 500e6 ? '#e05060' : p.precio > 100e6 ? '#f09040' : '#f0c040';
-    const PYGS_badge = p.tipo ? `<span class="PYGS_badge PYGS_badge-b">${p.tipo}</span>` : '';
+  const sorted = [...revision].filter(p=>p.precio>0).sort((a,b)=>b.precio-a.precio);
+  pipelineEl.innerHTML = sorted.map(p => {
+    const dot = p.precio > 500e6 ? '#e05060' : p.precio > 100e6 ? '#f09040' : '#f0c040';
+    const badge = p.tipo ? `<span class="badge badge-b">${p.tipo}</span>` : '';
     return `<div class="pipe-row">
-      <div class="pipe-PYGS_dot" style="background:${PYGS_dot}"></div>
+      <div class="pipe-dot" style="background:${dot}"></div>
       <div class="pipe-cod">${p.cod}</div>
       <div class="pipe-name">${p.proyecto}</div>
       <div class="pipe-dir">${p.director||'—'}</div>
-      <div class="pipe-tipo">${PYGS_badge}</div>
+      <div class="pipe-tipo">${badge}</div>
       <div class="pipe-val">${pygs_fmtM(p.precio)}</div>
     </div>`;
   }).join('');
@@ -8385,16 +8432,16 @@ function pygs_renderFinanciero() {
 
   // Evolución mensual por tipo
   const meses = ['diciembre','enero','febrero','marzo'];
-  const PYGS_tipos = ['INVITACION','RECOMPRA','CONCURSO','LICITACION','OTROS'];
-  const mesData = meses.reduce((acc, m) => { acc[m] = {}; PYGS_tipos.forEach(PYGS_t => acc[m][PYGS_t]=0); return acc; }, {});
+  const tipos = ['INVITACION','RECOMPRA','CONCURSO','LICITACION','OTROS'];
+  const mesData = meses.reduce((acc, m) => { acc[m] = {}; tipos.forEach(t => acc[m][t]=0); return acc; }, {});
   PYGS_DATA.forEach(p => { if (mesData[p.mes] && mesData[p.mes][p.tipo] !== undefined) mesData[p.mes][p.tipo] += p.precio/1e6; });
 
   pygs_mkChart('ch-mensual-tipo', 'bar', {
     labels: ['Dic','Ene','Feb','Mar'],
-    datasets: PYGS_tipos.map(PYGS_t => ({
-      label: PYGS_t,
-      data: meses.map(m => mesData[m][PYGS_t] || 0),
-      backgroundColor: PYGS_TIPO_COLORS[PYGS_t] || '#6b7494',
+    datasets: tipos.map(t => ({
+      label: t,
+      data: meses.map(m => mesData[m][t] || 0),
+      backgroundColor: PYGS_TIPO_COLORS[t] || '#6b7494',
       borderRadius: 4,
     }))
   }, {
@@ -8428,17 +8475,17 @@ function pygs_renderFinanciero() {
   const pm2Data = PYGS_DATA.filter(p=>p.precio_m2>0&&p.precio_m2<500000&&p.sector&&p.tipo);
   const pm2ByST = {};
   pm2Data.forEach(p => {
-    const PYGS_k = p.sector + '×' + p.tipo;
-    if (!pm2ByST[PYGS_k]) pm2ByST[PYGS_k] = {sector:p.sector,tipo:p.tipo,vals:[]};
-    pm2ByST[PYGS_k].vals.push(p.precio_m2);
+    const k = p.sector + '×' + p.tipo;
+    if (!pm2ByST[k]) pm2ByST[k] = {sector:p.sector,tipo:p.tipo,vals:[]};
+    pm2ByST[k].vals.push(p.precio_m2);
   });
   const pm2Labels = Object.values(pm2ByST).sort((a,b)=>(pygs_sumBy(b.vals,v=>v)/b.vals.length)-(pygs_sumBy(a.vals,v=>v)/a.vals.length)).slice(0,10);
   pygs_mkChart('ch-pm2-heatmap', 'bar', {
-    labels: pm2Labels.map(PYGS_d => PYGS_d.sector.substring(0,8)+'\PYGS_n×'+PYGS_d.tipo.substring(0,8)),
+    labels: pm2Labels.map(d => d.sector.substring(0,8)+'\n×'+d.tipo.substring(0,8)),
     datasets:[{
       label:'Precio/m² promedio ($)',
-      data: pm2Labels.map(PYGS_d => Math.round(pygs_sumBy(PYGS_d.vals,v=>v)/PYGS_d.vals.length)),
-      backgroundColor: pm2Labels.map(PYGS_d => PYGS_SECTOR_COLORS[PYGS_d.sector]||'#6b7494'),
+      data: pm2Labels.map(d => Math.round(pygs_sumBy(d.vals,v=>v)/d.vals.length)),
+      backgroundColor: pm2Labels.map(d => PYGS_SECTOR_COLORS[d.sector]||'#6b7494'),
       borderRadius:6,
     }]
   }, {
@@ -8487,13 +8534,13 @@ function pygs_renderEficiencia() {
     label: c,
     avg: pygs_sumBy(compDias[c],'dias_real')/compDias[c].length,
     max: Math.max(...compDias[c].map(p=>p.dias_real)),
-    PYGS_n: compDias[c].length
+    n: compDias[c].length
   }));
   pygs_mkChart('ch-vel-comp', 'bar', {
-    labels: velData.map(PYGS_d=>PYGS_d.label),
+    labels: velData.map(d=>d.label),
     datasets:[
-      { label:'Días Promedio', data:velData.map(PYGS_d=>+PYGS_d.avg.toFixed(1)), backgroundColor:velData.map(PYGS_d=>compColors[PYGS_d.label]), borderRadius:6 },
-      { label:'Días Máximo', data:velData.map(PYGS_d=>PYGS_d.max), backgroundColor:velData.map(PYGS_d=>compColors[PYGS_d.label]+'55'), borderRadius:6 }
+      { label:'Días Promedio', data:velData.map(d=>+d.avg.toFixed(1)), backgroundColor:velData.map(d=>compColors[d.label]), borderRadius:6 },
+      { label:'Días Máximo', data:velData.map(d=>d.max), backgroundColor:velData.map(d=>compColors[d.label]+'55'), borderRadius:6 }
     ]
   });
 
@@ -8501,22 +8548,22 @@ function pygs_renderEficiencia() {
   const maxVers = {};
   const tipoPorCod = {};
   PYGS_DATA.forEach(p => {
-    const PYGS_n = p.cod;
-    if (!maxVers[PYGS_n] || p.version > maxVers[PYGS_n]) { maxVers[PYGS_n] = p.version; tipoPorCod[PYGS_n] = p.tipo; }
+    const n = p.cod;
+    if (!maxVers[n] || p.version > maxVers[n]) { maxVers[n] = p.version; tipoPorCod[n] = p.tipo; }
   });
   const tipoIters = {};
   Object.entries(maxVers).forEach(([cod,v]) => {
-    const PYGS_t = tipoPorCod[cod]||'—';
-    if (!tipoIters[PYGS_t]) tipoIters[PYGS_t] = [];
-    tipoIters[PYGS_t].push(v);
+    const t = tipoPorCod[cod]||'—';
+    if (!tipoIters[t]) tipoIters[t] = [];
+    tipoIters[t].push(v);
   });
-  const tipoLabels = Object.keys(tipoIters).filter(PYGS_t=>PYGS_t&&PYGS_t!=='—');
+  const tipoLabels = Object.keys(tipoIters).filter(t=>t&&t!=='—');
   pygs_mkChart('ch-iters-tipo', 'bar', {
     labels: tipoLabels,
     datasets:[{
       label:'Versiones promedio',
-      data: tipoLabels.map(PYGS_t => +(pygs_sumBy(tipoIters[PYGS_t],v=>v)/tipoIters[PYGS_t].length).toFixed(2)),
-      backgroundColor: tipoLabels.map(PYGS_t=>PYGS_TIPO_COLORS[PYGS_t]||'#6b7494'),
+      data: tipoLabels.map(t => +(pygs_sumBy(tipoIters[t],v=>v)/tipoIters[t].length).toFixed(2)),
+      backgroundColor: tipoLabels.map(t=>PYGS_TIPO_COLORS[t]||'#6b7494'),
       borderRadius:6,
     }]
   }, {
@@ -8528,9 +8575,9 @@ function pygs_renderEficiencia() {
   });
 
   // Renders bubble: x=dias, y=renders, r=precio
-  const PYGS_bubbleData = PYGS_DATA.filter(p=>p.renders>0&&p.dias_real>0&&p.dias_real<50&&p.precio>0);
+  const bubbleData = PYGS_DATA.filter(p=>p.renders>0&&p.dias_real>0&&p.dias_real<50&&p.precio>0);
   const compBubble = {};
-  PYGS_bubbleData.forEach(p => {
+  bubbleData.forEach(p => {
     if (!compBubble[p.complejidad]) compBubble[p.complejidad] = [];
     compBubble[p.complejidad].push({ x:p.dias_real, y:p.renders, r:Math.max(4,Math.min(20,p.precio/50e6)) });
   });
@@ -8552,10 +8599,10 @@ function pygs_renderEficiencia() {
   const scatterData = PYGS_DATA.filter(p=>p.dias_real>0&&p.dias_real<60&&p.precio>0&&p.precio<500e6);
   const tiposScatter = [...new Set(scatterData.map(p=>p.tipo))].filter(Boolean);
   pygs_mkChart('ch-dias-precio-scatter', 'scatter', {
-    datasets: tiposScatter.map(PYGS_t => ({
-      label:PYGS_t,
-      data: scatterData.filter(p=>p.tipo===PYGS_t).map(p=>({x:p.dias_real,y:p.precio/1e6})),
-      backgroundColor: (PYGS_TIPO_COLORS[PYGS_t]||'#6b7494')+'bb',
+    datasets: tiposScatter.map(t => ({
+      label:t,
+      data: scatterData.filter(p=>p.tipo===t).map(p=>({x:p.dias_real,y:p.precio/1e6})),
+      backgroundColor: (PYGS_TIPO_COLORS[t]||'#6b7494')+'bb',
       pointRadius:5,
     }))
   }, {
@@ -8569,28 +8616,28 @@ function pygs_renderEficiencia() {
 // ═══════════════════════════════════════════════════════════════
 // TAB DIRECTORES
 // ═══════════════════════════════════════════════════════════════
-function pygs_renderDirectores() {
+function pygs_renderComerciales() {
   const dirData = {};
   PYGS_DATA.filter(p=>p.director).forEach(p => {
-    if (!dirData[p.director]) dirData[p.director] = {PYGS_n:0,valor:0,dias:[],PYGS_tipos:{},sectores:{},complejidades:{},resultados:{GANADO:0,PERDIDO:0,'EN REVISION':0,PENDIENTE:0}};
-    const PYGS_d = dirData[p.director];
-    PYGS_d.PYGS_n++; PYGS_d.valor+=p.precio;
-    if(p.dias_real>0&&p.dias_real<100) PYGS_d.dias.push(p.dias_real);
-    PYGS_d.PYGS_tipos[p.tipo]=(PYGS_d.PYGS_tipos[p.tipo]||0)+1;
-    PYGS_d.sectores[p.sector]=(PYGS_d.sectores[p.sector]||0)+1;
-    PYGS_d.complejidades[p.complejidad]=(PYGS_d.complejidades[p.complejidad]||0)+1;
-    if(p.resultado&&PYGS_d.resultados[p.resultado]!==undefined) PYGS_d.resultados[p.resultado]++;
+    if (!dirData[p.director]) dirData[p.director] = {n:0,valor:0,dias:[],tipos:{},sectores:{},complejidades:{},resultados:{GANADO:0,PERDIDO:0,'EN REVISION':0,PENDIENTE:0}};
+    const d = dirData[p.director];
+    d.n++; d.valor+=p.precio;
+    if(p.dias_real>0&&p.dias_real<100) d.dias.push(p.dias_real);
+    d.tipos[p.tipo]=(d.tipos[p.tipo]||0)+1;
+    d.sectores[p.sector]=(d.sectores[p.sector]||0)+1;
+    d.complejidades[p.complejidad]=(d.complejidades[p.complejidad]||0)+1;
+    if(p.resultado&&d.resultados[p.resultado]!==undefined) d.resultados[p.resultado]++;
   });
 
-  const PYGS_dirs = Object.entries(dirData).sort((a,b)=>b[1].valor-a[1].valor).filter(([PYGS_n])=>PYGS_n&&PYGS_n!=='—');
+  const dirs = Object.entries(dirData).sort((a,b)=>b[1].valor-a[1].valor).filter(([n])=>n&&n!=='—');
 
   // Ranking — dual axis: bars=valor, line=count
-  const dirLabels = PYGS_dirs.map(([PYGS_n])=>PYGS_n.split(' ')[0]+'\PYGS_n'+PYGS_n.split(' ').slice(1).join(' '));
+  const dirLabels = dirs.map(([n])=>n.split(' ')[0]+'\n'+n.split(' ').slice(1).join(' '));
   pygs_mkChart('ch-dir-ranking', 'bar', {
     labels: dirLabels,
     datasets:[
-      { label:'Valor M COP', data:PYGS_dirs.map(([,PYGS_d])=>PYGS_d.valor/1e6), backgroundColor:PYGS_COLORS.slice(0,PYGS_dirs.length), borderRadius:6, yAxisID:'y' },
-      { label:'# PYGs', data:PYGS_dirs.map(([,PYGS_d])=>PYGS_d.PYGS_n), type:'line', borderColor:'#4de0c0', backgroundColor:'transparent', pointBackgroundColor:'#4de0c0', yAxisID:'y2', tension:0.3 }
+      { label:'Valor M COP', data:dirs.map(([,d])=>d.valor/1e6), backgroundColor:PYGS_COLORS.slice(0,dirs.length), borderRadius:6, yAxisID:'y' },
+      { label:'# PYGs', data:dirs.map(([,d])=>d.n), type:'line', borderColor:'#4de0c0', backgroundColor:'transparent', pointBackgroundColor:'#4de0c0', yAxisID:'y2', tension:0.3 }
     ]
   }, {
     scales:{
@@ -8599,14 +8646,14 @@ function pygs_renderDirectores() {
     }
   });
 
-  // Mix de PYGS_tipos por director
-  const PYGS_tipos = ['INVITACION','RECOMPRA','CONCURSO','LICITACION','OTROS'];
-  pygs_mkChart('ch-dir-PYGS_tipos', 'bar', {
-    labels: PYGS_dirs.map(([PYGS_n])=>PYGS_n.split(' ')[0]),
-    datasets: PYGS_tipos.map(PYGS_t=>({
-      label:PYGS_t,
-      data: PYGS_dirs.map(([,PYGS_d])=>PYGS_d.PYGS_tipos[PYGS_t]||0),
-      backgroundColor: PYGS_TIPO_COLORS[PYGS_t]||'#6b7494',
+  // Mix de tipos por director
+  const tipos = ['INVITACION','RECOMPRA','CONCURSO','LICITACION','OTROS'];
+  pygs_mkChart('ch-dir-tipos', 'bar', {
+    labels: dirs.map(([n])=>n.split(' ')[0]),
+    datasets: tipos.map(t=>({
+      label:t,
+      data: dirs.map(([,d])=>d.tipos[t]||0),
+      backgroundColor: PYGS_TIPO_COLORS[t]||'#6b7494',
       borderRadius:4,
     }))
   }, {
@@ -8618,9 +8665,9 @@ function pygs_renderDirectores() {
 
   // Eficiencia: días prom + renders prom por director
   pygs_mkChart('ch-dir-eficiencia', 'bar', {
-    labels: PYGS_dirs.map(([PYGS_n])=>PYGS_n.split(' ')[0]),
+    labels: dirs.map(([n])=>n.split(' ')[0]),
     datasets:[
-      { label:'Días promedio', data:PYGS_dirs.map(([,PYGS_d])=>PYGS_d.dias.length?+(pygs_sumBy(PYGS_d.dias,v=>v)/PYGS_d.dias.length).toFixed(1):0), backgroundColor:'#f09040aa', borderRadius:4, yAxisID:'y' },
+      { label:'Días promedio', data:dirs.map(([,d])=>d.dias.length?+(pygs_sumBy(d.dias,v=>v)/d.dias.length).toFixed(1):0), backgroundColor:'#f09040aa', borderRadius:4, yAxisID:'y' },
     ]
   }, {
     plugins:{legend:{display:false}},
@@ -8632,11 +8679,11 @@ function pygs_renderDirectores() {
 
   // Resultados por director
   pygs_mkChart('ch-dir-resultados', 'bar', {
-    labels: PYGS_dirs.map(([PYGS_n])=>PYGS_n.split(' ')[0]),
+    labels: dirs.map(([n])=>n.split(' ')[0]),
     datasets:[
-      {label:'Ganado',data:PYGS_dirs.map(([,PYGS_d])=>PYGS_d.resultados.GANADO),backgroundColor:'#40d080',borderRadius:4},
-      {label:'Perdido',data:PYGS_dirs.map(([,PYGS_d])=>PYGS_d.resultados.PERDIDO),backgroundColor:'#e05060',borderRadius:4},
-      {label:'En Revisión',data:PYGS_dirs.map(([,PYGS_d])=>PYGS_d.resultados['EN REVISION']),backgroundColor:'#f0c040',borderRadius:4},
+      {label:'Ganado',data:dirs.map(([,d])=>d.resultados.GANADO),backgroundColor:'#40d080',borderRadius:4},
+      {label:'Perdido',data:dirs.map(([,d])=>d.resultados.PERDIDO),backgroundColor:'#e05060',borderRadius:4},
+      {label:'En Revisión',data:dirs.map(([,d])=>d.resultados['EN REVISION']),backgroundColor:'#f0c040',borderRadius:4},
     ]
   }, {
     scales:{
@@ -8646,27 +8693,27 @@ function pygs_renderDirectores() {
   });
 
   // Tabla
-  const PYGS_tbl = document.getElementById('PYGS_tbl-directores');
-  PYGS_tbl.innerHTML = `<thead><tr>
+  const tbl = document.getElementById('tbl-directores');
+  tbl.innerHTML = `<thead><tr>
     <th>Director</th><th>PYGs</th><th>Valor Total</th><th>Ticket Prom</th>
     <th>Días Prom</th><th>Top Tipo</th><th>Top Sector</th>
     <th>Ganados</th><th>Perdidos</th><th>En Revisión</th>
   </tr></thead><tbody>` +
-  PYGS_dirs.map(([name,PYGS_d]) => {
-    const topTipo = Object.entries(PYGS_d.PYGS_tipos).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
-    const topSec = Object.entries(PYGS_d.sectores).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
-    const diasAvg = PYGS_d.dias.length ? (pygs_sumBy(PYGS_d.dias,v=>v)/PYGS_d.dias.length).toFixed(1) : '—';
+  dirs.map(([name,d]) => {
+    const topTipo = Object.entries(d.tipos).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
+    const topSec = Object.entries(d.sectores).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
+    const diasAvg = d.dias.length ? (pygs_sumBy(d.dias,v=>v)/d.dias.length).toFixed(1) : '—';
     return `<tr>
       <td style="color:var(--text);font-weight:500">${name}</td>
-      <td style="text-align:right">${PYGS_d.PYGS_n}</td>
-      <td style="text-align:right;color:var(--yellow)">${pygs_fmtM(PYGS_d.valor)}</td>
-      <td style="text-align:right">${PYGS_d.PYGS_n?pygs_fmtM(PYGS_d.valor/PYGS_d.PYGS_n):'—'}</td>
-      <td style="text-align:right">${diasAvg}PYGS_d</td>
-      <td><span class="PYGS_badge PYGS_badge-b">${topTipo}</span></td>
+      <td style="text-align:right">${d.n}</td>
+      <td style="text-align:right;color:var(--yellow)">${pygs_fmtM(d.valor)}</td>
+      <td style="text-align:right">${d.n?pygs_fmtM(d.valor/d.n):'—'}</td>
+      <td style="text-align:right">${diasAvg}d</td>
+      <td><span class="badge badge-b">${topTipo}</span></td>
       <td>${topSec}</td>
-      <td style="text-align:right;color:var(--green)">${PYGS_d.resultados.GANADO}</td>
-      <td style="text-align:right;color:var(--red)">${PYGS_d.resultados.PERDIDO}</td>
-      <td style="text-align:right;color:var(--yellow)">${PYGS_d.resultados['EN REVISION']}</td>
+      <td style="text-align:right;color:var(--green)">${d.resultados.GANADO}</td>
+      <td style="text-align:right;color:var(--red)">${d.resultados.PERDIDO}</td>
+      <td style="text-align:right;color:var(--yellow)">${d.resultados['EN REVISION']}</td>
     </tr>`;
   }).join('') + '</tbody>';
 }
@@ -8678,16 +8725,16 @@ function pygs_renderMercado() {
   // Top ciudades
   const ciudades = {};
   PYGS_DATA.filter(p=>p.ciudad).forEach(p => {
-    if (!ciudades[p.ciudad]) ciudades[p.ciudad] = {PYGS_n:0,valor:0};
-    ciudades[p.ciudad].PYGS_n++;
+    if (!ciudades[p.ciudad]) ciudades[p.ciudad] = {n:0,valor:0};
+    ciudades[p.ciudad].n++;
     ciudades[p.ciudad].valor += p.precio;
   });
   const topCiudades = Object.entries(ciudades).sort((a,b)=>b[1].valor-a[1].valor).slice(0,8);
   pygs_mkChart('ch-ciudades', 'bar', {
     labels: topCiudades.map(([c])=>c),
     datasets:[
-      {label:'Valor M COP', data:topCiudades.map(([,PYGS_d])=>PYGS_d.valor/1e6), backgroundColor:PYGS_COLORS, borderRadius:6, yAxisID:'y'},
-      {label:'# PYGs', data:topCiudades.map(([,PYGS_d])=>PYGS_d.PYGS_n), type:'line', borderColor:'#4de0c0', backgroundColor:'transparent', pointBackgroundColor:'#4de0c0', yAxisID:'y2', tension:0.3}
+      {label:'Valor M COP', data:topCiudades.map(([,d])=>d.valor/1e6), backgroundColor:PYGS_COLORS, borderRadius:6, yAxisID:'y'},
+      {label:'# PYGs', data:topCiudades.map(([,d])=>d.n), type:'line', borderColor:'#4de0c0', backgroundColor:'transparent', pointBackgroundColor:'#4de0c0', yAxisID:'y2', tension:0.3}
     ]
   }, {
     scales:{
@@ -8744,19 +8791,19 @@ function pygs_renderMercado() {
   });
 
   // Colombia vs Internacional
-  const PYGS_col = PYGS_DATA.filter(p=>p.pais==='COLOMBIA');
+  const col = PYGS_DATA.filter(p=>p.pais==='COLOMBIA');
   const intl = PYGS_DATA.filter(p=>p.pais&&p.pais!=='COLOMBIA');
   pygs_mkChart('ch-intl', 'doughnut', {
     labels: ['Colombia','Internacional'],
     datasets:[{
-      data:[pygs_sumBy(PYGS_col,'precio')/1e6, pygs_sumBy(intl,'precio')/1e6],
+      data:[pygs_sumBy(col,'precio')/1e6, pygs_sumBy(intl,'precio')/1e6],
       backgroundColor:['#5080f0','#f09040'],
       borderWidth:0, hoverOffset:8
     }]
   }, {
     plugins:{
       legend:{labels:{color:'#8b90a8',font:{size:11}}},
-      tooltip:{callbacks:{label:PYGS_ctx=>' $'+PYGS_ctx.raw+'M ('+PYGS_ctx.label+')'}}
+      tooltip:{callbacks:{label:ctx=>' $'+ctx.raw+'M ('+ctx.label+')'}}
     }
   });
 }
@@ -8771,7 +8818,7 @@ function pygs_renderTab(id) {
   if (id === 'pipeline')    pygs_renderPipeline();
   if (id === 'financiero')  pygs_renderFinanciero();
   if (id === 'eficiencia')  pygs_renderEficiencia();
-  if (id === 'directores')  pygs_renderDirectores();
+  if (id === 'comerciales')  pygs_renderComerciales();
   if (id === 'mercado')     pygs_renderMercado();
 }
 
@@ -8781,9 +8828,29 @@ function pygs_renderTab(id) {
 pygs_renderHeader();
 pygs_renderPipeline();
 
-// ══════════════════════════════════════════════════════════════════
-// INGENIERÍA DASHBOARD
-// ══════════════════════════════════════════════════════════════════
+// === ING ===
+
+let _ingF={estado:'TODOS',fase:'TODOS'};
+function ingFilter(b){const fg=b.dataset.filter,v=b.dataset.val;_ingF[fg]=v;const w=document.getElementById('db-ing');if(w)w.querySelectorAll('.ing-filter-btn[data-filter="'+fg+'"]').forEach(x=>x.classList.remove('active'));b.classList.add('active');ingRenderProyectos();}
+function ingGetF(){return ING_DATA.filter(p=>{const eOk=_ingF.estado==='TODOS'||p.estado===_ingF.estado;const fa=(p.fase_actual||'').toUpperCase();const fOk=_ingF.fase==='TODOS'||(_ingF.fase==='DISENO'&&fa.includes('DISE')&&!fa.includes('CONSTRUCCI'))||(_ingF.fase==='CONSTRUCCION'&&fa.includes('CONSTRUCCI')&&!fa.includes('DISE'))||(_ingF.fase==='DYC'&&fa.includes('DISE')&&fa.includes('CONSTRUCCI'));return eOk&&fOk;});}
+function ingRenderProyectos(){
+  const f=ingGetF();
+  const s=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  s('ing-f-count',f.length);s('ing-f-activos',f.filter(p=>p.estado==='ACTIVO').length);
+  s('ing-f-hold',f.filter(p=>p.estado==='HOLD').length);s('ing-f-alta',f.filter(p=>p.complejidad==='ALTA').length);
+  const TC={'D+C':'#f0c040','CONSTRUCCION':'#f09040','DISEÑO':'#4de0c0','DISEÑO Y CONSTRUCCION':'#5080f0','CONSTRUCCIÓN':'#f09040'};
+  const CC={ALTA:'#e05060',MEDIA:'#f09040',ESTANDAR:'#6b7494'};
+  const fG={},tG={};
+  f.forEach(p=>{if(p.fase_actual)fG[p.fase_actual]=(fG[p.fase_actual]||0)+1;if(p.tipo)tG[p.tipo]=(tG[p.tipo]||0)+1;});
+  const fL=Object.keys(fG).sort((a,b)=>fG[b]-fG[a]).slice(0,6);
+  const tL=Object.keys(tG).sort((a,b)=>tG[b]-tG[a]);
+  ingMkChart('ing-ch-activos-fase','doughnut',{labels:fL,datasets:[{data:fL.map(x=>fG[x]),backgroundColor:['#4de0c0','#f09040','#5080f0','#40d080','#f0c040','#e05060'],borderWidth:0,hoverOffset:6}]});
+  ingMkChart('ing-ch-activos-tipo','bar',{labels:tL,datasets:[{label:'Proyectos',data:tL.map(t=>tG[t]),backgroundColor:tL.map(t=>TC[t]||'#6b7494'),borderRadius:6}]},{plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#6b7494',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#6b7494',stepSize:1},grid:{color:'rgba(255,255,255,.04)'}}}});
+  const tbl=document.getElementById('ing-tbl-proyectos');
+  if(!tbl)return;
+  tbl.innerHTML='<thead><tr><th>Proyecto</th><th>Estado</th><th>Fase</th><th>Tipo</th><th>Complejidad</th><th>PM</th><th>Coord. Diseno</th><th>Ing. Electrico</th><th>Sub-estado</th></tr></thead><tbody>'+
+  f.map(p=>'<tr><td style="color:var(--text);font-size:11px;font-weight:500">'+p.proyecto+'</td><td>'+ingBadge(p.estado)+'</td><td style="font-size:10px">'+(p.fase_actual||'—')+'</td><td style="font-size:9px;color:'+(TC[p.tipo]||'#6b7494')+'">'+(p.tipo||'—')+'</td><td style="font-size:10px;color:'+(CC[p.complejidad]||'#6b7494')+'">'+(p.complejidad||'—')+'</td><td style="font-size:10px">'+(p.pm||'—')+'</td><td style="font-size:10px">'+(p.coord_diseno||'—')+'</td><td style="font-size:10px;color:var(--blue)">'+(p.ing_electrico||'—')+'</td><td>'+(p.sub_estado?ingBadge(p.sub_estado):'')+'</td></tr>').join('')+'</tbody>';
+}
 // ═══════════════════════════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════════════════════════
@@ -8837,22 +8904,18 @@ function ingBadge(estado) {
 // ═══════════════════════════════════════════════════════════════
 const _ingRendered = {};
 function ingShowTab(id, btn) {
-  const ingWrap = document.getElementById('db-ing');
-  if (ingWrap) {
-    ingWrap.querySelectorAll('.ing-panel').forEach(p=>p.classList.remove('active'));
-    ingWrap.querySelectorAll('.ing-tab-btn').forEach(b=>b.classList.remove('active'));
-  }
-  const ingPanel = document.getElementById('ing-tab-'+id);
-  if (ingPanel) ingPanel.classList.add('active');
-  if(btn) btn.classList.add('active');
-  setTimeout(()=>ingRenderTab(id), 50);
+  const _w=document.getElementById('db-ing');
+  if(_w){_w.querySelectorAll('.ing-panel').forEach(p=>p.classList.remove('active'));_w.querySelectorAll('.ing-tab-btn').forEach(b=>b.classList.remove('active'));}
+  const _p=document.getElementById('ing-tab-'+id);if(_p)_p.classList.add('active');
+  if(btn)btn.classList.add('active');
+  setTimeout(()=>ingRenderTab(id),50);
 }
 
 function ingRenderTab(id) {
   if(_ingRendered[id]) return;
   _ingRendered[id] = true;
-  if(id==='activos')       ingRenderActivos();
-  if(id==='portafolio')    ingRenderPortafolio();
+  if(id==='proyectos')     ingRenderProyectos();
+  if(id==='estrategia')    ingRenderPortafolio();
   if(id==='equipo')        ingRenderEquipo();
   if(id==='especialidades') ingRenderEspecialidades();
   if(id==='timeline')      ingRenderTimeline();
@@ -9098,27 +9161,18 @@ function ingRenderEspecialidades() {
   const firmColors2 = {'CONTROL Y TELEMATICA':'#4de0c0','SUMAC':'#f0c040','IE2':'#5080f0','G7':'#40d080'};
   const matrixEl = document.getElementById('ing-spec-matrix');
   const colShort = ['Elec','CA','VD','CCTV','Det','AyV','Mec','Hidro','RCI','Ilu','Gas','Est'];
-  matrixEl.innerHTML = `<table class="spec-tbl" style="width:100%">
-    <thead><tr>
-      <th class="proj">Proyecto</th>
-      ${colShort.map(c=>`<th>${c}</th>`).join('')}
-      <th>Total</th>
-    </tr></thead>
-    <tbody>
-    ${ING_ACTIVOS.map(p=>`<tr>
-      <td class="proj">${p.proyecto}</td>
-      ${especCols.map(c=>{
-        const firm = p[c];
-        const col = firm ? (firmColors2[firm]||'#6b7494') : '';
-        return `<td><div class="spec-dot" style="background:${firm?col+'33':'transparent'};border:1px solid ${firm?col:'rgba(255,255,255,.05)'}" title="${firm||'—'}"></div></td>`;
-      }).join('')}
-      <td style="color:var(--cyan);font-weight:700;text-align:center">${p.n_especialidades||0}</td>
-    </tr>`).join('')}
-    </tbody>
-  </table>
-  <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
-    ${Object.entries(firmColors2).map(([f,c])=>`<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted2)"><div style="width:10px;height:10px;border-radius:2px;background:${c}"></div>${f}</div>`).join('')}
-  </div>`;
+  const specRows = ING_ACTIVOS.map(p => {
+    const cells = especCols.map(c => {
+      const firm = p[c];
+      const col = firm ? (firmColors2[firm]||'#6b7494') : '';
+      return '<td><div class="spec-dot" style="background:' + (firm?col+'33':'transparent') + ';border:1px solid ' + (firm?col:'rgba(255,255,255,.05)') + '" title="' + (firm||'—') + '"></div></td>';
+    }).join('');
+    return '<tr><td class="proj">' + p.proyecto + '</td>' + cells + '<td style="color:var(--cyan);font-weight:700;text-align:center">' + (p.n_especialidades||0) + '</td></tr>';
+  }).join('');
+  const specHeaders = colShort.map(c => '<th>' + c + '</th>').join('');
+  const specLegend = Object.entries(firmColors2).map(([f,col]) => '<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted2)"><div style="width:10px;height:10px;border-radius:2px;background:' + col + '"></div>' + f + '</div>').join('');
+  matrixEl.innerHTML = '<table class="spec-tbl" style="width:100%"><thead><tr><th class="proj">Proyecto</th>' + specHeaders + '<th>Total</th></tr></thead><tbody>' + specRows + '</tbody></table><div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">' + specLegend + '</div>';
+  // placeholder to replace old template
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -9190,6 +9244,25 @@ renderAll();
   if (saved && Date.now() < expiry - 300000) SP_CONFIG.mode = 'sharepoint';
 })();
 initConnection();
-</script>
-</body>
-</html>
+// ═══════════════════════════════════════════════════════════════
+// TAB TIMELINE
+// ═══════════════════════════════════════════════════════════════
+
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+ingRenderHeader();
+ingRenderActivos();
+
+// ══════════════════════════════════════════════════════════════════
+// INIT UNIFICADO
+// ══════════════════════════════════════════════════════════════════
+renderAll();
+// Auto-reconectar si hay token válido guardado
+(function() {
+  const saved = localStorage.getItem('aei_token');
+  const expiry = parseInt(localStorage.getItem('aei_token_expiry') || '0');
+  if (saved && Date.now() < expiry - 300000) SP_CONFIG.mode = 'sharepoint';
+})();
+initConnection();
