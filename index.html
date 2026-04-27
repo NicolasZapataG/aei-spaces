@@ -9267,5 +9267,40 @@ renderAll();
 })();
 initConnection();
 </script>
+
+<!-- ══ CONFIG PANEL ══════════════════════════════════════════════════════ -->
+<div id="config-overlay" onclick="toggleConfig()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:2000"></div>
+<div id="config-panel" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0f1421;border:1px solid rgba(240,192,64,.3);border-radius:16px;padding:32px;width:560px;max-width:95vw;z-index:2001;max-height:90vh;overflow-y:auto">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#f0c040">⚙ Conectar a SharePoint</div>
+    <button onclick="toggleConfig()" style="background:transparent;border:none;color:#6b7494;font-size:18px;cursor:pointer">✕</button>
+  </div>
+  <div style="display:grid;gap:10px;margin-bottom:20px">
+    <div>
+      <div style="font-size:9px;color:#6b7494;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Client ID de Azure AD</div>
+      <input id="cfg-clientId" type="text" placeholder="14096b1d-..." style="width:100%;background:#161c2e;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 12px;color:#e8eaf0;font-family:'DM Sans',sans-serif;font-size:12px;box-sizing:border-box">
+    </div>
+    <div>
+      <div style="font-size:9px;color:#6b7494;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Tenant ID de Azure AD</div>
+      <input id="cfg-tenantId" type="text" placeholder="bd1250f8-..." style="width:100%;background:#161c2e;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 12px;color:#e8eaf0;font-family:'DM Sans',sans-serif;font-size:12px;box-sizing:border-box">
+    </div>
+    <div>
+      <div style="font-size:9px;color:#6b7494;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">URL del sitio SharePoint / OneDrive</div>
+      <input id="cfg-siteUrl" type="text" placeholder="https://aeicol-my.sharepoint.com/personal/..." style="width:100%;background:#161c2e;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 12px;color:#e8eaf0;font-family:'DM Sans',sans-serif;font-size:12px;box-sizing:border-box">
+    </div>
+    <div>
+      <div style="font-size:9px;color:#6b7494;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">ID del archivo Excel (driveItemId)</div>
+      <input id="cfg-driveItemId" type="text" placeholder="01D6FN4Z..." style="width:100%;background:#161c2e;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 12px;color:#e8eaf0;font-family:'DM Sans',sans-serif;font-size:12px;box-sizing:border-box">
+    </div>
+  </div>
+  <div style="background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.2);border-radius:8px;padding:12px;margin-bottom:16px;font-size:10px;color:#8b90a8;line-height:1.6">
+    💡 Los IDs ya están configurados. Solo haz clic en <strong style="color:#f0c040">CONECTAR</strong> para autenticarte con tu cuenta de Microsoft.
+  </div>
+  <div style="display:flex;gap:10px">
+    <button onclick="saveConfig()" style="flex:1;padding:12px;background:var(--yellow);color:#0a0d14;border:none;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;cursor:pointer;font-weight:700">CONECTAR</button>
+    <button onclick="toggleConfig()" style="padding:12px 20px;background:transparent;color:#6b7494;border:1px solid rgba(255,255,255,.15);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">Cancelar</button>
+  </div>
+</div>
+
 </body>
 </html>
