@@ -2811,8 +2811,16 @@ function setFilter(btn) {
     filtroCelula = v;
     document.querySelectorAll('[data-k="celula"]').forEach(b=>b.classList.remove('active'));
   }
-  btn.classList.add('active');
-  renderAll();
+  if (btn) btn.classList.add('active');
+  // Tab-specific renders
+  const RENDER_ALL_TABS = ['general','intel','cargabilidad','gantt','equipos','celulas','proyectos','proyeccion'];
+  if (RENDER_ALL_TABS.includes(id)) {
+    setTimeout(() => { try { renderAll(); } catch(e) {} }, 30);
+  }
+  if (id === 'carg_bim')  setTimeout(() => renderCargBIM(), 30);
+  if (id === 'carg_pmo')  setTimeout(() => renderCargPMO(), 30);
+  if (id === 'carg_ing')  setTimeout(() => renderCargIngenieria(), 30);
+  if (id === 'exp')       setTimeout(() => renderEXP(document.getElementById('exp-select')?.value||''), 30);
 }
 
 function clearAll() {
@@ -2842,9 +2850,19 @@ function filtered() {
 function showTab(id, btn) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  btn.classList.add('active');
-  renderAll();
+  const panel = document.getElementById('tab-'+id);
+  if (panel) panel.classList.add('active');
+  if (btn) btn.classList.add('active');
+  // Render specific tab content
+  if (id === 'general' || id === 'intel' || id === 'cargabilidad' ||
+      id === 'gantt' || id === 'equipos' || id === 'celulas' ||
+      id === 'proyectos' || id === 'proyeccion') {
+    setTimeout(() => { try { renderAll(); } catch(e) {} }, 30);
+  }
+  if (id === 'carg_bim')  setTimeout(() => renderCargBIM(), 30);
+  if (id === 'carg_pmo')  setTimeout(() => renderCargPMO(), 30);
+  if (id === 'carg_ing')  setTimeout(() => renderCargIngenieria(), 30);
+  if (id === 'exp')       setTimeout(() => renderEXP(document.getElementById('exp-select')?.value||''), 30);
 }
 
 
@@ -3157,24 +3175,27 @@ function parseExcelRows(rows) {
       etapa:        row[49] ? row[49].toString().trim() : '',
       n_etapa:      cleanNum(row[50]),
       m2_dia_prog:  cleanNum(row[56]),
+      m2_dia_prog:  cleanNum(row[56]),
       m2_dia_real:  cleanNum(row[63]),
-      tipo_proyecto:row[66]?row[66].toString().trim().replace(/^N\/A$/,''):'',
-      pm:           row[85]?row[85].toString().trim().replace(/^N\/A$/,''):'',
-      bim:          row[86]?row[86].toString().trim().replace(/^N\/A$/,''):'',
-      ing_mecanico: row[87]?row[87].toString().trim().replace(/^N\/A$/,''):'',
-      ing_electrico:row[88]?row[88].toString().trim().replace(/^N\/A$/,''):'',
-      estructural:  row[67]?row[67].toString().trim().replace(/^N\/A$/,''):'',
-      rci:          row[68]?row[68].toString().trim().replace(/^N\/A$/,''):'',
-      hidro:        row[69]?row[69].toString().trim().replace(/^N\/A$/,''):'',
-      gas:          row[70]?row[70].toString().trim().replace(/^N\/A$/,''):'',
-      iluminacion:  row[71]?row[71].toString().trim().replace(/^N\/A$/,''):'',
-      electrico_firm:row[72]?row[72].toString().trim().replace(/^N\/A$/,''):'',
-      voz_datos:    row[73]?row[73].toString().trim().replace(/^N\/A$/,''):'',
-      deteccion:    row[74]?row[74].toString().trim().replace(/^N\/A$/,''):'',
-      cctv:         row[75]?row[75].toString().trim().replace(/^N\/A$/,''):'',
-      ayv:          row[76]?row[76].toString().trim().replace(/^N\/A$/,''):'',
-      acustico:     row[77]?row[77].toString().trim().replace(/^N\/A$/,''):'',
-      hvac:         row[80]?row[80].toString().trim().replace(/^N\/A$/,''):'',
+      // Equipo interno (cols 85-88)
+      pm:            row[85] ? row[85].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      bim:           row[86] ? row[86].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      ing_mecanico:  row[87] ? row[87].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      ing_electrico: row[88] ? row[88].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      // Contratistas especialidades (cols 67-84)
+      estructural:   row[67] ? row[67].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      rci:           row[68] ? row[68].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      hidro:         row[69] ? row[69].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      gas:           row[70] ? row[70].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      iluminacion:   row[71] ? row[71].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      electrico_firm:row[72] ? row[72].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      voz_datos:     row[73] ? row[73].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      deteccion:     row[74] ? row[74].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      cctv:          row[75] ? row[75].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      ayv:           row[76] ? row[76].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      acustico:      row[77] ? row[77].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      hvac:          row[80] ? row[80].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
+      tipo_proyecto: row[66] ? row[66].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
     });
   }
   return result.length > 0 ? result : null;
@@ -3186,10 +3207,15 @@ function parseExcelRows(rows) {
 // ════════════════════════════════════════════════════════════════
 const ETAPAS_NOMBRE = {1: "KO - Kick Off", 2: "LN - Levantamiento", 3: "EB - Esquema Básico", 4: "AP - Anteproyecto", 5: "PC - Planos Constructivos", 6: "C - Cantidades", 7: "AO - Acompañamiento Obra", 0: "CS/MA/WF/DG", "KO": "Kick Off", "LN": "Levantamiento", "EB": "Esquema Básico", "AP": "Anteproyecto", "PC": "Planos Constructivos", "C": "Cantidades", "AO": "Acompañamiento Obra", "CS": "Case Study", "MA": "Manual Diseño", "WF": "Wayfinding", "DG": "Diagnóstico"};
 function etapaLabel(e) {
-  if (!e) return '—';
+  if (e === null || e === undefined || e === '') return '—';
   const n = parseInt(e);
-  if (!isNaN(n)) return ETAPAS_NOMBRE[n] || String(e);
-  return ETAPAS_NOMBRE[String(e).toUpperCase()] || String(e);
+  if (!isNaN(n) && n >= 0) return ETAPAS_NOMBRE[n] || (n === 0 ? 'CS/MA/WF/DG' : String(e));
+  const s = String(e).trim().toUpperCase();
+  return ETAPAS_NOMBRE[s] || s || '—';
+}
+function getEtapa(p) {
+  // Try both n_etapa (numeric from Excel) and etapa (text)
+  return p.n_etapa !== undefined ? p.n_etapa : (p.etapa || '');
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -3265,7 +3291,7 @@ function parsePYGsRows(rows) {
 // ════════════════════════════════════════════════════════════════
 function mkProfileCard(name, projs, color, role) {
   const totalM2=projs.reduce((s,p)=>s+(p.m2||0),0);
-  const rows=projs.map(p=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:10px"><span style="color:var(--text);font-weight:500">${p.proyecto}</span><div style="text-align:right;flex-shrink:0;margin-left:8px"><span style="color:${color};font-size:9px">${etapaLabel(p.etapa)}</span><br><span style="color:var(--muted);font-size:9px">${p.m2?N(p.m2)+' m²':'—'}</span></div></div>`).join('');
+  const rows=projs.map(p=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:10px"><span style="color:var(--text);font-weight:500">${p.proyecto}</span><div style="text-align:right;flex-shrink:0;margin-left:8px"><span style="color:${color};font-size:9px">${etapaLabel(getEtapa(p))}</span><br><span style="color:var(--muted);font-size:9px">${p.m2?N(p.m2)+' m²':'—'}</span></div></div>`).join('');
   return `<div class="card" style="margin-bottom:10px;border-left:3px solid ${color}"><div class="card-header"><div class="card-title" style="color:${color}">${name} <span style="color:var(--muted);font-size:10px;font-weight:400">${projs.length} proy · ${N(totalM2)} m²</span></div><div style="font-size:9px;color:var(--muted)">${role}</div></div>${rows}</div>`;
 }
 
@@ -3347,11 +3373,11 @@ function renderEXP(proyName) {
   const contrats=Object.entries(ESP_MAP).map(([k,l])=>({esp:l,firma:p[k]||''})).filter(x=>x.firma&&x.firma!=='SIN ASIGNAR');
   const chip=(label,name,color)=>name?`<div style="background:${color}18;border:1px solid ${color}40;border-radius:8px;padding:8px 12px;min-width:120px"><div style="font-size:8px;color:${color};text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">${label}</div><div style="font-size:11px;color:var(--text);font-weight:600">${name}</div></div>`:'';
   const ganttPhases=[
-    {label:'Análisis (AE)',     dp:p.dias_ae||0,   dr:p.dias_ae_r||0,  isAct:etapaLabel(p.etapa).includes('KO')||etapaLabel(p.etapa).includes('LN')||etapaLabel(p.etapa).includes('AE')},
-    {label:'Esquema Básico',    dp:p.dias_eb||0,   dr:p.dias_eb_r||0,  isAct:etapaLabel(p.etapa).includes('EB')},
-    {label:'Anteproyecto',      dp:p.dias_ap||0,   dr:p.dias_ap_r||0,  isAct:etapaLabel(p.etapa).includes('AP')},
-    {label:'Constructivos',     dp:p.dias_pc||0,   dr:p.dias_pc_r||0,  isAct:etapaLabel(p.etapa).includes('PC')||etapaLabel(p.etapa).includes('C')},
-    {label:'Acompañamiento',    dp:p.dias_ac||0,   dr:p.dias_ac_r||0,  isAct:etapaLabel(p.etapa).includes('AO')},
+    {label:'Análisis (AE)',     dp:p.dias_ae||0,   dr:p.dias_ae_r||0,  isAct:etapaLabel(getEtapa(p)).includes('KO')||etapaLabel(getEtapa(p)).includes('LN')||etapaLabel(getEtapa(p)).includes('AE')},
+    {label:'Esquema Básico',    dp:p.dias_eb||0,   dr:p.dias_eb_r||0,  isAct:etapaLabel(getEtapa(p)).includes('EB')},
+    {label:'Anteproyecto',      dp:p.dias_ap||0,   dr:p.dias_ap_r||0,  isAct:etapaLabel(getEtapa(p)).includes('AP')},
+    {label:'Constructivos',     dp:p.dias_pc||0,   dr:p.dias_pc_r||0,  isAct:etapaLabel(getEtapa(p)).includes('PC')||etapaLabel(getEtapa(p)).includes('C')},
+    {label:'Acompañamiento',    dp:p.dias_ac||0,   dr:p.dias_ac_r||0,  isAct:etapaLabel(getEtapa(p)).includes('AO')},
   ];
   const maxD=Math.max(...ganttPhases.map(ph=>Math.max(parseFloat(ph.dp)||0,parseFloat(ph.dr)||0,1)));
   const ganttRows=ganttPhases.map(ph=>{
@@ -3360,7 +3386,7 @@ function renderEXP(proyName) {
     const diff=dp>0&&dr>0?dr-dp:0;
     return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:10px;color:${ph.isAct?'var(--yellow)':'var(--muted2)'};font-weight:${ph.isAct?700:400}">${ph.label}${ph.isAct?' ← ACTUAL':''}</span><span style="font-size:9px;color:var(--muted)">${dp?dp+' d prog.':''}</span></div><div style="height:8px;background:rgba(255,255,255,.06);border-radius:4px;margin-bottom:2px"><div style="height:100%;width:${wP}%;background:rgba(255,255,255,.3);border-radius:4px"></div></div><div style="height:8px;background:rgba(255,255,255,.06);border-radius:4px"><div style="height:100%;width:${wR}%;background:${diff>0?'var(--red)':'var(--cyan)'};border-radius:4px"></div></div>${diff!==0?`<div style="text-align:right;font-size:9px;color:${diff>0?'var(--red)':'var(--green)'};margin-top:2px">${diff>0?'+'+diff+' d atraso':Math.abs(diff)+' d adelanto'}</div>`:''}</div>`;
   }).join('');
-  content.innerHTML=`<div class="card" style="margin-bottom:12px;border-left:3px solid var(--yellow)"><div class="card-header"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px"><div><div class="card-title">${p.proyecto}</div><div style="font-size:10px;color:var(--muted);margin-top:2px">${p.celula||''} · ${p.tipo_proyecto||''} · ${p.m2?N(p.m2)+' m²':'—'}</div></div>${p.etapa?`<span style="background:var(--yellow)22;color:var(--yellow);padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700">${etapaLabel(p.etapa)}</span>`:''}</div></div></div><div class="section-title">👥 Equipo</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">${chip('Coordinador',p.coordinador,'#f0c040')}${chip('PM',p.pm,'#f09040')}${chip('BIM',p.bim,'#4de0c0')}${chip('Ing. Mecánico',p.ing_mecanico,'#5080f0')}${chip('Ing. Eléctrico',p.ing_electrico,'#a060f0')}</div><div class="section-title">📅 Gantt</div><div class="card" style="margin-bottom:12px"><div style="display:flex;gap:14px;margin-bottom:10px;font-size:9px;color:var(--muted)"><div style="display:flex;align-items:center;gap:5px"><div style="width:16px;height:6px;background:rgba(255,255,255,.3);border-radius:3px"></div>Programado</div><div style="display:flex;align-items:center;gap:5px"><div style="width:16px;height:6px;background:var(--cyan);border-radius:3px"></div>Real</div></div>${ganttRows}</div><div class="section-title">🏢 Especialistas</div><div class="card">${contrats.length?contrats.map(ct=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:10px"><span style="color:var(--muted)">${ct.esp}</span><span style="color:var(--text);font-weight:500">${ct.firma}</span></div>`).join(''):'<div style="font-size:11px;color:var(--muted)">Sin especialistas contratados</div>'}</div>`;
+  content.innerHTML=`<div class="card" style="margin-bottom:12px;border-left:3px solid var(--yellow)"><div class="card-header"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px"><div><div class="card-title">${p.proyecto}</div><div style="font-size:10px;color:var(--muted);margin-top:2px">${p.celula||''} · ${p.tipo_proyecto||''} · ${p.m2?N(p.m2)+' m²':'—'}</div></div>${p.etapa?`<span style="background:var(--yellow)22;color:var(--yellow);padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700">${etapaLabel(getEtapa(p))}</span>`:''}</div></div></div><div class="section-title">👥 Equipo</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">${chip('Coordinador',p.coordinador,'#f0c040')}${chip('PM',p.pm,'#f09040')}${chip('BIM',p.bim,'#4de0c0')}${chip('Ing. Mecánico',p.ing_mecanico,'#5080f0')}${chip('Ing. Eléctrico',p.ing_electrico,'#a060f0')}</div><div class="section-title">📅 Gantt</div><div class="card" style="margin-bottom:12px"><div style="display:flex;gap:14px;margin-bottom:10px;font-size:9px;color:var(--muted)"><div style="display:flex;align-items:center;gap:5px"><div style="width:16px;height:6px;background:rgba(255,255,255,.3);border-radius:3px"></div>Programado</div><div style="display:flex;align-items:center;gap:5px"><div style="width:16px;height:6px;background:var(--cyan);border-radius:3px"></div>Real</div></div>${ganttRows}</div><div class="section-title">🏢 Especialistas</div><div class="card">${contrats.length?contrats.map(ct=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:10px"><span style="color:var(--muted)">${ct.esp}</span><span style="color:var(--text);font-weight:500">${ct.firma}</span></div>`).join(''):'<div style="font-size:11px;color:var(--muted)">Sin especialistas contratados</div>'}</div>`;
 }
 
 // Ingeniería tab reads from Diseño filtered() data
@@ -3387,7 +3413,7 @@ function ingRenderProyectos(){
   sv('ing-f-hold',f.filter(p=>p.estado==='HOLD').length);
   sv('ing-f-alta',f.filter(p=>(p.complejidad_excel||'').toUpperCase().includes('ALTA')).length);
   const fG={},tG={};
-  f.forEach(p=>{const et=etapaLabel(p.etapa)||'—';fG[et]=(fG[et]||0)+1;const ti=p.tipo_proyecto||'—';tG[ti]=(tG[ti]||0)+1;});
+  f.forEach(p=>{const et=etapaLabel(getEtapa(p))||'—';fG[et]=(fG[et]||0)+1;const ti=p.tipo_proyecto||'—';tG[ti]=(tG[ti]||0)+1;});
   const fL=Object.keys(fG).sort((a,b)=>fG[b]-fG[a]).slice(0,6);
   const tL=Object.keys(tG).sort((a,b)=>tG[b]-tG[a]);
   ingMkChart('ing-ch-activos-fase','doughnut',{labels:fL,datasets:[{data:fL.map(x=>fG[x]),backgroundColor:['#4de0c0','#f09040','#5080f0','#40d080','#f0c040','#e05060'],borderWidth:0}]});
@@ -3395,7 +3421,7 @@ function ingRenderProyectos(){
   const tbl=document.getElementById('ing-tbl-proyectos');
   if(!tbl) return;
   tbl.innerHTML='<thead><tr><th>Proyecto</th><th>Estado</th><th>Etapa</th><th>PM</th><th>BIM</th><th>Ing. Eléctrico</th><th>Ing. Mecánico</th></tr></thead><tbody>'+
-  f.map(p=>`<tr><td style="color:var(--text);font-weight:500;font-size:11px">${p.proyecto}</td><td><span style="font-size:9px;padding:2px 7px;border-radius:10px;background:${estadoEfectivo(p)==='ACTIVO'?'#40d08020':'#6b749420'};color:${estadoEfectivo(p)==='ACTIVO'?'#40d080':'#6b7494'}">${estadoEfectivo(p)}</span></td><td style="font-size:10px;color:var(--muted2)">${etapaLabel(p.etapa)}</td><td style="font-size:10px">${p.pm||'—'}</td><td style="font-size:10px;color:var(--cyan)">${p.bim||'—'}</td><td style="font-size:10px;color:var(--blue)">${p.ing_electrico||'—'}</td><td style="font-size:10px;color:var(--green)">${p.ing_mecanico||'—'}</td></tr>`).join('')+'</tbody>';
+  f.map(p=>`<tr><td style="color:var(--text);font-weight:500;font-size:11px">${p.proyecto}</td><td><span style="font-size:9px;padding:2px 7px;border-radius:10px;background:${estadoEfectivo(p)==='ACTIVO'?'#40d08020':'#6b749420'};color:${estadoEfectivo(p)==='ACTIVO'?'#40d080':'#6b7494'}">${estadoEfectivo(p)}</span></td><td style="font-size:10px;color:var(--muted2)">${etapaLabel(getEtapa(p))}</td><td style="font-size:10px">${p.pm||'—'}</td><td style="font-size:10px;color:var(--cyan)">${p.bim||'—'}</td><td style="font-size:10px;color:var(--blue)">${p.ing_electrico||'—'}</td><td style="font-size:10px;color:var(--green)">${p.ing_mecanico||'—'}</td></tr>`).join('')+'</tbody>';
 }
 
 
@@ -3875,7 +3901,7 @@ function renderGantt() {
 function renderCargabilidad() {
   const data = filtered();
   const activos=data.filter(p=>estadoEfectivo(p)==='ACTIVO');
-  const coords=[...new Set(data.map(p=>p.coordinador).filter(c=>c&&c!=='SIN ASIGNAR'))].sort();
+  const coords=[...new Set(data.map(p=>p.coordinador).filter(c=>c&&c!=='SIN ASIGNAR'&&!['Nicolay Clopatofsky','Nicolas Zapata','Santiago Villada','Nicolás Zapata'].includes(c)))].sort();
   const CELULAS=['THE BIG DESING THEORY','EL TRINOMIO DE ORO','DESING COMPAST','PePeCe','CLOPA'];
 
   const act=activos.length;
