@@ -3236,16 +3236,31 @@ function parseInnovRows(rows) {
   const norm = s => (s||'').toString().toUpperCase().trim()
     .normalize('NFD').replace(/[\u0300-\u036f]/g,'')  // quita acentos (Ñ→N, Á→A)
     .replace(/\s+/g,'_');
-  const hdrsRaw = rows[0].map(h=>(h||'').toString());
+
+  // ─── Auto-detectar fila de header ───
+  // Buscar la primera fila que contenga al menos 2 nombres de columna reconocibles
+  // (puede haber filas de título arriba como "INNOVACION Y DESARROLLO - REGISTRO...")
+  const expectedKeys=['ANO','ANIO','TIPO','RESULTADO','MES','PROYECTO','COMERCIAL','DIRECTOR'];
+  let headerRow=0;
+  const maxScan=Math.min(rows.length,8);
+  for(let r=0;r<maxScan;r++){
+    const normRow=rows[r].map(c=>norm(c));
+    const matches=expectedKeys.filter(k=>normRow.includes(k)).length;
+    if(matches>=2){headerRow=r;break;}
+  }
+  console.log('[Innov] Fila de header detectada en índice:', headerRow, '(filas 0-'+(headerRow-1)+' tratadas como título y descartadas)');
+
+  const hdrsRaw = rows[headerRow].map(h=>(h||'').toString());
   const hdrs = hdrsRaw.map(norm);
   // Exponer para debug desde consola
   window._innovHeadersRaw = hdrsRaw;
   window._innovHeaders = hdrs;
   window._innovRows = rows;
+  window._innovHeaderRow = headerRow;
   console.log('[Innov] Headers RAW:', hdrsRaw.join(' | '));
   console.log('[Innov] Headers normalizados:', hdrs.join(' | '));
-  console.log('[Innov] Primera fila de datos:', rows[1]);
-  console.log('[Innov] Total filas (sin header):', rows.length-1);
+  console.log('[Innov] Primera fila de datos:', rows[headerRow+1]);
+  console.log('[Innov] Total filas de datos a procesar:', rows.length-headerRow-1);
   console.log('[Innov] Tip: inspecciona window._innovHeadersRaw, window._innovRows[1] etc. en consola');
 
   // g() ahora busca por nombre normalizado y acepta varios alias
@@ -3284,13 +3299,15 @@ function parseInnovRows(rows) {
   const idxAnio=['ANO','ANIO','ANOS','YEAR','ANO_INICIO','ANIO_INICIO'].map(k=>hdrs.indexOf(k)).find(i=>i>=0);
   if(idxAnio>=0){
     console.log('[Innov] Columna Año encontrada en índice', idxAnio, '— header raw:', hdrsRaw[idxAnio]);
-    console.log('[Innov] Valores año filas 1-3:', [rows[1],rows[2],rows[3]].map(r=>r?r[idxAnio]:'(vacío)'));
+    const muestraRows=[rows[headerRow+1],rows[headerRow+2],rows[headerRow+3]];
+    console.log('[Innov] Valores año primeras 3 filas datos:', muestraRows.map(r=>r?r[idxAnio]:'(vacío)'));
   } else {
     console.warn('[Innov] ⚠ NO se encontró columna de año entre los headers normalizados');
   }
 
-  for(let i=1;i<rows.length;i++){
+  for(let i=headerRow+1;i<rows.length;i++){
     const row=rows[i];
+    if(!row||row.every(c=>c===''||c===null||c===undefined)) continue;  // saltar filas vacías
     skip.total++;
 
     // Leer valor crudo de la columna Año
