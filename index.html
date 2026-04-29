@@ -1211,7 +1211,7 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
       <button class="chip" data-anio="2023" onclick="toggleAnio('2023',this)">2023</button>
       <button class="chip" data-anio="2024" onclick="toggleAnio('2024',this)">2024</button>
       <button class="chip" data-anio="2025" onclick="toggleAnio('2025',this)">2025</button>
-      <button class="dbi-active filter-btn" data-anio="2026" onclick="setAnioInnov(2026,this)">2026</button>
+      <button class="chip" data-anio="2026" onclick="toggleAnio('2026',this)">2026</button>
     </div>
     <div class="filter-sep"></div>
     <div class="filter-actions">
@@ -3504,6 +3504,18 @@ async function initConnection() {
       proyectos.forEach(p => RAW.push(p));
     }
 
+    // Cargar datos de Innovación desde Excel
+    try {
+      const innovData = await fetchInnovFromExcel(token);
+      if (innovData && innovData.length && typeof INNOV_RAW !== 'undefined') {
+        INNOV_RAW.length = 0;
+        innovData.forEach(r => INNOV_RAW.push(r));
+        if (typeof innovRefresh === 'function') {
+          try { innovRefresh(); } catch(e) { console.warn('innovRefresh tras carga:', e); }
+        }
+      }
+    } catch(e) { console.warn('Innov load:', e); }
+
     // Cargar overrides desde SharePoint List
     const ovs = await fetchOverridesFromSP(token);
     Object.assign(OVERRIDES, ovs);
@@ -3517,6 +3529,15 @@ async function initConnection() {
       setInterval(async () => {
         const ps = await fetchProyectosFromExcel(CONN.token);
         if (ps) { RAW.length = 0; ps.forEach(p => RAW.push(p)); renderAll(); }
+        // Refrescar también Innovación
+        try {
+          const inv = await fetchInnovFromExcel(CONN.token);
+          if (inv && inv.length && typeof INNOV_RAW !== 'undefined') {
+            INNOV_RAW.length = 0;
+            inv.forEach(r => INNOV_RAW.push(r));
+            if (typeof innovRefresh === 'function') innovRefresh();
+          }
+        } catch(e) { console.warn('Innov refresh:', e); }
         CONN.lastSync = new Date();
         updateSyncBadge('live', CONN.lastSync);
       }, SP_CONFIG.refreshInterval * 60000);
@@ -5582,7 +5603,9 @@ function innovRefresh(){
   document.getElementById('hr-total').textContent=total;
   document.getElementById('hr-periodo').textContent=anStr;
   document.getElementById('filter-info').textContent=`${total} proyectos · ${anStr}`;
-  const tab=document.querySelector('.tab-panel.active').id.replace('tab-','');
+  const innovRoot=document.getElementById('db-innov');
+  const activeP=innovRoot?innovRoot.querySelector('.tab-panel.active'):null;
+  const tab=activeP?activeP.id.replace('tab-',''):'general';
   if(tab==='general')buildGeneral(data);
   else if(tab==='comerciales')buildDirectores(data);
   else if(tab==='disenadores')buildDisenadores(data);
@@ -5598,9 +5621,12 @@ function innovRefresh(){
 }
 
 function innovSwitchTab(name,btn){
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');btn.classList.add('active');
+  const root=document.getElementById('db-innov');
+  root.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  root.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const target=root.querySelector('#tab-'+name);
+  if(target) target.classList.add('active');
+  btn.classList.add('active');
   const data=innovGetFiltered();
   if(name==='general')buildGeneral(data);
   else if(name==='comerciales')buildDirectores(data);
