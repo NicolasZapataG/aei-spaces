@@ -2401,41 +2401,111 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
 <!-- HEADER -->
 <div class="header">
   <div>
-    <div class="header-brand">AEI · PYGs 2026</div>
-    <div class="header-sub">Dashboard de Cotizaciones · Actualizado al corte de datos</div>
+    <div class="header-brand">AEI · PYGs</div>
+    <div class="header-sub" id="pygs-header-sub">Cotizaciones Comerciales</div>
   </div>
   <div class="header-kpis">
-    <div class="hkpi"><div class="hkpi-label">Total PYGs</div><div class="hkpi-val y" id="hk-total">—</div><div class="hkpi-sub">registros</div></div>
-    <div class="hkpi"><div class="hkpi-label">Valor Cotizado</div><div class="hkpi-val c" id="hk-valor">—</div><div class="hkpi-sub">COP total</div></div>
+    <div class="hkpi"><div class="hkpi-label">Proyectos</div><div class="hkpi-val y" id="hk-total">—</div><div class="hkpi-sub">únicos</div></div>
+    <div class="hkpi"><div class="hkpi-label">Valor Cotizado</div><div class="hkpi-val c" id="hk-valor">—</div><div class="hkpi-sub">última versión</div></div>
     <div class="hkpi"><div class="hkpi-label">En Revisión</div><div class="hkpi-val r" id="hk-revision">—</div><div class="hkpi-sub">pipeline activo</div></div>
-    <div class="hkpi"><div class="hkpi-label">Días Promedio</div><div class="hkpi-val g" id="hk-dias">—</div><div class="hkpi-sub">por cotización</div></div>
-    <div class="hkpi"><div class="hkpi-label">Versiones Avg</div><div class="hkpi-val o" id="hk-ver">—</div></div><div class="hkpi"><div class="hkpi-label">Hit Rate</div><div class="hkpi-val" style="color:var(--green)" id="hk-hitrate">—</div><div class="hkpi-sub">iteraciones</div></div>
+    <div class="hkpi"><div class="hkpi-label">Hit Rate</div><div class="hkpi-val g" id="hk-hitrate">—</div><div class="hkpi-sub">competitivo</div></div>
+    <div class="hkpi"><div class="hkpi-label">Hit Rate Gral.</div><div class="hkpi-val" style="color:var(--cyan)" id="hk-hitrate-gral">—</div><div class="hkpi-sub">vs total</div></div>
+    <div class="hkpi"><div class="hkpi-label">Versiones Avg</div><div class="hkpi-val o" id="hk-ver">—</div><div class="hkpi-sub">por proyecto</div></div>
   </div>
+</div>
+
+<!-- FILTROS -->
+<div style="background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;font-family:'DM Sans',sans-serif;">
+  <span style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;">Año</span>
+  <div id="pygs-chips-anio" style="display:flex;gap:6px;flex-wrap:wrap;">
+    <button class="chip pygs-chip active" data-anio="todos" onclick="pygsToggleAnio('todos',this)">Todos</button>
+    <button class="chip pygs-chip" data-anio="2023" onclick="pygsToggleAnio('2023',this)">2023</button>
+    <button class="chip pygs-chip" data-anio="2024" onclick="pygsToggleAnio('2024',this)">2024</button>
+    <button class="chip pygs-chip" data-anio="2025" onclick="pygsToggleAnio('2025',this)">2025</button>
+    <button class="chip pygs-chip" data-anio="2026" onclick="pygsToggleAnio('2026',this)">2026</button>
+  </div>
+  <span style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-left:12px;">Comercial</span>
+  <select id="pygs-sel-comercial" onchange="pygsSetComercial(this.value)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:6px;font-size:11px;font-family:'DM Sans',sans-serif;min-width:160px;">
+    <option value="todos">Todos</option>
+  </select>
+  <button id="pygs-eafit-btn" onclick="pygsToggleEAFIT()" style="margin-left:auto;padding:5px 12px;border-radius:20px;border:1px solid rgba(224,80,96,.4);background:transparent;color:#e05060;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif">Excluir EAFIT</button>
+  <span id="pygs-info-filtros" style="font-size:10px;color:var(--muted);">—</span>
 </div>
 
 <!-- TABS -->
-<div style="text-align:right;padding:4px 24px 0"><button id="pygs-eafit-btn" onclick="pygsToggleEAFIT()" style="padding:4px 12px;border-radius:20px;border:1px solid rgba(224,80,96,.4);background:transparent;color:#e05060;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif">Excluir EAFIT</button></div>
 <div class="tabs-bar">
-  <button class="tab-btn" onclick="pygs_showTab('pipeline',this)">📊 Pipeline</button>
-  <button class="tab-btn" onclick="pygs_showTab('financiero',this)">💰 Financiero</button>
-  <button class="tab-btn" onclick="pygs_showTab('eficiencia',this)">⚡ Eficiencia</button>
-  <button class="tab-btn" onclick="pygs_showTab('comerciales',this)">Comerciales</button>
-  <button class="tab-btn" onclick="pygs_showTab('mercado',this)">🗺 Mercado</button>
+  <button class="tab-btn pygs-active" onclick="pygs_showTab('resumen',this)">📊 Resumen Ejecutivo</button>
+  <button class="tab-btn" onclick="pygs_showTab('sweetspot',this)">🎯 Sweet Spot</button>
+  <button class="tab-btn" onclick="pygs_showTab('versiones',this)">🔁 Versiones</button>
+  <button class="tab-btn" onclick="pygs_showTab('comerciales',this)">👤 Comerciales</button>
+  <button class="tab-btn" onclick="pygs_showTab('pipeline',this)">📈 Pipeline & Tendencias</button>
 </div>
 
-<!-- TAB PIPELINE -->
-<div class="tab-panel" id="pygs-tab-pipeline">
+<!-- TAB RESUMEN -->
+<div class="tab-panel pygs-active" id="pygs-tab-resumen">
   <div class="grid-4">
     <div class="kpi-card g"><div class="kpi-label">Ganados</div><div class="kpi-val" id="kpi-ganados" style="color:var(--green)">—</div><div class="kpi-sub" id="kpi-ganados-val">—</div></div>
     <div class="kpi-card r"><div class="kpi-label">Perdidos</div><div class="kpi-val" id="kpi-perdidos" style="color:var(--red)">—</div><div class="kpi-sub" id="kpi-perdidos-val">—</div></div>
     <div class="kpi-card y"><div class="kpi-label">En Revisión</div><div class="kpi-val" id="kpi-revision" style="color:var(--yellow)">—</div><div class="kpi-sub" id="kpi-revision-val">—</div></div>
-    <div class="kpi-card c"><div class="kpi-label">Entregados</div><div class="kpi-val" id="kpi-entregados" style="color:var(--cyan)">—</div><div class="kpi-sub">total entregados</div></div>
+    <div class="kpi-card c"><div class="kpi-label">Ticket Promedio Ganado</div><div class="kpi-val" id="kpi-ticket-prom" style="color:var(--cyan)">—</div><div class="kpi-sub">ganados</div></div>
   </div>
-
   <div class="grid-2">
-    <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Embudo de resultados — Valor en COP</div>
+    <div class="card"><div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Embudo de resultados — Valor en COP (M)</div><div class="chart-wrap"><canvas id="ch-embudo"></canvas></div></div>
+    <div class="card"><div class="card-title"><span class="dot" style="background:var(--cyan)"></span>Tipo de cotización (proyectos únicos)</div><div class="chart-wrap"><canvas id="ch-tipos-pie"></canvas></div></div>
+  </div>
+  <div class="card" style="margin-bottom:16px"><div class="card-title"><span class="dot" style="background:var(--orange)"></span>⚠ Propuestas en revisión hace más tiempo (acción comercial)</div><div id="pygs-alertas-revision" style="display:flex;flex-direction:column;gap:6px;"></div></div>
+  <div class="card"><div class="card-title"><span class="dot" style="background:var(--green)"></span>🏆 Top Comerciales — Por Hit Rate y Valor Ganado</div><div style="overflow-x:auto"><table class="tbl" id="pygs-top-comerciales"></table></div></div>
+</div>
 
+<!-- TAB SWEET SPOT -->
+<div class="tab-panel" id="pygs-tab-sweetspot">
+  <div class="card" style="margin-bottom:16px"><div class="card-title"><span class="dot" style="background:var(--green)"></span>🎯 Tu Sweet Spot — Recomendaciones por Alcance × Complejidad</div><div id="pygs-ss-recos" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;"></div></div>
+  <div class="grid-2">
+    <div class="card"><div class="card-title"><span class="dot" style="background:var(--cyan)"></span>Distribución Precio/m² — Ganados vs Perdidos</div><div class="chart-wrap-lg"><canvas id="ch-ss-scatter"></canvas></div></div>
+    <div class="card"><div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Histograma Precio/m² Ganados</div><div class="chart-wrap-lg"><canvas id="ch-ss-hist"></canvas></div></div>
+  </div>
+  <div class="card"><div class="card-title"><span class="dot" style="background:var(--orange)"></span>Tabla Cruce — Alcance × Complejidad</div><div style="overflow-x:auto"><table class="tbl" id="pygs-tbl-cruce"></table></div></div>
+</div>
+
+<!-- TAB VERSIONES -->
+<div class="tab-panel" id="pygs-tab-versiones">
+  <div class="grid-4">
+    <div class="kpi-card y"><div class="kpi-label">Versiones Avg Ganados</div><div class="kpi-val" id="kpi-ver-gan" style="color:var(--green)">—</div></div>
+    <div class="kpi-card r"><div class="kpi-label">Versiones Avg Perdidos</div><div class="kpi-val" id="kpi-ver-per" style="color:var(--red)">—</div></div>
+    <div class="kpi-card o"><div class="kpi-label">Proyectos con V3+</div><div class="kpi-val" id="kpi-v3plus" style="color:var(--orange)">—</div><div class="kpi-sub">señal de sobre-negociación</div></div>
+    <div class="kpi-card c"><div class="kpi-label">Descuento Promedio V1→Final</div><div class="kpi-val" id="kpi-descuento" style="color:var(--cyan)">—</div><div class="kpi-sub">en ganados</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card"><div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Distribución de versiones</div><div class="chart-wrap"><canvas id="ch-ver-dist"></canvas></div></div>
+    <div class="card"><div class="card-title"><span class="dot" style="background:var(--orange)"></span>Hit Rate por # de versiones</div><div class="chart-wrap"><canvas id="ch-ver-hr"></canvas></div></div>
+  </div>
+  <div class="card"><div class="card-title"><span class="dot" style="background:var(--red)"></span>⚠ Proyectos en revisión con muchas versiones (riesgo)</div><div style="overflow-x:auto"><table class="tbl" id="pygs-tbl-versiones-riesgo"></table></div></div>
+</div>
+
+<!-- TAB COMERCIALES -->
+<div class="tab-panel" id="pygs-tab-comerciales">
+  <div class="grid-2">
+    <div class="card"><div class="card-title"><span class="dot" style="background:var(--green)"></span>Hit Rate por Comercial (mín. 5 propuestas)</div><div class="chart-wrap-lg"><canvas id="ch-com-hr"></canvas></div></div>
+    <div class="card"><div class="card-title"><span class="dot" style="background:var(--cyan)"></span>Valor Ganado por Comercial (M COP)</div><div class="chart-wrap-lg"><canvas id="ch-com-val"></canvas></div></div>
+  </div>
+  <div class="card"><div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Especialización — Tipo de proyecto por Comercial</div><div style="overflow-x:auto"><table class="tbl" id="pygs-tbl-com-tipo"></table></div></div>
+  <div class="card"><div class="card-title"><span class="dot" style="background:var(--orange)"></span>Tabla detallada por Comercial</div><div style="overflow-x:auto"><table class="tbl" id="pygs-tbl-comerciales"></table></div></div>
+</div>
+
+<!-- TAB PIPELINE & TENDENCIAS -->
+<div class="tab-panel" id="pygs-tab-pipeline">
+  <div class="grid-2">
+    <div class="card"><div class="card-title"><span class="dot" style="background:var(--cyan)"></span>Hit Rate mensual</div><div class="chart-wrap"><canvas id="ch-trend-hr"></canvas></div></div>
+    <div class="card"><div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Volumen mensual (proyectos)</div><div class="chart-wrap"><canvas id="ch-trend-vol"></canvas></div></div>
+  </div>
+  <div class="card" style="margin-bottom:16px"><div class="card-title"><span class="dot" style="background:var(--green)"></span>📈 Pipeline activo — Propuestas en revisión por valor</div><div id="pygs-pipeline-list" style="display:flex;flex-direction:column;gap:6px;"></div></div>
+  <div class="grid-2">
+    <div class="card"><div class="card-title"><span class="dot" style="background:var(--orange)"></span>Por Sector — Hit Rate</div><div class="chart-wrap"><canvas id="ch-sector-hr"></canvas></div></div>
+    <div class="card"><div class="card-title"><span class="dot" style="background:var(--blue)"></span>Por País — Volumen</div><div class="chart-wrap"><canvas id="ch-pais-vol"></canvas></div></div>
+  </div>
+</div>
+
+</div><!-- /db-pygs -->
 
 <!-- ING -->
 
@@ -3380,24 +3450,138 @@ async function fetchPYGsFromExcel(token) {
   } catch(e){console.warn('PYGs:',e);return null;}
 }
 function parsePYGsRows(rows) {
-  if(!rows||rows.length<9) return null;
-  const cn=v=>{const n=parseFloat(String(v||'').replace(/[$. ]/g,'').replace(',','.'));return isNaN(n)?0:n;};
-  const res=[];
-  for(let i=9;i<rows.length;i++){
-    const row=rows[i]; const cod=String(row[0]||'').trim();
-    if(!cod.startsWith('PYG')) continue;
-    res.push({cod,año:String(row[1]||''),mes:String(row[2]||'').toLowerCase(),
-      version:parseInt(String(row[3]||'1').replace(/[^0-9]/g,''))||1,
-      cliente:String(row[4]||''),proyecto:String(row[5]||''),
-      ciudad:String(row[6]||''),pais:String(row[7]||''),estado:String(row[8]||''),
-      f_ini:String(row[9]||''),f_fin:String(row[10]||''),tipo:String(row[11]||''),
-      sector:String(row[12]||''),alcance:String(row[14]||''),complejidad:String(row[15]||''),
-      renders:cn(row[16]),m2:cn(String(row[17]||'').replace('m2','')),
-      precio:cn(row[18]),arq:cn(row[19]),imp_arq:cn(row[20]),tec:cn(row[21]),
-      imp_tec:cn(row[22]),precio_m2:cn(row[23]),dias:cn(row[24]),
-      director:String(row[25]||''),resultado:String(row[26]||''),dias_real:cn(row[24])});
+  if(!rows||rows.length<2) { console.warn('[PYGS] Sin filas o solo header'); return null; }
+  const norm = s => (s||'').toString().toUpperCase().trim()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/\s+/g,'_');
+
+  // ─── Auto-detectar fila de header ───
+  const expectedSubstrings=['ANO','ANIO','VERSION','CLIENTE','PROYECTO','TIPO','SECTOR','ALCANCE','COMPLEJIDAD','PRECIO','RESULTADO','COMERCIAL','COD'];
+  let headerRow=-1; let bestMatches=0;
+  const maxScan=Math.min(rows.length,30);
+  for(let r=0;r<maxScan;r++){
+    if(!rows[r]) continue;
+    const normRow=rows[r].map(c=>norm(c));
+    const matches=normRow.filter(cell=>cell&&expectedSubstrings.some(k=>cell.includes(k))).length;
+    if(matches>=4&&matches>bestMatches){bestMatches=matches;headerRow=r;}
   }
-  return res.length?res:null;
+  if(headerRow<0||bestMatches<4){
+    console.warn('[PYGS] No se detectó header automáticamente. Forzando fila 8 (fila 9 en Excel — formato típico).');
+    headerRow=8;
+  }
+  console.log('[PYGS] Fila de header usada:', headerRow, '(equivale a fila', headerRow+1, 'en Excel) | matches:', bestMatches);
+
+  const hdrsRaw=rows[headerRow].map(h=>(h||'').toString());
+  const hdrs=hdrsRaw.map(norm);
+  window._pygsHeadersRaw=hdrsRaw; window._pygsHeaders=hdrs; window._pygsRows=rows;
+  console.log('[PYGS] Headers RAW:', hdrsRaw.join(' | '));
+  console.log('[PYGS] Headers normalizados:', hdrs.join(' | '));
+  console.log('[PYGS] Total filas de datos:', rows.length-headerRow-1);
+
+  // findCol: match exacto + substring
+  const findCol=(...keywords)=>{
+    for(const kw of keywords){
+      const nk=norm(kw);
+      const exact=hdrs.indexOf(nk); if(exact>=0) return exact;
+      const partial=hdrs.findIndex(h=>h&&h.includes(nk)); if(partial>=0) return partial;
+    }
+    return -1;
+  };
+  const g=(row,...keys)=>{const i=findCol(...keys);return i>=0?(row[i]||'').toString().trim():'';};
+  const cn=v=>{
+    const s=String(v||'').trim();
+    if(s===''||s==='#¡VALOR!'||s==='#VALUE!'||s==='N/A') return 0;
+    const n=parseFloat(s.replace(/[$\s]/g,'').replace(/\./g,'').replace(',','.'));
+    return isNaN(n)?0:n;
+  };
+  const extractYear=val=>{
+    if(!val) return 0;
+    const s=String(val).trim();
+    const m=s.match(/(20\d{2})/); if(m){const y=parseInt(m[1]);if(y>=2020&&y<=2035)return y;}
+    if(/^\d+(\.\d+)?$/.test(s)){
+      const serial=parseFloat(s);
+      if(serial>40000&&serial<60000){
+        const d=new Date((serial-25569)*86400*1000); const y=d.getFullYear();
+        if(y>=2020&&y<=2035) return y;
+      }
+    }
+    return 0;
+  };
+
+  const result=[]; const skip={sinCod:0,sinAno:0,total:0}; const sample=[];
+  for(let i=headerRow+1;i<rows.length;i++){
+    const row=rows[i];
+    if(!row||row.every(c=>c===''||c===null||c===undefined)) continue;
+    skip.total++;
+
+    const cod=g(row,'COD_PROYECT','COD._PROYECT','COD.PROYECT','COD','CODIGO','CODIGO_PROYECTO');
+    const proyecto=g(row,'PROYECTO','NOMBRE_PROYECTO','NOMBRE');
+    // Saltar filas resumen/total
+    if(!cod||/^total/i.test(cod)||/^total/i.test(proyecto)){skip.sinCod++;continue;}
+
+    // Año
+    const rawAno=g(row,'AÑO','ANIO','ANO','YEAR');
+    let anio=parseInt(rawAno);
+    if(!(anio>=2020&&anio<=2035)){anio=extractYear(rawAno);}
+    if(!anio){anio=extractYear(g(row,'FECHA_INICIO','FECHA INICIO','FECHA'));}
+    if(!anio){
+      skip.sinAno++;
+      if(sample.length<3) sample.push({fila:i+1,cod,valorAno:rawAno});
+      continue;
+    }
+
+    // Versión: extraer número de "V1", "V2", "V3"
+    const rawVer=g(row,'VERSION','VER','V');
+    const versionNum=parseInt(rawVer.replace(/[^0-9]/g,''))||1;
+
+    // Resultado normalizado
+    let resultado=g(row,'RESULTADO','ESTADO_RESULTADO').toUpperCase();
+    if(resultado.includes('GANAD')) resultado='GANADO';
+    else if(resultado.includes('PERDID')) resultado='PERDIDO';
+    else if(resultado.includes('REVISION')||resultado.includes('REVISIÓN')) resultado='EN REVISION';
+    // Otros valores se conservan tal cual
+
+    result.push({
+      cod, proyecto,
+      anio, mes:g(row,'MES_LETRA','MES LETRA','MES'),
+      version:rawVer||('V'+versionNum), versionNum,
+      cliente:g(row,'CLIENTE'),
+      ciudad:g(row,'CIUDAD'), pais:g(row,'PAIS','PAÍS'),
+      estado:g(row,'ESTADO'),
+      f_ini:g(row,'FECHA_INICIO','FECHA INICIO','FECHA_ENTRADA'),
+      f_fin:g(row,'FECHA_ENTREGA','FECHA ENTREGA','FECHA_FIN'),
+      tipo:g(row,'TIPO'), sector:g(row,'SECTOR'),
+      diseno_const:g(row,'DISENO/CONST','DISEÑO/CONST','DISENO_CONST'),
+      alcance:g(row,'ALCANCE'),
+      complejidad:g(row,'COMPLEJIDAD'),
+      renders:cn(g(row,'#_DE_RENDERS','#DE_RENDERS','RENDERS','N°_RENDERS')),
+      m2:cn(g(row,'AREA/M2','AREA_M2','M2','AREA','METROS')),
+      precio:cn(g(row,'PRECIO/PESOS','PRECIO_PESOS','PRECIO','VALOR','VALOR_COP')),
+      imp_tec:cn(g(row,'IMPREVISTOS_TEC','IMPREVISTOS','IMP_TEC')),
+      precio_m2:cn(g(row,'PRECIO_X_M2','PRECIO/M2','PRECIO_M2')),
+      dias:cn(g(row,'TIEMPO/DIAS','TIEMPO_DIAS','DIAS','TIEMPO')),
+      director:g(row,'DIRECTOR_COMERCIAL','DIRECTOR COMERCIAL','COMERCIAL','DIRECTOR'),
+      resultado,
+      // legacy compat para código viejo
+      año:String(anio), dias_real:cn(g(row,'TIEMPO/DIAS','TIEMPO_DIAS','DIAS','TIEMPO')),
+      arq:0, imp_arq:0, tec:0
+    });
+  }
+
+  // Diagnóstico
+  const porAno={}, porRes={};
+  result.forEach(r=>{porAno[r.anio]=(porAno[r.anio]||0)+1; porRes[r.resultado]=(porRes[r.resultado]||0)+1;});
+  console.log('[PYGS] Parseadas:', result.length, '| Sin COD:', skip.sinCod, '| Sin Año:', skip.sinAno);
+  console.log('[PYGS] Distribución por año:', porAno);
+  console.log('[PYGS] Distribución por resultado:', porRes);
+  // Conteo único por proyecto
+  const proyectosUnicos=new Set(result.map(r=>r.cod)).size;
+  console.log('[PYGS] Proyectos únicos (por COD):', proyectosUnicos, '| Versiones totales:', result.length);
+  if(skip.sinAno>0&&sample.length){
+    console.warn('[PYGS] Muestras filas descartadas:');
+    sample.forEach(s=>console.warn('  Fila',s.fila,'| cod:',s.cod,'| valor año:',JSON.stringify(s.valorAno)));
+  }
+  return result.length?result:null;
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -3634,6 +3818,22 @@ async function initConnection() {
       }
     } catch(e) { console.warn('Innov load:', e); }
 
+    // Cargar datos de PYGs desde Excel
+    try {
+      const pygsData = await fetchPYGsFromExcel(token);
+      if (pygsData && pygsData.length && typeof PYGS_DATA !== 'undefined') {
+        PYGS_DATA.length = 0;
+        pygsData.forEach(r => PYGS_DATA.push(r));
+        console.log('[PYGS] PYGS_DATA actualizado. Total registros:', PYGS_DATA.length);
+        console.log('[PYGS] Registros 2026:', PYGS_DATA.filter(r=>r.anio===2026).length);
+        if (typeof pygs_refresh === 'function') {
+          try { pygs_refresh(); } catch(e) { console.warn('pygs_refresh tras carga:', e); }
+        }
+      } else {
+        console.warn('[PYGS] fetchPYGsFromExcel devolvió vacío o nulo. Manteniendo datos hardcodeados.');
+      }
+    } catch(e) { console.warn('PYGs load:', e); }
+
     // Cargar overrides desde SharePoint List
     const ovs = await fetchOverridesFromSP(token);
     Object.assign(OVERRIDES, ovs);
@@ -3656,6 +3856,15 @@ async function initConnection() {
             if (typeof innovRefresh === 'function') innovRefresh();
           }
         } catch(e) { console.warn('Innov refresh:', e); }
+        // Refrescar también PYGs
+        try {
+          const pg = await fetchPYGsFromExcel(CONN.token);
+          if (pg && pg.length && typeof PYGS_DATA !== 'undefined') {
+            PYGS_DATA.length = 0;
+            pg.forEach(r => PYGS_DATA.push(r));
+            if (typeof pygs_refresh === 'function') pygs_refresh();
+          }
+        } catch(e) { console.warn('PYGs refresh:', e); }
         CONN.lastSync = new Date();
         updateSyncBadge('live', CONN.lastSync);
       }, SP_CONFIG.refreshInterval * 60000);
@@ -8220,502 +8429,617 @@ function pygs_showTab(id, btn) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// RENDER HEADER KPIs
+// PYGS — FILTROS Y DATA HELPERS
+// ═══════════════════════════════════════════════════════════════
+const PYGS_FILTROS = { anios: new Set(['todos']), comercial: 'todos' };
+
+function pygsToggleAnio(a, btn) {
+  const f = PYGS_FILTROS;
+  if (a === 'todos') { f.anios.clear(); f.anios.add('todos'); }
+  else {
+    if (f.anios.has('todos')) f.anios.clear();
+    if (f.anios.has(a)) f.anios.delete(a); else f.anios.add(a);
+    if (f.anios.size === 0) f.anios.add('todos');
+  }
+  document.querySelectorAll('#pygs-chips-anio .pygs-chip').forEach(b => {
+    const v = b.dataset.anio;
+    b.classList.toggle('active', f.anios.has(v));
+  });
+  pygs_refresh();
+}
+function pygsSetComercial(v) { PYGS_FILTROS.comercial = v; pygs_refresh(); }
+
+// Devuelve PYGS_DATA filtrado por año/comercial/EAFIT
+function pygs_getFiltered() {
+  let d = (typeof pygsGetData === 'function') ? pygsGetData() : PYGS_DATA;
+  d = d.filter(p => p.proyecto && p.cod);
+  if (!PYGS_FILTROS.anios.has('todos')) {
+    d = d.filter(p => PYGS_FILTROS.anios.has(String(p.anio || p.año)));
+  }
+  if (PYGS_FILTROS.comercial !== 'todos') {
+    d = d.filter(p => (p.director || '').toUpperCase() === PYGS_FILTROS.comercial.toUpperCase());
+  }
+  return d;
+}
+
+// Agrupa versiones por COD: devuelve un proyecto único por código,
+// usando el resultado de la versión MÁXIMA. Útil para Hit Rate y conteos.
+function pygs_uniqueProjects(data) {
+  const byCod = {};
+  data.forEach(p => {
+    if (!byCod[p.cod] || p.versionNum > byCod[p.cod].versionNum) byCod[p.cod] = p;
+  });
+  return Object.values(byCod);
+}
+
+// Para sweet spot: el precio real de un proyecto es el de su versión GANADA.
+// Si nunca ganó, usar última versión.
+function pygs_finalVersion(data) {
+  const byCod = {};
+  data.forEach(p => {
+    const cur = byCod[p.cod];
+    if (!cur) { byCod[p.cod] = p; return; }
+    // Preferir GANADO sobre cualquier otra
+    if (p.resultado === 'GANADO' && cur.resultado !== 'GANADO') byCod[p.cod] = p;
+    else if (cur.resultado !== 'GANADO' && p.versionNum > cur.versionNum) byCod[p.cod] = p;
+  });
+  return Object.values(byCod);
+}
+
+function pygs_fmt(v) {
+  if (!v || v === 0) return '—';
+  if (v >= 1e9) return '$' + (v/1e9).toFixed(2) + 'B';
+  if (v >= 1e6) return '$' + (v/1e6).toFixed(0) + 'M';
+  return '$' + Math.round(v/1e3) + 'k';
+}
+
+// Inicializar selector de comerciales
+function pygs_initComercialesDropdown() {
+  const sel = document.getElementById('pygs-sel-comercial');
+  if (!sel) return;
+  const comerciales = [...new Set(PYGS_DATA.map(p => (p.director || '').trim()).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="todos">Todos</option>' + comerciales.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// REFRESH MAESTRO
+// ═══════════════════════════════════════════════════════════════
+function pygs_refresh() {
+  PYGS__rendered = {};
+  pygs_initComercialesDropdown();
+  pygs_renderHeader();
+  // Re-renderizar la pestaña activa actualmente
+  const root = document.getElementById('db-pygs');
+  const active = root ? root.querySelector('.tab-panel.pygs-active') : null;
+  const tabId = active ? active.id.replace('pygs-tab-', '') : 'resumen';
+  pygs_renderTab(tabId);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HEADER KPIs
 // ═══════════════════════════════════════════════════════════════
 function pygs_renderHeader() {
-  const _d=typeof pygsGetData==='function'?pygsGetData():PYGS_DATA;
-  const PYGS_valid=_d.filter(p=>p.proyecto);
-  const ganados=PYGS_valid.filter(p=>p.resultado==='GANADO');
-  const perdidos=PYGS_valid.filter(p=>p.resultado==='PERDIDO');
-  const withRes=ganados.length+perdidos.length;
-  const hitRate=withRes>0?(ganados.length/withRes*100).toFixed(1)+'%':'—';
-  const totalVal=pygs_sumBy(PYGS_valid,'precio');
-  const enRev=PYGS_valid.filter(p=>p.resultado==='EN REVISION');
-  const diasArr=PYGS_valid.filter(p=>p.dias_real>0&&p.dias_real<100);
-  const diasAvg=diasArr.length>0?(pygs_sumBy(diasArr,'dias_real')/diasArr.length).toFixed(1):'—';
-  const maxV={};PYGS_valid.forEach(p=>{if(!maxV[p.cod]||p.version>maxV[p.cod])maxV[p.cod]=p.version;});
-  const verAvg=Object.values(maxV).length>0?(Object.values(maxV).reduce((s,v)=>s+v,0)/Object.values(maxV).length).toFixed(1):'—';
-  const se=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
-  se('hk-total',PYGS_valid.length);se('hk-valor',pygs_fmt(totalVal));
-  se('hk-revision',pygs_fmtM(pygs_sumBy(enRev,'precio')));
-  se('hk-dias',diasAvg);se('hk-ver',verAvg);se('hk-hitrate',hitRate);
-  se('kpi-ganados',ganados.length);se('kpi-ganados-val',pygs_fmtM(pygs_sumBy(ganados,'precio')));
-  se('kpi-perdidos',perdidos.length);se('kpi-perdidos-val',pygs_fmtM(pygs_sumBy(perdidos,'precio')));
-  const revEl=document.getElementById('kpi-revision');if(revEl)revEl.textContent=enRev.length;
+  const data = pygs_getFiltered();
+  const proyectos = pygs_uniqueProjects(data);  // proyectos únicos
+  const ganados = proyectos.filter(p => p.resultado === 'GANADO');
+  const perdidos = proyectos.filter(p => p.resultado === 'PERDIDO');
+  const revision = proyectos.filter(p => p.resultado === 'EN REVISION');
+  const competitivos = ganados.length + perdidos.length;
+  const hr = competitivos > 0 ? (ganados.length / competitivos * 100).toFixed(1) + '%' : '—';
+  const hrGral = proyectos.length > 0 ? (ganados.length / proyectos.length * 100).toFixed(1) + '%' : '—';
+  // Valor cotizado: precio de la versión final/ganada
+  const finalP = pygs_finalVersion(data);
+  const totalVal = pygs_sumBy(finalP, 'precio');
+  const valRevision = pygs_sumBy(finalP.filter(p => p.resultado === 'EN REVISION'), 'precio');
+  // Versiones promedio por proyecto
+  const maxV = {};
+  data.forEach(p => { if (!maxV[p.cod] || p.versionNum > maxV[p.cod]) maxV[p.cod] = p.versionNum; });
+  const verAvg = Object.values(maxV).length ? (Object.values(maxV).reduce((s,v)=>s+v,0)/Object.values(maxV).length).toFixed(1) : '—';
+
+  const se = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  se('hk-total', proyectos.length);
+  se('hk-valor', pygs_fmt(totalVal));
+  se('hk-revision', pygs_fmt(valRevision));
+  se('hk-hitrate', hr);
+  se('hk-hitrate-gral', hrGral);
+  se('hk-ver', verAvg);
+
+  // Subtítulo dinámico
+  const anStr = PYGS_FILTROS.anios.has('todos') ? 'Todos los años' : [...PYGS_FILTROS.anios].sort().join(', ');
+  const comStr = PYGS_FILTROS.comercial === 'todos' ? '' : ' · ' + PYGS_FILTROS.comercial;
+  const sub = document.getElementById('pygs-header-sub');
+  if (sub) sub.textContent = 'Cotizaciones · ' + anStr + comStr;
+  const info = document.getElementById('pygs-info-filtros');
+  if (info) info.textContent = `${proyectos.length} proyectos · ${data.length} versiones`;
 }
 
 // ═══════════════════════════════════════════════════════════════
-// TAB PIPELINE
+// TAB 1 — RESUMEN EJECUTIVO
 // ═══════════════════════════════════════════════════════════════
-function pygs_renderPipeline() {
-  const ganados   = PYGS_DATA.filter(p => p.resultado === 'GANADO');
-  const perdidos  = PYGS_DATA.filter(p => p.resultado === 'PERDIDO');
-  const revision  = PYGS_DATA.filter(p => p.resultado === 'EN REVISION');
-  const entregados = PYGS_DATA.filter(p => p.estado === 'ENTREGADO');
+function pygs_renderResumen() {
+  const data = pygs_getFiltered();
+  const proyectos = pygs_uniqueProjects(data);
+  const finalP = pygs_finalVersion(data);
+  const ganados = proyectos.filter(p => p.resultado === 'GANADO');
+  const perdidos = proyectos.filter(p => p.resultado === 'PERDIDO');
+  const revision = proyectos.filter(p => p.resultado === 'EN REVISION');
 
-  document.getElementById('kpi-ganados').textContent = ganados.length;
-  document.getElementById('kpi-ganados-val').textContent = pygs_fmtM(pygs_sumBy(ganados,'precio'));
-  document.getElementById('kpi-perdidos').textContent = perdidos.length;
-  document.getElementById('kpi-perdidos-val').textContent = pygs_fmtM(pygs_sumBy(perdidos,'precio'));
-  document.getElementById('kpi-revision').textContent = revision.length;
-  document.getElementById('kpi-revision-val').textContent = pygs_fmtM(pygs_sumBy(revision,'precio')) + ' en juego';
-  document.getElementById('kpi-entregados').textContent = entregados.length;
+  const valGan = pygs_sumBy(finalP.filter(p => p.resultado === 'GANADO'), 'precio');
+  const valPer = pygs_sumBy(finalP.filter(p => p.resultado === 'PERDIDO'), 'precio');
+  const valRev = pygs_sumBy(finalP.filter(p => p.resultado === 'EN REVISION'), 'precio');
+  const ticketProm = ganados.length > 0 ? valGan / ganados.length : 0;
 
-  // Chart: embudo de resultados
-  const grupos = ['GANADO','PERDIDO','EN REVISION','PENDIENTE'];
+  const se = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  se('kpi-ganados', ganados.length);
+  se('kpi-ganados-val', pygs_fmt(valGan));
+  se('kpi-perdidos', perdidos.length);
+  se('kpi-perdidos-val', pygs_fmt(valPer));
+  se('kpi-revision', revision.length);
+  se('kpi-revision-val', pygs_fmt(valRev) + ' en juego');
+  se('kpi-ticket-prom', pygs_fmt(ticketProm));
+
+  // Embudo
+  const grupos = ['GANADO','EN REVISION','PERDIDO'];
   pygs_mkChart('ch-embudo', 'bar', {
-    labels: grupos,
+    labels: ['Ganado','En Revisión','Perdido'],
     datasets: [{
-      label: 'Valor (M COP)',
-      data: grupos.map(g => pygs_sumBy(PYGS_DATA.filter(p=>p.resultado===g),'precio')/1e6),
-      backgroundColor: grupos.map(g => PYGS_RES_COLORS[g] || '#6b7494'),
-      borderRadius: 6,
+      label: 'M COP',
+      data: [valGan/1e6, valRev/1e6, valPer/1e6],
+      backgroundColor: ['#40d080','#f0c040','#e05060'],
+      borderRadius: 6
     }]
-  }, {
-    plugins: { legend: { display: false } },
-    scales: { y: { ticks: { callback: v => '$'+v+'M', color:'#6b7494', font:{size:10} }, grid:{color:'rgba(255,255,255,.04)'} }, x:{ticks:{color:'#6b7494'}, grid:{color:'rgba(255,255,255,.04)'}}}
-  });
+  }, { plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>' $'+c.raw.toFixed(0)+'M'}}},
+       scales:{ x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+                y:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}}});
 
-  // Chart: tipos pie
-  const tipoGroups = pygs_groupBy(PYGS_DATA, 'tipo');
-  const tipoLabels = Object.keys(tipoGroups).filter(k=>k&&k!=='—');
+  // Tipos pie
+  const tipoG = pygs_groupBy(proyectos, 'tipo');
+  const tipoLabels = Object.keys(tipoG).filter(k=>k);
   pygs_mkChart('ch-tipos-pie', 'doughnut', {
     labels: tipoLabels,
-    datasets: [{ data: tipoLabels.map(t=>tipoGroups[t].length), backgroundColor: tipoLabels.map(t=>PYGS_TIPO_COLORS[t]||'#6b7494'), borderWidth:0, hoverOffset:6 }]
-  });
+    datasets: [{ data: tipoLabels.map(t=>tipoG[t].length),
+      backgroundColor: ['#5080f0','#f0c040','#40d080','#a060f0','#f09040','#4de0c0','#e05060','#6b7494'],
+      borderWidth: 2, borderColor:'#0f1421' }]
+  }, { plugins:{ legend:{labels:{color:'#8b90a8',font:{size:10}}}}});
 
-  // Pipeline list
-  const pipelineEl = document.getElementById('pipeline-list');
-  if (!pipelineEl) return;
-  const sorted = [...revision].filter(p=>p.precio>0).sort((a,b)=>b.precio-a.precio);
-  pipelineEl.innerHTML = sorted.map(p => {
-    const dot = p.precio > 500e6 ? '#e05060' : p.precio > 100e6 ? '#f09040' : '#f0c040';
-    const badge = p.tipo ? `<span class="badge badge-b">${p.tipo}</span>` : '';
-    return `<div class="pipe-row">
-      <div class="pipe-dot" style="background:${dot}"></div>
-      <div class="pipe-cod">${p.cod}</div>
-      <div class="pipe-name">${p.proyecto}</div>
-      <div class="pipe-dir">${p.director||'—'}</div>
-      <div class="pipe-tipo">${badge}</div>
-      <div class="pipe-val">${pygs_fmtM(p.precio)}</div>
-    </div>`;
-  }).join('');
+  // Alertas: revisiones más antiguas
+  const alertEl = document.getElementById('pygs-alertas-revision');
+  if (alertEl) {
+    const sorted = revision.slice().sort((a,b) => (b.precio||0)-(a.precio||0)).slice(0, 8);
+    if (sorted.length === 0) {
+      alertEl.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:8px;">Sin propuestas en revisión.</div>';
+    } else {
+      alertEl.innerHTML = sorted.map(p => `
+        <div class="pipe-row">
+          <div class="pipe-dot" style="background:${p.precio>500e6?'#e05060':p.precio>100e6?'#f09040':'#f0c040'}"></div>
+          <div class="pipe-cod">${p.cod}</div>
+          <div class="pipe-name">${p.proyecto}</div>
+          <div class="pipe-dir">${p.director||'—'}</div>
+          <div class="pipe-tipo"><span class="badge badge-y">${p.version||'V1'}</span></div>
+          <div class="pipe-val">${pygs_fmt(p.precio)}</div>
+        </div>`).join('');
+    }
+  }
+
+  // Top comerciales
+  const tblEl = document.getElementById('pygs-top-comerciales');
+  if (tblEl) {
+    const byCom = {};
+    proyectos.forEach(p => {
+      const c = p.director || '—';
+      if (!byCom[c]) byCom[c] = { prop:0, gan:0, per:0, val:0 };
+      byCom[c].prop++;
+      if (p.resultado === 'GANADO') { byCom[c].gan++; byCom[c].val += p.precio || 0; }
+      if (p.resultado === 'PERDIDO') byCom[c].per++;
+    });
+    const rows = Object.entries(byCom)
+      .filter(([c,d]) => c !== '—' && d.prop >= 3)
+      .map(([c,d]) => {
+        const comp = d.gan + d.per;
+        const hr = comp > 0 ? (d.gan/comp*100) : 0;
+        return { c, ...d, hr };
+      })
+      .sort((a,b) => b.val - a.val)
+      .slice(0, 10);
+    tblEl.innerHTML = `<thead><tr><th>Comercial</th><th>Propuestas</th><th>Ganadas</th><th>Hit Rate</th><th>Valor Ganado</th></tr></thead><tbody>` +
+      rows.map(r => `<tr>
+        <td style="color:var(--text);font-weight:500">${r.c}</td>
+        <td>${r.prop}</td>
+        <td style="color:var(--green)">${r.gan}</td>
+        <td><span class="badge ${r.hr>=40?'badge-g':r.hr>=25?'badge-y':'badge-r'}">${r.hr.toFixed(0)}%</span></td>
+        <td style="color:var(--cyan);font-family:'Bebas Neue',sans-serif">${pygs_fmt(r.val)}</td>
+      </tr>`).join('') + `</tbody>`;
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
-// TAB FINANCIERO
+// TAB 2 — SWEET SPOT (Alcance × Complejidad)
 // ═══════════════════════════════════════════════════════════════
-function pygs_renderFinanciero() {
-  const withPrice = PYGS_DATA.filter(p => p.precio > 0);
-  const totalVal = pygs_sumBy(withPrice, 'precio');
-  const avgVal = totalVal / withPrice.length;
-  const maxP = withPrice.reduce((m,p) => p.precio > m.precio ? p : m, withPrice[0]);
-  const withPM2 = PYGS_DATA.filter(p => p.precio_m2 > 0 && p.precio_m2 < 2000000);
-  const avgPM2 = withPM2.length > 0 ? pygs_sumBy(withPM2,'precio_m2')/withPM2.length : 0;
+function pygs_renderSweetSpot() {
+  const data = pygs_getFiltered();
+  const finalP = pygs_finalVersion(data).filter(p => p.precio_m2 > 0 && p.precio_m2 < 2000000 && p.alcance && p.complejidad);
 
-  document.getElementById('kpi-fin-total').textContent = pygs_fmt(totalVal);
-  document.getElementById('kpi-fin-avg').textContent = pygs_fmtM(avgVal);
-  document.getElementById('kpi-fin-max').textContent = pygs_fmtM(maxP.precio);
-  document.getElementById('kpi-fin-max-name').textContent = maxP.proyecto.substring(0,20);
-  document.getElementById('kpi-fin-pm2').textContent = '$' + Math.round(avgPM2/1000) + 'K/m²';
+  // Cruce alcance × complejidad
+  const cruce = {};
+  finalP.forEach(p => {
+    const k = p.alcance + '|||' + p.complejidad;
+    if (!cruce[k]) cruce[k] = { alcance:p.alcance, complejidad:p.complejidad, gan:[], per:[], rev:[] };
+    if (p.resultado === 'GANADO') cruce[k].gan.push(p);
+    else if (p.resultado === 'PERDIDO') cruce[k].per.push(p);
+    else if (p.resultado === 'EN REVISION') cruce[k].rev.push(p);
+  });
 
-  // Evolución mensual por tipo
-  const meses = ['diciembre','enero','febrero','marzo'];
-  const tipos = ['INVITACION','RECOMPRA','CONCURSO','LICITACION','OTROS'];
-  const mesData = meses.reduce((acc, m) => { acc[m] = {}; tipos.forEach(t => acc[m][t]=0); return acc; }, {});
-  PYGS_DATA.forEach(p => { if (mesData[p.mes] && mesData[p.mes][p.tipo] !== undefined) mesData[p.mes][p.tipo] += p.precio/1e6; });
+  // Recomendaciones (sweet spot por celda con datos)
+  const recos = Object.values(cruce)
+    .filter(c => c.gan.length >= 2)
+    .map(c => {
+      const ganPM = c.gan.map(p=>p.precio_m2).sort((a,b)=>a-b);
+      const min = ganPM[Math.floor(ganPM.length*0.25)] || ganPM[0];
+      const max = ganPM[Math.floor(ganPM.length*0.75)] || ganPM[ganPM.length-1];
+      const med = ganPM[Math.floor(ganPM.length/2)];
+      return { ...c, min, max, med, n: c.gan.length };
+    })
+    .sort((a,b) => b.n - a.n)
+    .slice(0, 12);
 
-  pygs_mkChart('ch-mensual-tipo', 'bar', {
-    labels: ['Dic','Ene','Feb','Mar'],
-    datasets: tipos.map(t => ({
-      label: t,
-      data: meses.map(m => mesData[m][t] || 0),
-      backgroundColor: PYGS_TIPO_COLORS[t] || '#6b7494',
-      borderRadius: 4,
-    }))
-  }, {
-    scales: {
-      x: { stacked: true, ticks:{color:'#6b7494'}, grid:{color:'rgba(255,255,255,.04)'} },
-      y: { stacked: true, ticks:{callback:v=>'$'+v+'M',color:'#6b7494'}, grid:{color:'rgba(255,255,255,.04)'} }
+  const recosEl = document.getElementById('pygs-ss-recos');
+  if (recosEl) {
+    if (recos.length === 0) {
+      recosEl.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:12px;grid-column:1/-1;">Sin suficientes datos ganados para calcular sweet spot. Necesitas al menos 2 proyectos ganados por combinación Alcance × Complejidad.</div>';
+    } else {
+      recosEl.innerHTML = recos.map(r => `
+        <div style="background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;padding:12px;">
+          <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">${r.alcance}</div>
+          <div style="font-size:11px;color:var(--text);font-weight:600;margin:2px 0;">${r.complejidad}</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--green);letter-spacing:1px;">$${(r.med/1000).toFixed(0)}k/m²</div>
+          <div style="font-size:9px;color:var(--muted);">Rango: $${(r.min/1000).toFixed(0)}k–$${(r.max/1000).toFixed(0)}k</div>
+          <div style="font-size:9px;color:var(--muted2);margin-top:4px;">${r.n} ganados · ${r.per.length} perdidos</div>
+        </div>`).join('');
     }
-  });
+  }
 
-  // Valor por sector
-  const secs = pygs_groupBy(withPrice, 'sector');
-  const secLabels = Object.keys(secs).filter(s=>s&&s!=='—').sort((a,b)=>pygs_sumBy(secs[b],'precio')-pygs_sumBy(secs[a],'precio'));
-  pygs_mkChart('ch-sector-valor', 'bar', {
-    labels: secLabels,
-    datasets: [{
-      label: 'Valor M COP',
-      data: secLabels.map(s => pygs_sumBy(secs[s],'precio')/1e6),
-      backgroundColor: secLabels.map(s => PYGS_SECTOR_COLORS[s]||'#6b7494'),
-      borderRadius:6,
-    }]
-  }, {
-    indexAxis:'y',
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{ticks:{callback:v=>'$'+v+'M',color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-      y:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
-    }
-  });
-
-  // Precio/m2 heatmap — sector × tipo como scatter
-  const pm2Data = PYGS_DATA.filter(p=>p.precio_m2>0&&p.precio_m2<500000&&p.sector&&p.tipo);
-  const pm2ByST = {};
-  pm2Data.forEach(p => {
-    const k = p.sector + '×' + p.tipo;
-    if (!pm2ByST[k]) pm2ByST[k] = {sector:p.sector,tipo:p.tipo,vals:[]};
-    pm2ByST[k].vals.push(p.precio_m2);
-  });
-  const pm2Labels = Object.values(pm2ByST).sort((a,b)=>(pygs_sumBy(b.vals,v=>v)/b.vals.length)-(pygs_sumBy(a.vals,v=>v)/a.vals.length)).slice(0,10);
-  pygs_mkChart('ch-pm2-heatmap', 'bar', {
-    labels: pm2Labels.map(d => d.sector.substring(0,8)+'\n×'+d.tipo.substring(0,8)),
-    datasets:[{
-      label:'Precio/m² promedio ($)',
-      data: pm2Labels.map(d => Math.round(pygs_sumBy(d.vals,v=>v)/d.vals.length)),
-      backgroundColor: pm2Labels.map(d => PYGS_SECTOR_COLORS[d.sector]||'#6b7494'),
-      borderRadius:6,
-    }]
-  }, {
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{ticks:{color:'#6b7494',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}},
-      y:{ticks:{callback:v=>'$'+Math.round(v/1000)+'K',color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
-    }
-  });
-
-  // M2 por complejidad
-  const compM2 = pygs_groupBy(PYGS_DATA.filter(p=>p.m2>0&&p.complejidad), 'complejidad');
-  const compLabels = ['ESTANDAR','MEDIA','ALTA','BAJA'];
-  const compColors = {ESTANDAR:'#6b7494',MEDIA:'#f09040',ALTA:'#e05060',BAJA:'#40d080'};
-  pygs_mkChart('ch-m2-comp', 'doughnut', {
-    labels: compLabels.filter(c=>compM2[c]),
-    datasets:[{
-      data: compLabels.filter(c=>compM2[c]).map(c=>pygs_sumBy(compM2[c],'m2')),
-      backgroundColor: compLabels.filter(c=>compM2[c]).map(c=>compColors[c]),
-      borderWidth:0, hoverOffset:6
-    }]
-  });
-}
-
-// ═══════════════════════════════════════════════════════════════
-// TAB EFICIENCIA
-// ═══════════════════════════════════════════════════════════════
-function pygs_renderEficiencia() {
-  const validDias = PYGS_DATA.filter(p=>p.dias_real>0&&p.dias_real<100);
-  const diasAvg = validDias.length ? (pygs_sumBy(validDias,'dias_real')/validDias.length).toFixed(1) : '—';
-  const diasMin = validDias.length ? Math.min(...validDias.map(p=>p.dias_real)) : '—';
-  const diasMax = validDias.length ? Math.max(...validDias.map(p=>p.dias_real)) : '—';
-  const validRen = PYGS_DATA.filter(p=>p.renders>0);
-  const renAvg = validRen.length ? (pygs_sumBy(validRen,'renders')/validRen.length).toFixed(1) : '—';
-
-  document.getElementById('kpi-ef-dias').textContent = diasAvg;
-  document.getElementById('kpi-ef-min').textContent = diasMin;
-  document.getElementById('kpi-ef-max').textContent = diasMax;
-  document.getElementById('kpi-ef-renders').textContent = renAvg;
-
-  // Velocidad por complejidad
-  const compLabels = ['BAJA','ESTANDAR','MEDIA','ALTA'];
-  const compColors = {BAJA:'#40d080',ESTANDAR:'#6b7494',MEDIA:'#f09040',ALTA:'#e05060'};
-  const compDias = pygs_groupBy(PYGS_DATA.filter(p=>p.dias_real>0&&p.dias_real<100&&p.complejidad), 'complejidad');
-  const velData = compLabels.filter(c=>compDias[c]).map(c => ({
-    label: c,
-    avg: pygs_sumBy(compDias[c],'dias_real')/compDias[c].length,
-    max: Math.max(...compDias[c].map(p=>p.dias_real)),
-    n: compDias[c].length
-  }));
-  pygs_mkChart('ch-vel-comp', 'bar', {
-    labels: velData.map(d=>d.label),
-    datasets:[
-      { label:'Días Promedio', data:velData.map(d=>+d.avg.toFixed(1)), backgroundColor:velData.map(d=>compColors[d.label]), borderRadius:6 },
-      { label:'Días Máximo', data:velData.map(d=>d.max), backgroundColor:velData.map(d=>compColors[d.label]+'55'), borderRadius:6 }
+  // Scatter ganados vs perdidos (m2 vs precio_m2)
+  const ganDots = finalP.filter(p => p.resultado === 'GANADO' && p.m2 > 0).map(p => ({ x: p.m2, y: p.precio_m2 }));
+  const perDots = finalP.filter(p => p.resultado === 'PERDIDO' && p.m2 > 0).map(p => ({ x: p.m2, y: p.precio_m2 }));
+  pygs_mkChart('ch-ss-scatter', 'scatter', {
+    datasets: [
+      { label: 'Ganado', data: ganDots, backgroundColor: 'rgba(64,208,128,.7)', pointRadius: 4 },
+      { label: 'Perdido', data: perDots, backgroundColor: 'rgba(224,80,96,.5)', pointRadius: 4 }
     ]
-  });
-
-  // Iteraciones por tipo
-  const maxVers = {};
-  const tipoPorCod = {};
-  PYGS_DATA.forEach(p => {
-    const n = p.cod;
-    if (!maxVers[n] || p.version > maxVers[n]) { maxVers[n] = p.version; tipoPorCod[n] = p.tipo; }
-  });
-  const tipoIters = {};
-  Object.entries(maxVers).forEach(([cod,v]) => {
-    const t = tipoPorCod[cod]||'—';
-    if (!tipoIters[t]) tipoIters[t] = [];
-    tipoIters[t].push(v);
-  });
-  const tipoLabels = Object.keys(tipoIters).filter(t=>t&&t!=='—');
-  pygs_mkChart('ch-iters-tipo', 'bar', {
-    labels: tipoLabels,
-    datasets:[{
-      label:'Versiones promedio',
-      data: tipoLabels.map(t => +(pygs_sumBy(tipoIters[t],v=>v)/tipoIters[t].length).toFixed(2)),
-      backgroundColor: tipoLabels.map(t=>PYGS_TIPO_COLORS[t]||'#6b7494'),
-      borderRadius:6,
-    }]
   }, {
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-      y:{ticks:{color:'#6b7494',stepSize:0.5},grid:{color:'rgba(255,255,255,.04)'},min:1}
+    plugins: { legend: { labels: { color:'#8b90a8' }}},
+    scales: {
+      x: { type: 'logarithmic', title: { display:true, text:'m² (log)', color:'#6b7494' }, ticks:{color:'#6b7494'}, grid:{color:'rgba(255,255,255,.04)'}},
+      y: { type: 'logarithmic', title: { display:true, text:'$/m² (log)', color:'#6b7494' }, ticks:{color:'#6b7494'}, grid:{color:'rgba(255,255,255,.04)'}}
     }
   });
 
-  // Renders bubble: x=dias, y=renders, r=precio
-  const bubbleData = PYGS_DATA.filter(p=>p.renders>0&&p.dias_real>0&&p.dias_real<50&&p.precio>0);
-  const compBubble = {};
-  bubbleData.forEach(p => {
-    if (!compBubble[p.complejidad]) compBubble[p.complejidad] = [];
-    compBubble[p.complejidad].push({ x:p.dias_real, y:p.renders, r:Math.max(4,Math.min(20,p.precio/50e6)) });
-  });
-  pygs_mkChart('ch-renders-bubble', 'bubble', {
-    datasets: Object.entries(compBubble).map(([comp,pts]) => ({
-      label: comp,
-      data: pts,
-      backgroundColor: (compColors[comp]||'#6b7494')+'99',
-      borderColor: compColors[comp]||'#6b7494',
-    }))
-  }, {
-    scales:{
-      x:{title:{display:true,text:'Días de cotización',color:'#6b7494'},ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-      y:{title:{display:true,text:'# Renders',color:'#6b7494'},ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
+  // Histograma precio/m² ganados
+  const ganP = finalP.filter(p => p.resultado === 'GANADO' && p.precio_m2 > 0).map(p => p.precio_m2);
+  const buckets = [0, 25000, 50000, 75000, 100000, 150000, 200000, 300000, 500000, 1000000];
+  const counts = new Array(buckets.length-1).fill(0);
+  ganP.forEach(v => {
+    for (let i=0; i<buckets.length-1; i++) {
+      if (v >= buckets[i] && v < buckets[i+1]) { counts[i]++; break; }
     }
   });
+  const labels = buckets.slice(0,-1).map((b,i) => `$${(b/1000).toFixed(0)}–${(buckets[i+1]/1000).toFixed(0)}k`);
+  pygs_mkChart('ch-ss-hist', 'bar', {
+    labels, datasets: [{ label:'Proyectos ganados', data:counts, backgroundColor:'#40d080', borderRadius:6 }]
+  }, { plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'#6b7494',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#6b7494',stepSize:1},grid:{color:'rgba(255,255,255,.04)'}}}});
 
-  // Scatter dias vs precio
-  const scatterData = PYGS_DATA.filter(p=>p.dias_real>0&&p.dias_real<60&&p.precio>0&&p.precio<500e6);
-  const tiposScatter = [...new Set(scatterData.map(p=>p.tipo))].filter(Boolean);
-  pygs_mkChart('ch-dias-precio-scatter', 'scatter', {
-    datasets: tiposScatter.map(t => ({
-      label:t,
-      data: scatterData.filter(p=>p.tipo===t).map(p=>({x:p.dias_real,y:p.precio/1e6})),
-      backgroundColor: (PYGS_TIPO_COLORS[t]||'#6b7494')+'bb',
-      pointRadius:5,
-    }))
-  }, {
-    scales:{
-      x:{title:{display:true,text:'Días reales',color:'#6b7494'},ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-      y:{title:{display:true,text:'Valor M COP',color:'#6b7494'},ticks:{callback:v=>'$'+v+'M',color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
+  // Tabla cruce
+  const tblEl = document.getElementById('pygs-tbl-cruce');
+  if (tblEl) {
+    const all = Object.values(cruce);
+    if (all.length === 0) {
+      tblEl.innerHTML = '<tbody><tr><td style="text-align:center;padding:20px;color:var(--muted)">Sin datos de Alcance × Complejidad para mostrar.</td></tr></tbody>';
+    } else {
+      const sorted = all.sort((a,b) => (b.gan.length+b.per.length+b.rev.length) - (a.gan.length+a.per.length+a.rev.length));
+      tblEl.innerHTML = `<thead><tr><th>Alcance</th><th>Complejidad</th><th>Ganados</th><th>Perdidos</th><th>Revisión</th><th>Hit Rate</th><th>$/m² Ganado Avg</th><th>$/m² Perdido Avg</th></tr></thead><tbody>` +
+        sorted.map(c => {
+          const comp = c.gan.length + c.per.length;
+          const hr = comp > 0 ? (c.gan.length/comp*100) : 0;
+          const avgG = c.gan.length ? c.gan.reduce((s,p)=>s+p.precio_m2,0)/c.gan.length : 0;
+          const avgP = c.per.length ? c.per.reduce((s,p)=>s+p.precio_m2,0)/c.per.length : 0;
+          return `<tr><td style="color:var(--text)">${c.alcance}</td><td>${c.complejidad}</td>
+            <td style="color:var(--green)">${c.gan.length}</td><td style="color:var(--red)">${c.per.length}</td>
+            <td style="color:var(--yellow)">${c.rev.length}</td>
+            <td><span class="badge ${hr>=40?'badge-g':hr>=25?'badge-y':'badge-r'}">${comp>0?hr.toFixed(0)+'%':'—'}</span></td>
+            <td style="color:var(--green);font-family:'Bebas Neue',sans-serif">${avgG?'$'+(avgG/1000).toFixed(0)+'k':'—'}</td>
+            <td style="color:var(--red);font-family:'Bebas Neue',sans-serif">${avgP?'$'+(avgP/1000).toFixed(0)+'k':'—'}</td>
+          </tr>`;
+        }).join('') + `</tbody>`;
     }
-  });
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
-// TAB DIRECTORES
+// TAB 3 — VERSIONES
+// ═══════════════════════════════════════════════════════════════
+function pygs_renderVersiones() {
+  const data = pygs_getFiltered();
+  // Para cada proyecto, contar versiones y obtener resultado final
+  const byCod = {};
+  data.forEach(p => {
+    if (!byCod[p.cod]) byCod[p.cod] = { cod:p.cod, proyecto:p.proyecto, director:p.director, versiones:[], maxV:0, finalRes:null, finalPrecio:0, v1Precio:0 };
+    byCod[p.cod].versiones.push(p);
+    if (p.versionNum > byCod[p.cod].maxV) {
+      byCod[p.cod].maxV = p.versionNum;
+      byCod[p.cod].finalRes = p.resultado;
+      byCod[p.cod].finalPrecio = p.precio || 0;
+    }
+    if (p.versionNum === 1) byCod[p.cod].v1Precio = p.precio || 0;
+  });
+  const proyectos = Object.values(byCod);
+
+  // Versiones avg ganados vs perdidos
+  const ganV = proyectos.filter(p=>p.finalRes==='GANADO').map(p=>p.maxV);
+  const perV = proyectos.filter(p=>p.finalRes==='PERDIDO').map(p=>p.maxV);
+  const avg = arr => arr.length ? (arr.reduce((s,v)=>s+v,0)/arr.length).toFixed(1) : '—';
+
+  // Proyectos con V3+
+  const v3plus = proyectos.filter(p => p.maxV >= 3);
+  const v3plusGan = v3plus.filter(p => p.finalRes === 'GANADO').length;
+
+  // Descuento V1 → final en ganados
+  const ganConV1 = proyectos.filter(p => p.finalRes === 'GANADO' && p.v1Precio > 0 && p.finalPrecio > 0);
+  const descAvg = ganConV1.length ? ganConV1.reduce((s,p)=>s+(1-p.finalPrecio/p.v1Precio),0)/ganConV1.length*100 : 0;
+
+  const se = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  se('kpi-ver-gan', avg(ganV));
+  se('kpi-ver-per', avg(perV));
+  se('kpi-v3plus', `${v3plus.length} (${v3plusGan} gan.)`);
+  se('kpi-descuento', descAvg ? descAvg.toFixed(1) + '%' : '—');
+
+  // Distribución de versiones
+  const distMax = {};
+  proyectos.forEach(p => { distMax[p.maxV] = (distMax[p.maxV]||0) + 1; });
+  const verLabels = Object.keys(distMax).sort((a,b)=>parseInt(a)-parseInt(b));
+  pygs_mkChart('ch-ver-dist', 'bar', {
+    labels: verLabels.map(v => 'V' + v),
+    datasets: [{ label:'Proyectos', data: verLabels.map(v=>distMax[v]), backgroundColor:'#5080f0', borderRadius:6 }]
+  }, { plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#6b7494',stepSize:1},grid:{color:'rgba(255,255,255,.04)'}}}});
+
+  // Hit rate por # versiones
+  const hrByV = {};
+  proyectos.forEach(p => {
+    if (!hrByV[p.maxV]) hrByV[p.maxV] = { gan:0, per:0 };
+    if (p.finalRes === 'GANADO') hrByV[p.maxV].gan++;
+    if (p.finalRes === 'PERDIDO') hrByV[p.maxV].per++;
+  });
+  const hrLabels = Object.keys(hrByV).sort((a,b)=>parseInt(a)-parseInt(b));
+  pygs_mkChart('ch-ver-hr', 'bar', {
+    labels: hrLabels.map(v => 'V' + v),
+    datasets: [{ label:'Hit Rate %', data: hrLabels.map(v => {
+      const d = hrByV[v]; const tot = d.gan+d.per;
+      return tot > 0 ? (d.gan/tot*100).toFixed(1) : 0;
+    }), backgroundColor:'#40d080', borderRadius:6 }]
+  }, { plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
+       scales:{x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'},max:100}}});
+
+  // Tabla riesgo: en revisión con V3+
+  const riesgo = proyectos.filter(p => p.finalRes === 'EN REVISION' && p.maxV >= 3).sort((a,b)=>b.maxV-a.maxV);
+  const tblEl = document.getElementById('pygs-tbl-versiones-riesgo');
+  if (tblEl) {
+    if (riesgo.length === 0) {
+      tblEl.innerHTML = '<tbody><tr><td style="text-align:center;padding:20px;color:var(--muted)">Sin proyectos en riesgo (V3+ en revisión).</td></tr></tbody>';
+    } else {
+      tblEl.innerHTML = `<thead><tr><th>COD</th><th>Proyecto</th><th>Comercial</th><th>Versiones</th><th>Precio Final</th><th>Δ vs V1</th></tr></thead><tbody>` +
+        riesgo.slice(0,15).map(p => {
+          const delta = (p.v1Precio>0 && p.finalPrecio>0) ? ((p.finalPrecio/p.v1Precio - 1)*100).toFixed(1) + '%' : '—';
+          return `<tr>
+            <td style="font-family:'Bebas Neue',sans-serif;color:var(--muted)">${p.cod}</td>
+            <td style="color:var(--text)">${p.proyecto}</td>
+            <td>${p.director||'—'}</td>
+            <td><span class="badge ${p.maxV>=5?'badge-r':'badge-y'}">V${p.maxV}</span></td>
+            <td style="font-family:'Bebas Neue',sans-serif;color:var(--cyan)">${pygs_fmt(p.finalPrecio)}</td>
+            <td style="color:${delta.startsWith('-')?'var(--green)':'var(--red)'}">${delta}</td>
+          </tr>`;
+        }).join('') + `</tbody>`;
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TAB 4 — COMERCIALES
 // ═══════════════════════════════════════════════════════════════
 function pygs_renderComerciales() {
-  const dirData = {};
-  PYGS_DATA.filter(p=>p.director).forEach(p => {
-    if (!dirData[p.director]) dirData[p.director] = {n:0,valor:0,dias:[],tipos:{},sectores:{},complejidades:{},resultados:{GANADO:0,PERDIDO:0,'EN REVISION':0,PENDIENTE:0}};
-    const d = dirData[p.director];
-    d.n++; d.valor+=p.precio;
-    if(p.dias_real>0&&p.dias_real<100) d.dias.push(p.dias_real);
-    d.tipos[p.tipo]=(d.tipos[p.tipo]||0)+1;
-    d.sectores[p.sector]=(d.sectores[p.sector]||0)+1;
-    d.complejidades[p.complejidad]=(d.complejidades[p.complejidad]||0)+1;
-    if(p.resultado&&d.resultados[p.resultado]!==undefined) d.resultados[p.resultado]++;
+  const data = pygs_getFiltered();
+  const proyectos = pygs_uniqueProjects(data);
+  const finalP = pygs_finalVersion(data);
+
+  const byCom = {};
+  proyectos.forEach(p => {
+    const c = p.director || '—';
+    if (!byCom[c]) byCom[c] = { c, prop:0, gan:0, per:0, rev:0, valGan:0, tipos:{} };
+    byCom[c].prop++;
+    if (p.resultado === 'GANADO') byCom[c].gan++;
+    if (p.resultado === 'PERDIDO') byCom[c].per++;
+    if (p.resultado === 'EN REVISION') byCom[c].rev++;
+    byCom[c].tipos[p.tipo||'—'] = (byCom[c].tipos[p.tipo||'—']||0) + 1;
   });
-
-  const dirs = Object.entries(dirData).sort((a,b)=>b[1].valor-a[1].valor).filter(([n])=>n&&n!=='—');
-
-  // Ranking — dual axis: bars=valor, line=count
-  const dirLabels = dirs.map(([n])=>n.split(' ')[0]+'\n'+n.split(' ').slice(1).join(' '));
-  pygs_mkChart('ch-dir-ranking', 'bar', {
-    labels: dirLabels,
-    datasets:[
-      { label:'Valor M COP', data:dirs.map(([,d])=>d.valor/1e6), backgroundColor:PYGS_COLORS.slice(0,dirs.length), borderRadius:6, yAxisID:'y' },
-      { label:'# PYGs', data:dirs.map(([,d])=>d.n), type:'line', borderColor:'#4de0c0', backgroundColor:'transparent', pointBackgroundColor:'#4de0c0', yAxisID:'y2', tension:0.3 }
-    ]
-  }, {
-    scales:{
-      y:{ticks:{callback:v=>'$'+v+'M',color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-      y2:{position:'right',ticks:{color:'#4de0c0'},grid:{display:false}}
-    }
+  // Valor ganado por comercial (de versión final ganada)
+  finalP.filter(p => p.resultado === 'GANADO').forEach(p => {
+    const c = p.director || '—';
+    if (byCom[c]) byCom[c].valGan += p.precio || 0;
   });
+  const all = Object.values(byCom).filter(b => b.c !== '—');
 
-  // Mix de tipos por director
-  const tipos = ['INVITACION','RECOMPRA','CONCURSO','LICITACION','OTROS'];
-  pygs_mkChart('ch-dir-tipos', 'bar', {
-    labels: dirs.map(([n])=>n.split(' ')[0]),
-    datasets: tipos.map(t=>({
-      label:t,
-      data: dirs.map(([,d])=>d.tipos[t]||0),
-      backgroundColor: PYGS_TIPO_COLORS[t]||'#6b7494',
-      borderRadius:4,
-    }))
-  }, {
-    scales:{
-      x:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-      y:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
-    }
-  });
+  // Hit rate (mín 5 propuestas)
+  const validHR = all.filter(b => b.prop >= 5).map(b => {
+    const comp = b.gan + b.per;
+    return { c: b.c, hr: comp > 0 ? (b.gan/comp*100) : 0, prop: b.prop };
+  }).sort((a,b) => b.hr - a.hr);
 
-  // Eficiencia: días prom + renders prom por director
-  pygs_mkChart('ch-dir-eficiencia', 'bar', {
-    labels: dirs.map(([n])=>n.split(' ')[0]),
-    datasets:[
-      { label:'Días promedio', data:dirs.map(([,d])=>d.dias.length?+(pygs_sumBy(d.dias,v=>v)/d.dias.length).toFixed(1):0), backgroundColor:'#f09040aa', borderRadius:4, yAxisID:'y' },
-    ]
-  }, {
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-      y:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
-    }
-  });
+  pygs_mkChart('ch-com-hr', 'bar', {
+    labels: validHR.map(x => x.c),
+    datasets: [{ label:'Hit Rate %', data: validHR.map(x => x.hr.toFixed(1)),
+      backgroundColor: validHR.map(x => x.hr>=40?'#40d080':x.hr>=25?'#f0c040':'#e05060'), borderRadius:6 }]
+  }, { indexAxis:'y', plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
+       scales:{x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'},max:100},
+               y:{ticks:{color:'#6b7494',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'}}}});
 
-  // Resultados por director
-  pygs_mkChart('ch-dir-resultados', 'bar', {
-    labels: dirs.map(([n])=>n.split(' ')[0]),
-    datasets:[
-      {label:'Ganado',data:dirs.map(([,d])=>d.resultados.GANADO),backgroundColor:'#40d080',borderRadius:4},
-      {label:'Perdido',data:dirs.map(([,d])=>d.resultados.PERDIDO),backgroundColor:'#e05060',borderRadius:4},
-      {label:'En Revisión',data:dirs.map(([,d])=>d.resultados['EN REVISION']),backgroundColor:'#f0c040',borderRadius:4},
-    ]
-  }, {
-    scales:{
-      x:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-      y:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
-    }
-  });
+  // Valor ganado
+  const valSorted = all.filter(b => b.valGan > 0).sort((a,b) => b.valGan - a.valGan);
+  pygs_mkChart('ch-com-val', 'bar', {
+    labels: valSorted.map(x => x.c),
+    datasets: [{ label:'M COP', data: valSorted.map(x => (x.valGan/1e6).toFixed(0)),
+      backgroundColor:'#4de0c0', borderRadius:6 }]
+  }, { indexAxis:'y', plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' $'+c.raw+'M'}}},
+       scales:{x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+               y:{ticks:{color:'#6b7494',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'}}}});
 
-  // Tabla
-  const tbl = document.getElementById('tbl-directores');
-  tbl.innerHTML = `<thead><tr>
-    <th>Director</th><th>PYGs</th><th>Valor Total</th><th>Ticket Prom</th>
-    <th>Días Prom</th><th>Top Tipo</th><th>Top Sector</th>
-    <th>Ganados</th><th>Perdidos</th><th>En Revisión</th>
-  </tr></thead><tbody>` +
-  dirs.map(([name,d]) => {
-    const topTipo = Object.entries(d.tipos).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
-    const topSec = Object.entries(d.sectores).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
-    const diasAvg = d.dias.length ? (pygs_sumBy(d.dias,v=>v)/d.dias.length).toFixed(1) : '—';
-    return `<tr>
-      <td style="color:var(--text);font-weight:500">${name}</td>
-      <td style="text-align:right">${d.n}</td>
-      <td style="text-align:right;color:var(--yellow)">${pygs_fmtM(d.valor)}</td>
-      <td style="text-align:right">${d.n?pygs_fmtM(d.valor/d.n):'—'}</td>
-      <td style="text-align:right">${diasAvg}d</td>
-      <td><span class="badge badge-b">${topTipo}</span></td>
-      <td>${topSec}</td>
-      <td style="text-align:right;color:var(--green)">${d.resultados.GANADO}</td>
-      <td style="text-align:right;color:var(--red)">${d.resultados.PERDIDO}</td>
-      <td style="text-align:right;color:var(--yellow)">${d.resultados['EN REVISION']}</td>
-    </tr>`;
-  }).join('') + '</tbody>';
+  // Especialización: tipo top por comercial
+  const tipoTbl = document.getElementById('pygs-tbl-com-tipo');
+  if (tipoTbl) {
+    const allTipos = [...new Set(proyectos.map(p=>p.tipo).filter(Boolean))].sort();
+    tipoTbl.innerHTML = `<thead><tr><th>Comercial</th>${allTipos.map(t=>`<th>${t}</th>`).join('')}<th>Total</th></tr></thead><tbody>` +
+      all.sort((a,b)=>b.prop-a.prop).slice(0,12).map(b =>
+        `<tr><td style="color:var(--text);font-weight:500">${b.c}</td>` +
+        allTipos.map(t => `<td>${b.tipos[t]||'—'}</td>`).join('') +
+        `<td style="color:var(--cyan);font-weight:600">${b.prop}</td></tr>`).join('') + `</tbody>`;
+  }
+
+  // Tabla detallada
+  const tblEl = document.getElementById('pygs-tbl-comerciales');
+  if (tblEl) {
+    const sorted = all.sort((a,b) => b.valGan - a.valGan);
+    tblEl.innerHTML = `<thead><tr><th>Comercial</th><th>Propuestas</th><th>Ganadas</th><th>Perdidas</th><th>En Revisión</th><th>Hit Rate</th><th>Valor Ganado</th><th>Ticket Promedio</th></tr></thead><tbody>` +
+      sorted.map(b => {
+        const comp = b.gan + b.per;
+        const hr = comp > 0 ? (b.gan/comp*100) : 0;
+        const ticket = b.gan > 0 ? b.valGan / b.gan : 0;
+        return `<tr><td style="color:var(--text);font-weight:500">${b.c}</td>
+          <td>${b.prop}</td><td style="color:var(--green)">${b.gan}</td>
+          <td style="color:var(--red)">${b.per}</td><td style="color:var(--yellow)">${b.rev}</td>
+          <td><span class="badge ${hr>=40?'badge-g':hr>=25?'badge-y':'badge-r'}">${comp>0?hr.toFixed(0)+'%':'—'}</span></td>
+          <td style="color:var(--cyan);font-family:'Bebas Neue',sans-serif">${pygs_fmt(b.valGan)}</td>
+          <td style="color:var(--muted2);font-family:'Bebas Neue',sans-serif">${pygs_fmt(ticket)}</td>
+        </tr>`;
+      }).join('') + `</tbody>`;
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
-// TAB MERCADO
+// TAB 5 — PIPELINE & TENDENCIAS
 // ═══════════════════════════════════════════════════════════════
-function pygs_renderMercado() {
-  // Top ciudades
-  const ciudades = {};
-  PYGS_DATA.filter(p=>p.ciudad).forEach(p => {
-    if (!ciudades[p.ciudad]) ciudades[p.ciudad] = {n:0,valor:0};
-    ciudades[p.ciudad].n++;
-    ciudades[p.ciudad].valor += p.precio;
-  });
-  const topCiudades = Object.entries(ciudades).sort((a,b)=>b[1].valor-a[1].valor).slice(0,8);
-  pygs_mkChart('ch-ciudades', 'bar', {
-    labels: topCiudades.map(([c])=>c),
-    datasets:[
-      {label:'Valor M COP', data:topCiudades.map(([,d])=>d.valor/1e6), backgroundColor:PYGS_COLORS, borderRadius:6, yAxisID:'y'},
-      {label:'# PYGs', data:topCiudades.map(([,d])=>d.n), type:'line', borderColor:'#4de0c0', backgroundColor:'transparent', pointBackgroundColor:'#4de0c0', yAxisID:'y2', tension:0.3}
-    ]
-  }, {
-    scales:{
-      y:{ticks:{callback:v=>'$'+v+'M',color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-      y2:{position:'right',ticks:{color:'#4de0c0'},grid:{display:false}}
-    }
-  });
+function pygs_renderPipelineTrends() {
+  const data = pygs_getFiltered();
+  const proyectos = pygs_uniqueProjects(data);
+  const finalP = pygs_finalVersion(data);
 
-  // Precio/m2 por sector
-  const secPM2 = {};
-  PYGS_DATA.filter(p=>p.precio_m2>0&&p.precio_m2<500000&&p.sector).forEach(p => {
-    if (!secPM2[p.sector]) secPM2[p.sector] = [];
-    secPM2[p.sector].push(p.precio_m2);
+  // Series mensuales: hit rate y volumen
+  const MM = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const byMes = {};
+  proyectos.forEach(p => {
+    const m = (p.mes || '').toLowerCase().trim();
+    if (!byMes[m]) byMes[m] = { gan:0, per:0, rev:0, total:0 };
+    byMes[m].total++;
+    if (p.resultado === 'GANADO') byMes[m].gan++;
+    if (p.resultado === 'PERDIDO') byMes[m].per++;
+    if (p.resultado === 'EN REVISION') byMes[m].rev++;
   });
-  const secLabels = Object.keys(secPM2).sort((a,b)=>(pygs_sumBy(secPM2[b],v=>v)/secPM2[b].length)-(pygs_sumBy(secPM2[a],v=>v)/secPM2[a].length));
-  pygs_mkChart('ch-sector-pm2', 'bar', {
+  const labels = MM.filter(m => byMes[m]);
+  const hrSerie = labels.map(m => {
+    const d = byMes[m]; const comp = d.gan+d.per;
+    return comp > 0 ? (d.gan/comp*100).toFixed(1) : 0;
+  });
+  pygs_mkChart('ch-trend-hr', 'line', {
+    labels: labels.map(l => l.charAt(0).toUpperCase()+l.slice(1,3)),
+    datasets: [{ label:'Hit Rate %', data: hrSerie, borderColor:'#40d080',
+      backgroundColor:'rgba(64,208,128,.1)', borderWidth:2, fill:true, tension:.3, pointRadius:4 }]
+  }, { plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
+       scales:{x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+               y:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'},max:100}}});
+
+  pygs_mkChart('ch-trend-vol', 'bar', {
+    labels: labels.map(l => l.charAt(0).toUpperCase()+l.slice(1,3)),
+    datasets: [
+      { label:'Ganados', data: labels.map(m=>byMes[m].gan), backgroundColor:'#40d080', stack:'s' },
+      { label:'Perdidos', data: labels.map(m=>byMes[m].per), backgroundColor:'#e05060', stack:'s' },
+      { label:'Revisión', data: labels.map(m=>byMes[m].rev), backgroundColor:'#f0c040', stack:'s' }
+    ]
+  }, { plugins:{legend:{labels:{color:'#8b90a8',font:{size:10}}}},
+       scales:{x:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+               y:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}}});
+
+  // Pipeline activo
+  const pipeEl = document.getElementById('pygs-pipeline-list');
+  if (pipeEl) {
+    const revisiones = finalP.filter(p => p.resultado === 'EN REVISION' && p.precio > 0)
+      .sort((a,b) => b.precio - a.precio).slice(0, 20);
+    if (revisiones.length === 0) {
+      pipeEl.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:8px;">Sin pipeline activo.</div>';
+    } else {
+      pipeEl.innerHTML = revisiones.map(p => `
+        <div class="pipe-row">
+          <div class="pipe-dot" style="background:${p.precio>500e6?'#e05060':p.precio>100e6?'#f09040':'#f0c040'}"></div>
+          <div class="pipe-cod">${p.cod}</div>
+          <div class="pipe-name">${p.proyecto}</div>
+          <div class="pipe-dir">${p.director||'—'}</div>
+          <div class="pipe-tipo"><span class="badge badge-b">${p.tipo||'—'}</span></div>
+          <div class="pipe-val">${pygs_fmt(p.precio)}</div>
+        </div>`).join('');
+    }
+  }
+
+  // Por sector — hit rate
+  const bySec = {};
+  proyectos.forEach(p => {
+    const s = p.sector || '—';
+    if (!bySec[s]) bySec[s] = { gan:0, per:0 };
+    if (p.resultado === 'GANADO') bySec[s].gan++;
+    if (p.resultado === 'PERDIDO') bySec[s].per++;
+  });
+  const secLabels = Object.keys(bySec).filter(s => s!=='—' && (bySec[s].gan+bySec[s].per)>=2);
+  pygs_mkChart('ch-sector-hr', 'bar', {
     labels: secLabels,
-    datasets:[{
-      label:'Precio/m² promedio',
-      data: secLabels.map(s => Math.round(pygs_sumBy(secPM2[s],v=>v)/secPM2[s].length)),
-      backgroundColor: secLabels.map(s=>PYGS_SECTOR_COLORS[s]||'#6b7494'),
-      borderRadius:6,
-    }]
-  }, {
-    indexAxis:'y',
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{ticks:{callback:v=>'$'+Math.round(v/1000)+'K',color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-      y:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
-    }
-  });
+    datasets: [{ label:'Hit Rate %', data: secLabels.map(s => {
+      const d = bySec[s]; const t = d.gan+d.per;
+      return t>0?(d.gan/t*100).toFixed(1):0;
+    }), backgroundColor: secLabels.map(s => {
+      const d = bySec[s]; const t = d.gan+d.per;
+      const hr = t>0?d.gan/t*100:0;
+      return hr>=40?'#40d080':hr>=25?'#f0c040':'#e05060';
+    }), borderRadius:6 }]
+  }, { plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
+       scales:{x:{ticks:{color:'#6b7494',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}},
+               y:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'},max:100}}});
 
-  // Distribución geográfica por sector (ciudad × sector)
-  const topCiuds = topCiudades.slice(0,5).map(([c])=>c);
-  const secs = ['CORPORATIVO','HOSPITALITY','RETAIL','SALUD','EDUCATIVO','RESIDENCIAL'];
-  const geoData = {};
-  PYGS_DATA.filter(p=>topCiuds.includes(p.ciudad)&&p.sector).forEach(p => {
-    if (!geoData[p.ciudad]) geoData[p.ciudad] = {};
-    geoData[p.ciudad][p.sector] = (geoData[p.ciudad][p.sector]||0) + 1;
-  });
-  pygs_mkChart('ch-geo-sector', 'bar', {
-    labels: topCiuds,
-    datasets: secs.map(s=>({
-      label:s,
-      data: topCiuds.map(c=>(geoData[c]||{})[s]||0),
-      backgroundColor: PYGS_SECTOR_COLORS[s]||'#6b7494',
-      borderRadius:4,
-    }))
-  }, {
-    scales:{
-      x:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-      y:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
-    }
-  });
-
-  // Colombia vs Internacional
-  const col = PYGS_DATA.filter(p=>p.pais==='COLOMBIA');
-  const intl = PYGS_DATA.filter(p=>p.pais&&p.pais!=='COLOMBIA');
-  pygs_mkChart('ch-intl', 'doughnut', {
-    labels: ['Colombia','Internacional'],
-    datasets:[{
-      data:[pygs_sumBy(col,'precio')/1e6, pygs_sumBy(intl,'precio')/1e6],
-      backgroundColor:['#5080f0','#f09040'],
-      borderWidth:0, hoverOffset:8
-    }]
-  }, {
-    plugins:{
-      legend:{labels:{color:'#8b90a8',font:{size:11}}},
-      tooltip:{callbacks:{label:ctx=>' $'+ctx.raw+'M ('+ctx.label+')'}}
-    }
-  });
+  // Por país — volumen
+  const byPais = pygs_groupBy(proyectos, 'pais');
+  const paisLabels = Object.keys(byPais).filter(k=>k && k!=='—').sort((a,b)=>byPais[b].length-byPais[a].length).slice(0,8);
+  pygs_mkChart('ch-pais-vol', 'doughnut', {
+    labels: paisLabels,
+    datasets: [{ data: paisLabels.map(p=>byPais[p].length),
+      backgroundColor:['#5080f0','#f09040','#40d080','#a060f0','#4de0c0','#f0c040','#e05060','#6b7494'],
+      borderWidth: 2, borderColor:'#0f1421' }]
+  }, { plugins:{legend:{labels:{color:'#8b90a8',font:{size:10}}}}});
 }
 
 // ═══════════════════════════════════════════════════════════════
-// TAB DISPATCHER
+// TAB ROUTER
 // ═══════════════════════════════════════════════════════════════
-const PYGS__rendered = {};
+let PYGS__rendered = {};
 function pygs_renderTab(id) {
   if (PYGS__rendered[id]) return;
   PYGS__rendered[id] = true;
-  if (id === 'pipeline')    pygs_renderPipeline();
-  if (id === 'financiero')  pygs_renderFinanciero();
-  if (id === 'eficiencia')  pygs_renderEficiencia();
-  if (id === 'comerciales')  pygs_renderComerciales();
-  if (id === 'mercado')     pygs_renderMercado();
+  if (id === 'resumen')      pygs_renderResumen();
+  else if (id === 'sweetspot')   pygs_renderSweetSpot();
+  else if (id === 'versiones')   pygs_renderVersiones();
+  else if (id === 'comerciales') pygs_renderComerciales();
+  else if (id === 'pipeline')    pygs_renderPipelineTrends();
 }
 
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
+pygs_initComercialesDropdown();
 pygs_renderHeader();
-pygs_renderPipeline();
+pygs_renderResumen();
+
+
 
 // === ING Dashboard JS ===
 // ═══════════════════════════════════════════════════════════════
