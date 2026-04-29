@@ -2695,7 +2695,7 @@ function switchDashboard(id) {
     _innovInit=true;
   }
   if(id==='pygs'&&!_pygsInit){
-    setTimeout(()=>{try{pygs_renderHeader();const w=document.getElementById('db-pygs');if(w){const fp=w.querySelector('.tab-panel');const fb=w.querySelector('.tab-btn');if(fp)fp.classList.add('pygs-active');if(fb)fb.classList.add('pygs-active');}pygs_renderPipeline();}catch(e){console.warn('pygs:',e);}},50);
+    setTimeout(()=>{try{pygs_renderHeader();const w=document.getElementById('db-pygs');if(w){const fp=w.querySelector('.tab-panel');const fb=w.querySelector('.tab-btn');if(fp)fp.classList.add('pygs-active');if(fb)fb.classList.add('pygs-active');}pygs_renderResumen();}catch(e){console.warn('pygs:',e);}},50);
     _pygsInit=true;
   }
   if(id==='ing'&&!_ingInit){
@@ -8368,7 +8368,7 @@ const RAW_PYGS = [{"cod":"PYG-01","año":"2026","mes":"enero","version":1,"clien
 // Filter valid projects
 let PYGS_DATA = RAW_PYGS.filter(p => p.cod && p.proyecto);
 let _pygsExcludeEAFIT=false;
-function pygsToggleEAFIT(){_pygsExcludeEAFIT=!_pygsExcludeEAFIT;const b=document.getElementById("pygs-eafit-btn");if(b)b.textContent=_pygsExcludeEAFIT?"✓ EAFIT excluido":"Excluir EAFIT";Object.keys(PYGS__rendered).forEach(k=>delete PYGS__rendered[k]);pygs_renderHeader();pygs_renderPipeline();}
+function pygsToggleEAFIT(){_pygsExcludeEAFIT=!_pygsExcludeEAFIT;const b=document.getElementById("pygs-eafit-btn");if(b)b.textContent=_pygsExcludeEAFIT?"✓ EAFIT excluido":"Excluir EAFIT";pygs_refresh();}
 function pygsGetData(){return _pygsExcludeEAFIT?PYGS_DATA.filter(p=>!p.proyecto.toUpperCase().includes("EAFIT")):PYGS_DATA;}
 
 // ═══════════════════════════════════════════════════════════════
