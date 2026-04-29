@@ -1197,7 +1197,8 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
     <div class="sub">Dashboard Innovación & Diseño · Registro de Concursos 2023–2025</div>
   </div>
   <div class="hit-boxes">
-    <div class="hit-box"><div class="lbl">Hit Rate General</div><div class="val" id="hr-general">—</div><div class="sub2">Ganados / Competitivos</div></div>
+    <div class="hit-box"><div class="lbl">Hit Rate Departamento</div><div class="val" id="hr-general">—</div><div class="sub2">Ganados / Competitivos</div></div>
+    <div class="hit-box"><div class="lbl">Hit Rate General</div><div class="val" id="hr-global">—</div><div class="sub2">Ganados / Total proyectos</div></div>
     <div class="hit-box"><div class="lbl">Proyectos</div><div class="val" id="hr-total">—</div><div class="sub2" id="hr-periodo">—</div></div>
   </div>
 </header>
@@ -5715,8 +5716,11 @@ function innovRefresh(){
   // KPI Dpto. Innovación: solo Ganados ÷ (Ganados + Perdidos)
   const compHR=gan+perH;
   const hr=compHR>0?(gan/compHR*100).toFixed(1)+'%':'—';
+  // KPI Hit Rate General: Ganados ÷ Total de proyectos (incluye en revisión, en curso, etc.)
+  const hrGlobal=total>0?(gan/total*100).toFixed(1)+'%':'—';
   const anStr=selAnios.has('todos')?'2023–2025':[...selAnios].sort().join(', ');
   document.getElementById('hr-general').textContent=hr;
+  document.getElementById('hr-global').textContent=hrGlobal;
   document.getElementById('hr-total').textContent=total;
   document.getElementById('hr-periodo').textContent=anStr;
   document.getElementById('filter-info').textContent=`${total} proyectos · ${anStr}`;
