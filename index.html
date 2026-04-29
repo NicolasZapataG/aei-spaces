@@ -2812,15 +2812,7 @@ function setFilter(btn) {
     document.querySelectorAll('[data-k="celula"]').forEach(b=>b.classList.remove('active'));
   }
   if (btn) btn.classList.add('active');
-  // Tab-specific renders
-  const RENDER_ALL_TABS = ['general','intel','cargabilidad','gantt','equipos','celulas','proyectos','proyeccion'];
-  if (RENDER_ALL_TABS.includes(id)) {
-    setTimeout(() => { try { renderAll(); } catch(e) {} }, 30);
-  }
-  if (id === 'carg_bim')  setTimeout(() => renderCargBIM(), 30);
-  if (id === 'carg_pmo')  setTimeout(() => renderCargPMO(), 30);
-  if (id === 'carg_ing')  setTimeout(() => renderCargIngenieria(), 30);
-  if (id === 'exp')       setTimeout(() => renderEXP(document.getElementById('exp-select')?.value||''), 30);
+  setTimeout(() => { try { renderAll(); } catch(e) {} }, 30);
 }
 
 function clearAll() {
@@ -3237,22 +3229,27 @@ function parseInnovRows(rows) {
     .normalize('NFD').replace(/[\u0300-\u036f]/g,'')  // quita acentos (Ñ→N, Á→A)
     .replace(/\s+/g,'_');
 
-  // ─── Auto-detectar fila de header ───
-  // Buscar la primera fila que contenga al menos 2 nombres de columna reconocibles
-  // (puede haber filas de título arriba como "INNOVACION Y DESARROLLO - REGISTRO...")
-  const expectedKeys=['ANO','ANIO','TIPO','RESULTADO','MES','PROYECTO','COMERCIAL','DIRECTOR'];
-  let headerRow=0;
-  const maxScan=Math.min(rows.length,8);
+  // ─── Auto-detectar fila de header (escaneo hasta 30 filas + fallback fila 14) ───
+  // El usuario confirmó que en el Excel el header está en B15 (fila 15 de Excel = índice 14)
+  const expectedSubstrings=['ANO','ANIO','TIPO','RESULTADO','MES','PROYECTO','COMERCIAL','DIRECTOR','EQUIPO','PRECIO','SECTOR','FECHA'];
+  let headerRow=-1;
+  let bestMatches=0;
+  const maxScan=Math.min(rows.length,30);
   for(let r=0;r<maxScan;r++){
+    if(!rows[r]) continue;
     const normRow=rows[r].map(c=>norm(c));
-    const matches=expectedKeys.filter(k=>normRow.includes(k)).length;
-    if(matches>=2){headerRow=r;break;}
+    const matches=normRow.filter(cell=>cell&&expectedSubstrings.some(k=>cell.includes(k))).length;
+    if(matches>=3&&matches>bestMatches){bestMatches=matches;headerRow=r;}
   }
-  console.log('[Innov] Fila de header detectada en índice:', headerRow, '(filas 0-'+(headerRow-1)+' tratadas como título y descartadas)');
+  // Fallback: si no se encontró nada confiable, forzar fila 14 (B15 en Excel)
+  if(headerRow<0||bestMatches<3){
+    console.warn('[Innov] No se detectó header automáticamente. Forzando fila 14 (B15 según config).');
+    headerRow=14;
+  }
+  console.log('[Innov] Fila de header usada:', headerRow, '(equivale a fila', headerRow+1, 'en Excel) | matches:', bestMatches);
 
   const hdrsRaw = rows[headerRow].map(h=>(h||'').toString());
   const hdrs = hdrsRaw.map(norm);
-  // Exponer para debug desde consola
   window._innovHeadersRaw = hdrsRaw;
   window._innovHeaders = hdrs;
   window._innovRows = rows;
@@ -3261,15 +3258,23 @@ function parseInnovRows(rows) {
   console.log('[Innov] Headers normalizados:', hdrs.join(' | '));
   console.log('[Innov] Primera fila de datos:', rows[headerRow+1]);
   console.log('[Innov] Total filas de datos a procesar:', rows.length-headerRow-1);
-  console.log('[Innov] Tip: inspecciona window._innovHeadersRaw, window._innovRows[1] etc. en consola');
 
-  // g() ahora busca por nombre normalizado y acepta varios alias
-  const g=(row,...keys)=>{
-    for(const k of keys){
-      const i=hdrs.indexOf(norm(k));
-      if(i>=0) return (row[i]||'').toString().trim();
+  // findCol: busca columna por keywords con MATCH POR SUBSTRING (acepta "Año del Concurso", etc.)
+  const findCol=(...keywords)=>{
+    for(const kw of keywords){
+      const nk=norm(kw);
+      // 1. exact match
+      const exact=hdrs.indexOf(nk);
+      if(exact>=0) return exact;
+      // 2. substring match (header contiene la keyword)
+      const partial=hdrs.findIndex(h=>h&&h.includes(nk));
+      if(partial>=0) return partial;
     }
-    return '';
+    return -1;
+  };
+  const g=(row,...keys)=>{
+    const i=findCol(...keys);
+    return i>=0?(row[i]||'').toString().trim():'';
   };
   const cn=v=>{const n=parseFloat(String(v||'').replace(/[$.\s]/g,'').replace(',','.'));return isNaN(n)?0:n;};
   const MM={enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,octubre:10,noviembre:11,diciembre:12};
@@ -8277,6 +8282,7 @@ function pygs_renderPipeline() {
 
   // Pipeline list
   const pipelineEl = document.getElementById('pipeline-list');
+  if (!pipelineEl) return;
   const sorted = [...revision].filter(p=>p.precio>0).sort((a,b)=>b.precio-a.precio);
   pipelineEl.innerHTML = sorted.map(p => {
     const dot = p.precio > 500e6 ? '#e05060' : p.precio > 100e6 ? '#f09040' : '#f0c040';
