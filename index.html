@@ -3231,20 +3231,25 @@ async function fetchInnovFromExcel(token) {
   } catch(e){console.warn('Innov:',e);return null;}
 }
 function parseInnovRows(rows) {
-  if(!rows||rows.length<2) return null;
+  if(!rows||rows.length<2) { console.warn('[Innov] Sin filas o solo header'); return null; }
   const hdrs=rows[0].map(h=>(h||'').toString().toUpperCase().trim());
+  console.log('[Innov] Headers detectados:', hdrs);
+  console.log('[Innov] Total filas en hoja (sin header):', rows.length-1);
   const g=(row,k)=>{const i=hdrs.indexOf(k);return i>=0?(row[i]||'').toString().trim():'';};
   const cn=v=>{const n=parseFloat(v.replace(',','.'));return isNaN(n)?0:n;};
   const MM={enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,octubre:10,noviembre:11,diciembre:12};
   const result=[];
+  const skip={sinAnio:0,sinTipo:0,total:0};
   for(let i=1;i<rows.length;i++){
     const row=rows[i];
-    const anio=parseInt(g(row,'AÑO')||g(row,'ANIO')||'0');
-    if(!anio||anio<2020) continue;
+    skip.total++;
+    const anio=parseInt(g(row,'AÑO')||g(row,'ANIO')||g(row,'AÑOS')||g(row,'YEAR')||'0');
+    if(!anio||anio<2020) { skip.sinAnio++; continue; }
     const mesStr=(g(row,'MES')||'').toLowerCase();
     const mes=MM[mesStr]||parseInt(g(row,'MES_N')||'0')||0;
-    const tipo=g(row,'TIPO'); const res=g(row,'RESULTADO');
-    if(!tipo||!res) continue;
+    const tipo=g(row,'TIPO');
+    const res=g(row,'RESULTADO')||'EN REVISION';  // Si no hay resultado, asumir EN REVISION (proyecto en curso)
+    if(!tipo) { skip.sinTipo++; continue; }
     result.push({anio,mes,dir:g(row,'COMERCIAL')||g(row,'DIRECTOR'),
       equipo:g(row,'EQUIPO_DISEÑO')||g(row,'EQUIPO_DISENO')||g(row,'EQUIPO'),
       tipo,resultado:res,precio:cn(g(row,'PRECIO_COP')||g(row,'PRECIO')||'0'),
@@ -3253,6 +3258,12 @@ function parseInnovRows(rows) {
       m2:cn(g(row,'AREA_M2')||g(row,'M2')||'0'),
       sector:g(row,'SECTOR')||'CORPORATIVO',pais:g(row,'PAIS')||'Colombia'});
   }
+  // Diagnóstico
+  const porAnio={};
+  result.forEach(r=>{porAnio[r.anio]=(porAnio[r.anio]||0)+1;});
+  console.log('[Innov] Parseadas:', result.length, '| Descartadas sin AÑO:', skip.sinAnio, '| Descartadas sin TIPO:', skip.sinTipo);
+  console.log('[Innov] Distribución por año:', porAnio);
+  if(!porAnio[2026]) console.warn('[Innov] ⚠ Sin registros de 2026. Verifica que la hoja "'+SP_CONFIG.sheetNameInnov+'" contenga filas con AÑO=2026.');
   return result.length?result:null;
 }
 
@@ -3510,9 +3521,13 @@ async function initConnection() {
       if (innovData && innovData.length && typeof INNOV_RAW !== 'undefined') {
         INNOV_RAW.length = 0;
         innovData.forEach(r => INNOV_RAW.push(r));
+        console.log('[Innov] INNOV_RAW actualizado. Total registros:', INNOV_RAW.length);
+        console.log('[Innov] Registros 2026:', INNOV_RAW.filter(r=>r.anio===2026).length);
         if (typeof innovRefresh === 'function') {
           try { innovRefresh(); } catch(e) { console.warn('innovRefresh tras carga:', e); }
         }
+      } else {
+        console.warn('[Innov] fetchInnovFromExcel devolvió vacío o nulo. Manteniendo datos hardcodeados.');
       }
     } catch(e) { console.warn('Innov load:', e); }
 
