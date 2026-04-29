@@ -3232,38 +3232,118 @@ async function fetchInnovFromExcel(token) {
 }
 function parseInnovRows(rows) {
   if(!rows||rows.length<2) { console.warn('[Innov] Sin filas o solo header'); return null; }
-  const hdrs=rows[0].map(h=>(h||'').toString().toUpperCase().trim());
-  console.log('[Innov] Headers detectados:', hdrs);
-  console.log('[Innov] Total filas en hoja (sin header):', rows.length-1);
-  const g=(row,k)=>{const i=hdrs.indexOf(k);return i>=0?(row[i]||'').toString().trim():'';};
-  const cn=v=>{const n=parseFloat(v.replace(',','.'));return isNaN(n)?0:n;};
+  // Normalizar header: uppercase, trim, sin acentos, sin espacios duplicados
+  const norm = s => (s||'').toString().toUpperCase().trim()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')  // quita acentos (Ñ→N, Á→A)
+    .replace(/\s+/g,'_');
+  const hdrsRaw = rows[0].map(h=>(h||'').toString());
+  const hdrs = hdrsRaw.map(norm);
+  // Exponer para debug desde consola
+  window._innovHeadersRaw = hdrsRaw;
+  window._innovHeaders = hdrs;
+  window._innovRows = rows;
+  console.log('[Innov] Headers RAW:', hdrsRaw.join(' | '));
+  console.log('[Innov] Headers normalizados:', hdrs.join(' | '));
+  console.log('[Innov] Primera fila de datos:', rows[1]);
+  console.log('[Innov] Total filas (sin header):', rows.length-1);
+  console.log('[Innov] Tip: inspecciona window._innovHeadersRaw, window._innovRows[1] etc. en consola');
+
+  // g() ahora busca por nombre normalizado y acepta varios alias
+  const g=(row,...keys)=>{
+    for(const k of keys){
+      const i=hdrs.indexOf(norm(k));
+      if(i>=0) return (row[i]||'').toString().trim();
+    }
+    return '';
+  };
+  const cn=v=>{const n=parseFloat(String(v||'').replace(/[$.\s]/g,'').replace(',','.'));return isNaN(n)?0:n;};
   const MM={enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,octubre:10,noviembre:11,diciembre:12};
+
+  // Helper: extraer año de un valor de fecha (varios formatos)
+  const extractYear=(val)=>{
+    if(!val) return 0;
+    const s=String(val).trim();
+    let m=s.match(/(20\d{2})/);  // busca 20XX en cualquier parte
+    if(m){const y=parseInt(m[1]);if(y>=2020&&y<=2035)return y;}
+    // Excel serial number
+    if(/^\d+(\.\d+)?$/.test(s)){
+      const serial=parseFloat(s);
+      if(serial>40000&&serial<60000){
+        const date=new Date((serial-25569)*86400*1000);
+        const y=date.getFullYear();
+        if(y>=2020&&y<=2035)return y;
+      }
+    }
+    return 0;
+  };
+
   const result=[];
   const skip={sinAnio:0,sinTipo:0,total:0};
+  const sample=[];
+  // Encontrar índice columna AÑO una sola vez para diagnóstico
+  const idxAnio=['ANO','ANIO','ANOS','YEAR','ANO_INICIO','ANIO_INICIO'].map(k=>hdrs.indexOf(k)).find(i=>i>=0);
+  if(idxAnio>=0){
+    console.log('[Innov] Columna Año encontrada en índice', idxAnio, '— header raw:', hdrsRaw[idxAnio]);
+    console.log('[Innov] Valores año filas 1-3:', [rows[1],rows[2],rows[3]].map(r=>r?r[idxAnio]:'(vacío)'));
+  } else {
+    console.warn('[Innov] ⚠ NO se encontró columna de año entre los headers normalizados');
+  }
+
   for(let i=1;i<rows.length;i++){
     const row=rows[i];
     skip.total++;
-    const anio=parseInt(g(row,'AÑO')||g(row,'ANIO')||g(row,'AÑOS')||g(row,'YEAR')||'0');
-    if(!anio||anio<2020) { skip.sinAnio++; continue; }
+
+    // Leer valor crudo de la columna Año
+    const rawAnio=g(row,'AÑO','ANIO','ANO','AÑOS','YEAR','AÑO_INICIO','ANIO_INICIO');
+    let anio=0;
+    // Caso 1: ya viene como número de año válido (2020-2035)
+    const direct=parseInt(rawAnio);
+    if(direct>=2020&&direct<=2035){anio=direct;}
+    // Caso 2: viene como serial date Excel o texto con fecha
+    else if(rawAnio){anio=extractYear(rawAnio);}
+    // Caso 3: fallback a columnas de fecha
+    if(!anio||anio<2020){
+      anio=extractYear(g(row,'FECHA_INICIO','FECHA INICIO','FECHA','FECHA_ENTRADA','FECHA ENTRADA','FECHA_FIN','FECHA FIN'));
+    }
+
+    if(!anio||anio<2020){
+      skip.sinAnio++;
+      if(sample.length<3) sample.push({fila:i+1, valorAnio:rawAnio, fila_completa:row});
+      continue;
+    }
+
     const mesStr=(g(row,'MES')||'').toLowerCase();
-    const mes=MM[mesStr]||parseInt(g(row,'MES_N')||'0')||0;
-    const tipo=g(row,'TIPO');
-    const res=g(row,'RESULTADO')||'EN REVISION';  // Si no hay resultado, asumir EN REVISION (proyecto en curso)
-    if(!tipo) { skip.sinTipo++; continue; }
-    result.push({anio,mes,dir:g(row,'COMERCIAL')||g(row,'DIRECTOR'),
-      equipo:g(row,'EQUIPO_DISEÑO')||g(row,'EQUIPO_DISENO')||g(row,'EQUIPO'),
-      tipo,resultado:res,precio:cn(g(row,'PRECIO_COP')||g(row,'PRECIO')||'0'),
-      dias:cn(g(row,'DIAS')||'0'),dis:cn(g(row,'NUM_DISENADORES')||'1')||1,
-      fi:g(row,'FECHA_INICIO'),ff:g(row,'FECHA_FIN'),proy:g(row,'PROYECTO'),
-      m2:cn(g(row,'AREA_M2')||g(row,'M2')||'0'),
-      sector:g(row,'SECTOR')||'CORPORATIVO',pais:g(row,'PAIS')||'Colombia'});
+    const mes=MM[mesStr]||parseInt(g(row,'MES_N','MES_NUM','MES NUMERO')||'0')||0;
+    const tipo=g(row,'TIPO','TIPO_CONCURSO','TIPO CONCURSO');
+    const res=g(row,'RESULTADO','ESTADO')||'EN REVISION';
+    if(!tipo){skip.sinTipo++;continue;}
+
+    result.push({anio,mes,
+      dir:g(row,'COMERCIAL','DIRECTOR','DIRECTOR_COMERCIAL'),
+      equipo:g(row,'EQUIPO_DISEÑO','EQUIPO_DISENO','EQUIPO DISEÑO','EQUIPO DISENO','EQUIPO'),
+      tipo,resultado:res,
+      precio:cn(g(row,'PRECIO_COP','PRECIO COP','PRECIO','VALOR','VALOR_COP')||'0'),
+      dias:cn(g(row,'DIAS','DIAS_TRABAJADOS')||'0'),
+      dis:cn(g(row,'NUM_DISENADORES','NUM DISEÑADORES','NUM DISENADORES','NUMERO_DISENADORES','DISEÑADORES','DISENADORES')||'1')||1,
+      fi:g(row,'FECHA_INICIO','FECHA INICIO','FECHA'),
+      ff:g(row,'FECHA_FIN','FECHA FIN','FECHA_FINAL'),
+      proy:g(row,'PROYECTO','NOMBRE_PROYECTO','NOMBRE PROYECTO','NOMBRE'),
+      m2:cn(g(row,'AREA_M2','AREA M2','M2','AREA','METROS')||'0'),
+      sector:g(row,'SECTOR')||'CORPORATIVO',
+      pais:g(row,'PAIS','PAÍS')||'Colombia'});
   }
+
   // Diagnóstico
   const porAnio={};
   result.forEach(r=>{porAnio[r.anio]=(porAnio[r.anio]||0)+1;});
-  console.log('[Innov] Parseadas:', result.length, '| Descartadas sin AÑO:', skip.sinAnio, '| Descartadas sin TIPO:', skip.sinTipo);
+  console.log('[Innov] Parseadas:', result.length, '| Sin AÑO:', skip.sinAnio, '| Sin TIPO:', skip.sinTipo);
   console.log('[Innov] Distribución por año:', porAnio);
-  if(!porAnio[2026]) console.warn('[Innov] ⚠ Sin registros de 2026. Verifica que la hoja "'+SP_CONFIG.sheetNameInnov+'" contenga filas con AÑO=2026.');
+  if(skip.sinAnio>0&&sample.length){
+    console.warn('[Innov] Muestras filas descartadas (sin año detectable):');
+    sample.forEach(s=>console.warn('  Fila',s.fila,'| valor leído en col Año:',JSON.stringify(s.valorAnio),'| fila completa:',s.fila_completa));
+    console.warn('[Innov] → Si el "valor leído" es un número grande (ej: 46023) es serial date Excel — debería autoconvertirse. Si está vacío, la celda está vacía en SharePoint.');
+  }
+  if(!porAnio[2026]) console.warn('[Innov] ⚠ Sin registros de 2026.');
   return result.length?result:null;
 }
 
