@@ -5365,9 +5365,12 @@ function ciSemanaToMes(week) {
 }
 
 // Determinar fechas inicio/fin de un proyecto.
-// Para proyectos ACTIVOS: ignora fechas fin (real o programada) y asume hasta HOY,
-// porque esas fechas son promesas/estimaciones que no se cumplieron. La realidad es que el proyecto sigue corriendo.
-// Para proyectos CERRADOS: usa fecha_fin_real (real), o fecha_fin_prog si no hay real.
+// Lógica para proyectos ACTIVOS:
+//   - Si tiene fecha_fin_prog en el FUTURO → úsala (es una proyección válida del cronograma)
+//   - Si fecha_fin_prog ya pasó → ignórala y asume hasta HOY + 15 días (proyección conservadora)
+//   - Si no hay fecha_fin_prog → asume hasta HOY + 15 días
+// Lógica para proyectos CERRADOS:
+//   - Usa fecha_fin_real, o fecha_fin_prog como fallback
 function ciProyectoRango(p) {
   // Inicio: prefer fecha real, sino programada, sino fecha_ae como último fallback
   const inicioStr = p.fecha_inicio_r || p.fecha_inicio || p.fecha_ae_r || p.fecha_ae;
@@ -5378,9 +5381,21 @@ function ciProyectoRango(p) {
   let fin;
 
   if (estado === 'ACTIVO' || estado === 'EN CURSO' || estado === 'HOLD' || estado === '') {
-    // PROYECTO ACTIVO/EN CURSO: ignora fechas fin (no son confiables) y asume hasta HOY
-    fin = new Date();
-    fin.setHours(23, 59, 59, 999);
+    // PROYECTO ACTIVO: revisar si la fecha programada de fin está en el futuro
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    const finProgStr = p.fecha_fin_prog || p.fecha_ic_r || p.fecha_ic;
+    const finProg = ciParseDate(finProgStr);
+
+    if (finProg && finProg > hoy) {
+      // Fecha programada está en el futuro → confiar en ella (proyección del cronograma)
+      fin = finProg;
+    } else {
+      // Fecha programada ya pasó (o no existe) → asumir hasta HOY + 15 días
+      fin = new Date(hoy);
+      fin.setDate(hoy.getDate() + 15);
+      fin.setHours(23, 59, 59, 999);
+    }
   } else {
     // PROYECTO CERRADO/TERMINADO: usa fecha real, o programada como fallback
     const finStr = p.fecha_fin_real || p.fecha_fin_prog || p.fecha_ic_r || p.fecha_ic || p.fecha_pc_r || p.fecha_pc;
