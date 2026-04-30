@@ -5364,26 +5364,28 @@ function ciSemanaToMes(week) {
   return CI_MESES[start.getMonth()];
 }
 
-// Determinar fechas inicio/fin REALES de un proyecto (con fallback a programadas)
+// Determinar fechas inicio/fin de un proyecto.
+// Para proyectos ACTIVOS: ignora fechas fin (real o programada) y asume hasta HOY,
+// porque esas fechas son promesas/estimaciones que no se cumplieron. La realidad es que el proyecto sigue corriendo.
+// Para proyectos CERRADOS: usa fecha_fin_real (real), o fecha_fin_prog si no hay real.
 function ciProyectoRango(p) {
-  // Inicio: prefer fecha_inicio_r, sino fecha_inicio, sino fecha_ae
+  // Inicio: prefer fecha real, sino programada, sino fecha_ae como último fallback
   const inicioStr = p.fecha_inicio_r || p.fecha_inicio || p.fecha_ae_r || p.fecha_ae;
   const inicio = ciParseDate(inicioStr);
   if (!inicio) return null;
 
-  // Fin: prefer fecha_fin_real, sino fecha_fin_prog, sino fecha_ic_r, sino fecha_ic, sino fecha_pc
-  const finStr = p.fecha_fin_real || p.fecha_fin_prog || p.fecha_ic_r || p.fecha_ic || p.fecha_pc_r || p.fecha_pc;
-  let fin = ciParseDate(finStr);
+  const estado = (p.estado || '').toUpperCase().trim();
+  let fin;
 
-  // Si NO tiene fecha fin pero el proyecto está ACTIVO → asumir que sigue corriendo hasta HOY
-  if (!fin) {
-    const estado = (p.estado || '').toUpperCase().trim();
-    if (estado === 'ACTIVO' || estado === 'EN CURSO' || estado === '' || estado === 'HOLD') {
-      fin = new Date();
-      fin.setHours(23, 59, 59, 999);
-    } else {
-      return null;
-    }
+  if (estado === 'ACTIVO' || estado === 'EN CURSO' || estado === 'HOLD' || estado === '') {
+    // PROYECTO ACTIVO/EN CURSO: ignora fechas fin (no son confiables) y asume hasta HOY
+    fin = new Date();
+    fin.setHours(23, 59, 59, 999);
+  } else {
+    // PROYECTO CERRADO/TERMINADO: usa fecha real, o programada como fallback
+    const finStr = p.fecha_fin_real || p.fecha_fin_prog || p.fecha_ic_r || p.fecha_ic || p.fecha_pc_r || p.fecha_pc;
+    fin = ciParseDate(finStr);
+    if (!fin) return null;
   }
   if (fin < inicio) return null;
   return { inicio, fin };
