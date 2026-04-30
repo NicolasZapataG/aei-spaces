@@ -834,6 +834,7 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
   <button class="tab-btn" onclick="showTab('equipos',this)">Equipos</button>
   <button class="tab-btn" onclick="showTab('celulas',this)">Células</button>
   <button class="tab-btn" onclick="showTab('proyectos',this)">Proyectos</button>
+  <button class="tab-btn" onclick="showTab('cargaInstalada',this)">⚡ Carga Instalada</button>
   <button class="tab-btn" onclick="showTab('proyeccion',this)">🔭 Proyección</button>
   <button onclick="toggleConfig()" style="margin-left:auto;padding:4px 12px;border-radius:20px;border:1px solid rgba(240,192,64,.2);background:transparent;color:var(--muted);font-size:10px;font-family:'DM Sans',sans-serif;cursor:pointer">⚙ SharePoint</button>
 </div>
@@ -1094,6 +1095,58 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
   </div>
 </div>
 
+
+<!-- ============ TAB CARGA INSTALADA ============ -->
+<div id="tab-cargaInstalada" class="tab-panel">
+  <!-- KPIs principales -->
+  <div class="kpi-grid" id="kpis-carga"></div>
+
+  <!-- Slider de semanas -->
+  <div class="card" style="margin-top:16px;margin-bottom:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:12px">
+      <div class="card-title"><span class="dot" style="background:var(--cyan)"></span>📅 Línea de tiempo · Año 2026</div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px">Semana</span>
+        <span id="ci-week-label" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--cyan);letter-spacing:1px">—</span>
+        <span id="ci-date-range" style="font-size:10px;color:var(--muted2)">—</span>
+        <button onclick="ciSetCurrentWeek()" style="padding:5px 12px;border-radius:18px;border:1px solid var(--cyan);background:transparent;color:var(--cyan);font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif">Hoy</button>
+      </div>
+    </div>
+    <input type="range" id="ci-slider" min="1" max="52" value="1" step="1" oninput="ciSliderChange(this.value)" style="width:100%;accent-color:#4de0c0">
+    <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:6px;padding:0 2px">
+      <span>Ene</span><span>Feb</span><span>Mar</span><span>Abr</span><span>May</span><span>Jun</span><span>Jul</span><span>Ago</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dic</span>
+    </div>
+  </div>
+
+  <!-- Panel configurar capacidad -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title"><span class="dot" style="background:var(--orange)"></span>⚙️ Configurar Capacidad por Célula — Simula escenarios sumando o restando integrantes</div>
+    <div id="ci-cap-config" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:12px"></div>
+    <div style="margin-top:14px;padding:10px 12px;background:rgba(64,208,128,.08);border-left:3px solid var(--green);border-radius:6px;font-size:11px;color:var(--text)">
+      <span id="ci-cap-summary">—</span>
+    </div>
+  </div>
+
+  <!-- Gráfica A: Proyectos activos por célula -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title"><span class="dot" style="background:var(--yellow)"></span>📊 Proyectos activos por semana — Por Célula</div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:12px">Cantidad de proyectos corriendo simultáneamente cada semana del año. La línea punteada marca el umbral de proyectos simultáneos manejables (= total diseñadores).</p>
+    <div style="position:relative;height:300px;width:100%"><canvas id="ci-ch-conteo" height="300"></canvas></div>
+  </div>
+
+  <!-- Gráfica B: Carga ponderada -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title"><span class="dot" style="background:var(--red)"></span>⚡ Carga ponderada — Etapa × Complejidad</div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:12px">Diseñadores-equivalentes ocupados cada semana, ponderado por etapa (AE 0.5× · EB 1× · AP 1.5× · PC 1.8× · IC 1× · AC 0.3×) y complejidad (Estándar 1× · Media 1.5× · Alta 2×). La línea roja es tu capacidad total. Por encima = sobrecarga.</p>
+    <div style="position:relative;height:300px;width:100%"><canvas id="ci-ch-carga" height="300"></canvas></div>
+  </div>
+
+  <!-- Tabla de proyectos activos en semana seleccionada -->
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--green)"></span>📋 Proyectos activos en <span id="ci-tbl-week-label" style="color:var(--cyan)">semana —</span> · Agrupado por Célula</div>
+    <div id="ci-proyectos-semana" style="margin-top:12px"></div>
+  </div>
+</div>
 
 <!-- ============ TAB PROYECCIÓN ============ -->
 <div id="tab-proyeccion" class="tab-panel">
@@ -2449,6 +2502,12 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
     <div class="kpi-card y"><div class="kpi-label">En Revisión</div><div class="kpi-val" id="kpi-revision" style="color:var(--yellow)">—</div><div class="kpi-sub" id="kpi-revision-val">—</div></div>
     <div class="kpi-card c"><div class="kpi-label">Ticket Promedio Ganado</div><div class="kpi-val" id="kpi-ticket-prom" style="color:var(--cyan)">—</div><div class="kpi-sub">ganados</div></div>
   </div>
+  <div class="grid-4">
+    <div class="kpi-card g"><div class="kpi-label">⏱ Días Avg Respuesta — Ganados</div><div class="kpi-val" id="kpi-resp-gan" style="color:var(--green)">—</div><div class="kpi-sub">producción del PYG</div></div>
+    <div class="kpi-card r"><div class="kpi-label">⏱ Días Avg Respuesta — Perdidos</div><div class="kpi-val" id="kpi-resp-per" style="color:var(--red)">—</div><div class="kpi-sub">producción del PYG</div></div>
+    <div class="kpi-card y"><div class="kpi-label">⏱ Días Avg Respuesta — Revisión</div><div class="kpi-val" id="kpi-resp-rev" style="color:var(--yellow)">—</div><div class="kpi-sub">producción del PYG</div></div>
+    <div class="kpi-card b"><div class="kpi-label">⏱ Días Avg Respuesta — Global</div><div class="kpi-val" id="kpi-resp-glob" style="color:var(--blue)">—</div><div class="kpi-sub">todos los proyectos</div></div>
+  </div>
   <div class="grid-2">
     <div class="card"><div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Embudo de resultados — Valor en COP (M)</div><div class="chart-wrap"><canvas id="ch-embudo"></canvas></div></div>
     <div class="card"><div class="card-title"><span class="dot" style="background:var(--cyan)"></span>Tipo de cotización (proyectos únicos)</div><div class="chart-wrap"><canvas id="ch-tipos-pie"></canvas></div></div>
@@ -2473,6 +2532,7 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
     <div class="kpi-card o"><div class="kpi-label">% Téc. (proyectos perdidos)</div><div class="kpi-val" id="kpi-pct-tec-per" style="color:var(--orange)">—</div><div class="kpi-sub">del precio total</div></div>
   </div>
   <div class="card"><div class="card-title"><span class="dot" style="background:var(--blue)"></span>💰 Composición Arquitectura vs Técnicos — ¿Estamos cobrando bien la parte técnica?</div><div class="chart-wrap"><canvas id="ch-arq-tec"></canvas></div></div>
+  <div class="card"><div class="card-title"><span class="dot" style="background:var(--cyan)"></span>📐 Venta promedio por rango de m² — Arquitectura e Ingenierías (Ganados vs Perdidos)</div><div style="overflow-x:auto"><table class="tbl" id="pygs-tbl-rangos-m2"></table></div><div style="font-size:9px;color:var(--muted2);margin-top:8px;padding:0 4px">* Arquitectura incluye Imprev. Arq · Ingenierías incluye Técnicos + Imprev. Téc · Solo proyectos con desglose financiero disponible</div></div>
 </div>
 
 <!-- TAB VERSIONES -->
@@ -3275,6 +3335,20 @@ function parseExcelRows(rows) {
       hvac:          row[80] ? row[80].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
       tipo_proyecto: row[66] ? row[66].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
     });
+  }
+  // Diagnóstico
+  if (result.length > 0) {
+    const porEstado = {};
+    result.forEach(p => { porEstado[p.estado || '—'] = (porEstado[p.estado || '—']||0) + 1; });
+    const porCelula = {};
+    result.forEach(p => { porCelula[p.celula] = (porCelula[p.celula]||0) + 1; });
+    const conFin = result.filter(p => p.fecha_fin_real || p.fecha_fin_prog).length;
+    console.log('[Diseño] Proyectos parseados:', result.length);
+    console.log('[Diseño] Por estado:', porEstado);
+    console.log('[Diseño] Por célula:', porCelula);
+    console.log('[Diseño] Con fecha fin (real o prog):', conFin, '| Sin fecha fin:', result.length - conFin);
+  } else {
+    console.warn('[Diseño] ⚠ Sin proyectos parseados');
   }
   return result.length > 0 ? result : null;
 }
@@ -4279,14 +4353,16 @@ function renderCargabilidad() {
   const act=activos.length;
   const hold=data.filter(p=>p.estado==='HOLD').length;
   const m2Act=activos.reduce((s,p)=>s+(p.m2||0),0);
+  const m2Total=data.reduce((s,p)=>s+(p.m2||0),0);
+  const m2Cerrado=data.filter(p=>p.estado==='CERRADO').reduce((s,p)=>s+(p.m2||0),0);
   const avgAct=coords.length?activos.length/coords.length:0;
 
   document.getElementById('kpis-carg').innerHTML=`
-    <div class="kpi-card g"><div class="kpi-label">Proyectos Activos</div><div class="kpi-val g">${act}</div><div class="kpi-sub">${N(m2Act)} m² activos</div></div>
+    <div class="kpi-card g"><div class="kpi-label">Proyectos Activos</div><div class="kpi-val g">${act}</div><div class="kpi-sub">en cronograma</div></div>
+    <div class="kpi-card c"><div class="kpi-label">M² en Diseño Activo</div><div class="kpi-val c">${N(m2Act)}</div><div class="kpi-sub">m² actualmente</div></div>
+    <div class="kpi-card y"><div class="kpi-label">M² Diseñados Total</div><div class="kpi-val y">${N(m2Total)}</div><div class="kpi-sub">${N(m2Cerrado)} m² cerrados</div></div>
     <div class="kpi-card o"><div class="kpi-label">En Hold</div><div class="kpi-val o">${hold}</div><div class="kpi-sub">Pendientes</div></div>
-    <div class="kpi-card y"><div class="kpi-label">Coordinadores</div><div class="kpi-val y">${coords.length}</div><div class="kpi-sub">Activos en equipo</div></div>
-    <div class="kpi-card c"><div class="kpi-label">Prom. Activos/Coord.</div><div class="kpi-val c">${N(avgAct,1)}</div><div class="kpi-sub">proyectos por coordinador</div></div>
-    <div class="kpi-card p"><div class="kpi-label">Células con Carga</div><div class="kpi-val p">${CELULAS.filter(c=>activos.some(p=>p.celula===c)).length}</div><div class="kpi-sub">de ${CELULAS.length} células</div></div>
+    <div class="kpi-card p"><div class="kpi-label">Coordinadores</div><div class="kpi-val p">${coords.length}</div><div class="kpi-sub">${N(avgAct,1)} proy/coord</div></div>
   `;
 
   // Utilización = proyectos activos / capacidad razonable (4 proyectos simultáneos por coordinador)
@@ -5216,6 +5292,523 @@ function setSim(v) {
   renderProyeccion();
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// CARGA INSTALADA — Estado y configuración
+// ═══════════════════════════════════════════════════════════════
+const CI_STATE = {
+  semana: 1,                    // semana seleccionada (1-52)
+  capacidades: null,            // se inicializa con base en CELULAS_DATA
+  ano: 2026,
+  charts: { conteo: null, carga: null }
+};
+
+// Pesos por etapa (impacto en carga)
+const CI_PESO_ETAPA = {
+  'AE': 0.5,  'EB': 1.0,  'AP': 1.5,  'PC': 1.8,
+  'IC': 1.0,  'AO': 0.3,  'AC': 0.3,  'C':  1.5,  'MA': 0.7,  'WF': 0.4
+};
+// Pesos por complejidad
+const CI_PESO_COMPL = { 'ALTA': 2.0, 'MEDIA': 1.5, 'ESTANDAR': 1.0, 'ESTÁNDAR': 1.0 };
+
+// Inicializar capacidades a partir de CELULAS_DATA
+function ciInitCapacidades() {
+  if (CI_STATE.capacidades) return;
+  CI_STATE.capacidades = {};
+  Object.entries(CELULAS_DATA).forEach(([id, info]) => {
+    CI_STATE.capacidades[id] = info.diseñadores.length;
+  });
+}
+
+// Capacidad total (suma de todas las células)
+function ciCapacidadTotal() {
+  ciInitCapacidades();
+  return Object.values(CI_STATE.capacidades).reduce((s,v) => s+v, 0);
+}
+
+// Helper: parsear fecha YYYY-MM-DD
+function ciParseDate(s) {
+  if (!s) return null;
+  const m = String(s).match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (!m) return null;
+  const dt = new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
+  return isNaN(dt.getTime()) ? null : dt;
+}
+
+// Calcular el ISO week (1-52) y año de una fecha
+function ciWeekOfYear(date) {
+  const d = new Date(date.getTime());
+  d.setHours(0,0,0,0);
+  // Jueves de la semana ISO
+  d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
+  const yearStart = new Date(d.getFullYear(), 0, 1);
+  return { week: Math.ceil((((d - yearStart) / 86400000) + 1) / 7), year: d.getFullYear() };
+}
+
+// Convertir semana (1-52) del CI_STATE.ano a fechas inicio/fin (lunes/domingo)
+function ciWeekToRange(week) {
+  const ano = CI_STATE.ano;
+  // 4 de enero siempre cae en la semana 1 ISO
+  const enero4 = new Date(ano, 0, 4);
+  const dow = (enero4.getDay() + 6) % 7;  // 0=lun, 6=dom
+  const week1Monday = new Date(enero4); week1Monday.setDate(enero4.getDate() - dow);
+  const start = new Date(week1Monday); start.setDate(week1Monday.getDate() + (week-1)*7);
+  const end = new Date(start); end.setDate(start.getDate() + 6);
+  return { start, end };
+}
+
+// Obtener nombre corto del mes (Ene, Feb...) de una semana del año
+const CI_MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+function ciSemanaToMes(week) {
+  const { start } = ciWeekToRange(week);
+  return CI_MESES[start.getMonth()];
+}
+
+// Determinar fechas inicio/fin REALES de un proyecto (con fallback a programadas)
+function ciProyectoRango(p) {
+  // Inicio: prefer fecha_inicio_r, sino fecha_inicio, sino fecha_ae
+  const inicioStr = p.fecha_inicio_r || p.fecha_inicio || p.fecha_ae_r || p.fecha_ae;
+  const inicio = ciParseDate(inicioStr);
+  if (!inicio) return null;
+
+  // Fin: prefer fecha_fin_real, sino fecha_fin_prog, sino fecha_ic_r, sino fecha_ic, sino fecha_pc
+  const finStr = p.fecha_fin_real || p.fecha_fin_prog || p.fecha_ic_r || p.fecha_ic || p.fecha_pc_r || p.fecha_pc;
+  let fin = ciParseDate(finStr);
+
+  // Si NO tiene fecha fin pero el proyecto está ACTIVO → asumir que sigue corriendo hasta HOY
+  if (!fin) {
+    const estado = (p.estado || '').toUpperCase().trim();
+    if (estado === 'ACTIVO' || estado === 'EN CURSO' || estado === '' || estado === 'HOLD') {
+      fin = new Date();
+      fin.setHours(23, 59, 59, 999);
+    } else {
+      return null;
+    }
+  }
+  if (fin < inicio) return null;
+  return { inicio, fin };
+}
+
+// ¿Está activo este proyecto en esta semana del año?
+function ciActivoEnSemana(p, week, ano) {
+  const rng = ciProyectoRango(p);
+  if (!rng) return false;
+  const { start, end } = ciWeekToRange(week);
+  // Activo si su rango se traslapa con la semana
+  return rng.inicio <= end && rng.fin >= start;
+}
+
+// Etapa estimada del proyecto en una semana dada (mira las fechas de cada etapa)
+function ciEtapaEnSemana(p, week) {
+  const { start } = ciWeekToRange(week);
+  // Fechas de las etapas (preferir reales, fallback programadas)
+  const etapas = [
+    { cod: 'AE', f: ciParseDate(p.fecha_ae_r || p.fecha_ae) },
+    { cod: 'EB', f: ciParseDate(p.fecha_eb_r || p.fecha_eb) },
+    { cod: 'AP', f: ciParseDate(p.fecha_ap_r || p.fecha_ap) },
+    { cod: 'PC', f: ciParseDate(p.fecha_pc_r || p.fecha_pc) },
+    { cod: 'IC', f: ciParseDate(p.fecha_ic_r || p.fecha_ic) }
+  ].filter(e => e.f);
+  // La etapa actual en una semana es la última etapa cuyo inicio es <= start
+  let actual = 'AE';
+  for (const e of etapas) {
+    if (e.f <= start) actual = e.cod;
+  }
+  return actual;
+}
+
+// Calcular complejidad como string normalizado
+function ciComplejidad(p) {
+  const c = String(p.complejidad || 'ESTANDAR').toUpperCase().trim().replace('Á','A');
+  return c.includes('ALTA') ? 'ALTA' : c.includes('MEDIA') ? 'MEDIA' : 'ESTANDAR';
+}
+
+// Carga ponderada de un proyecto en una semana
+function ciCargaProyecto(p, week) {
+  const etapa = ciEtapaEnSemana(p, week);
+  const pesoE = CI_PESO_ETAPA[etapa] || 1.0;
+  const compl = ciComplejidad(p);
+  const pesoC = CI_PESO_COMPL[compl] || 1.0;
+  return pesoE * pesoC;
+}
+
+// Obtener proyectos activos del año (filtrando los que tienen al menos una semana activa en el año actual)
+function ciProyectosDelAno() {
+  return RAW.filter(p => {
+    const rng = ciProyectoRango(p);
+    if (!rng) return false;
+    const inicioYear = rng.inicio.getFullYear();
+    const finYear = rng.fin.getFullYear();
+    // Activo si traslapa el año
+    return inicioYear <= CI_STATE.ano && finYear >= CI_STATE.ano;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER PRINCIPAL
+// ═══════════════════════════════════════════════════════════════
+function renderCargaInstalada() {
+  ciInitCapacidades();
+  // Ajustar slider a la semana actual la primera vez
+  if (CI_STATE.semana === 1 && new Date().getFullYear() === CI_STATE.ano) {
+    const hoy = ciWeekOfYear(new Date());
+    if (hoy.year === CI_STATE.ano) {
+      CI_STATE.semana = Math.max(1, Math.min(52, hoy.week));
+      const slider = document.getElementById('ci-slider');
+      if (slider) slider.value = CI_STATE.semana;
+    }
+  }
+  ciRenderKPIs();
+  ciRenderCapConfig();
+  ciRenderSliderLabel();
+  ciRenderConteoChart();
+  ciRenderCargaChart();
+  ciRenderTablaSemana();
+}
+
+// KPIs principales
+function ciRenderKPIs() {
+  const totalDis = ciCapacidadTotal();
+  const proyAno = ciProyectosDelAno();
+  // Proyectos activos en la semana seleccionada
+  const activosSem = proyAno.filter(p => ciActivoEnSemana(p, CI_STATE.semana, CI_STATE.ano));
+  // Carga total ponderada en la semana
+  const cargaSem = activosSem.reduce((s, p) => s + ciCargaProyecto(p, CI_STATE.semana), 0);
+  const utilizacion = totalDis > 0 ? (cargaSem / totalDis * 100) : 0;
+  let statusColor = 'var(--green)', statusLabel = '🟢 Saludable';
+  if (utilizacion > 100) { statusColor = 'var(--red)'; statusLabel = '🔴 Sobrecargado'; }
+  else if (utilizacion > 80) { statusColor = 'var(--yellow)'; statusLabel = '🟡 Tensionado'; }
+  else if (utilizacion < 40) { statusColor = 'var(--cyan)'; statusLabel = '🔵 Sub-utilizado'; }
+
+  const html = `
+    <div class="kpi-card y">
+      <div class="kpi-label">Capacidad total</div>
+      <div class="kpi-val y">${totalDis}</div>
+      <div class="kpi-sub">diseñadores · 5 células</div>
+    </div>
+    <div class="kpi-card c">
+      <div class="kpi-label">Proyectos activos · Sem ${CI_STATE.semana}</div>
+      <div class="kpi-val c">${activosSem.length}</div>
+      <div class="kpi-sub">en cronograma</div>
+    </div>
+    <div class="kpi-card g">
+      <div class="kpi-label">Carga ponderada · Sem ${CI_STATE.semana}</div>
+      <div class="kpi-val" style="color:${statusColor}">${cargaSem.toFixed(1)}</div>
+      <div class="kpi-sub">de ${totalDis} diseñadores</div>
+    </div>
+    <div class="kpi-card r">
+      <div class="kpi-label">Utilización · Sem ${CI_STATE.semana}</div>
+      <div class="kpi-val" style="color:${statusColor}">${utilizacion.toFixed(0)}%</div>
+      <div class="kpi-sub">${statusLabel}</div>
+    </div>`;
+  const el = document.getElementById('kpis-carga');
+  if (el) el.innerHTML = html;
+}
+
+// Panel configurar capacidad
+function ciRenderCapConfig() {
+  const el = document.getElementById('ci-cap-config');
+  if (!el) return;
+  el.innerHTML = Object.entries(CELULAS_DATA).map(([id, info]) => {
+    const cap = CI_STATE.capacidades[id];
+    const original = info.diseñadores.length;
+    const delta = cap - original;
+    const deltaStr = delta === 0 ? '' : (delta > 0 ? `<span style="color:var(--green);font-size:10px"> (+${delta})</span>` : `<span style="color:var(--red);font-size:10px"> (${delta})</span>`);
+    return `
+      <div style="background:var(--bg3);border:1px solid var(--border);border-left:3px solid ${info.color};border-radius:8px;padding:10px 12px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <span style="color:${info.color};font-size:14px">${info.icon}</span>
+          <span style="font-size:10px;color:var(--text);font-weight:600;text-transform:uppercase;letter-spacing:1px">${info.label}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <button onclick="ciAjustarCap('${id}',-1)" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;font-size:14px">−</button>
+          <div style="text-align:center;flex:1">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:${info.color};letter-spacing:1px">${cap}${deltaStr}</div>
+            <div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">diseñadores</div>
+          </div>
+          <button onclick="ciAjustarCap('${id}',1)" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;font-size:14px">+</button>
+        </div>
+      </div>`;
+  }).join('');
+  // Resumen
+  const total = ciCapacidadTotal();
+  const totalOrig = Object.values(CELULAS_DATA).reduce((s,c) => s + c.diseñadores.length, 0);
+  const diff = total - totalOrig;
+  const diffStr = diff === 0 ? '' : ` (${diff > 0 ? '+' : ''}${diff} vs original ${totalOrig})`;
+  const sumEl = document.getElementById('ci-cap-summary');
+  if (sumEl) sumEl.innerHTML = `<strong>Capacidad simulada total: ${total} diseñadores${diffStr}</strong> · Usa los botones +/− para simular escenarios y ver cómo cambia la carga del equipo.`;
+}
+
+// Ajustar capacidad de una célula
+function ciAjustarCap(id, delta) {
+  if (!CI_STATE.capacidades[id] && CI_STATE.capacidades[id] !== 0) return;
+  const nuevo = Math.max(0, CI_STATE.capacidades[id] + delta);
+  CI_STATE.capacidades[id] = nuevo;
+  ciRenderKPIs();
+  ciRenderCapConfig();
+  ciRenderConteoChart();
+  ciRenderCargaChart();
+}
+
+// Slider label
+function ciRenderSliderLabel() {
+  const { start, end } = ciWeekToRange(CI_STATE.semana);
+  const fmt = d => d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short' });
+  const lbl = document.getElementById('ci-week-label');
+  const rng = document.getElementById('ci-date-range');
+  if (lbl) lbl.textContent = 'S' + CI_STATE.semana;
+  if (rng) rng.textContent = fmt(start) + ' – ' + fmt(end);
+}
+
+function ciSliderChange(val) {
+  CI_STATE.semana = parseInt(val);
+  ciRenderSliderLabel();
+  ciRenderKPIs();
+  ciRenderTablaSemana();
+}
+
+function ciSetCurrentWeek() {
+  const hoy = ciWeekOfYear(new Date());
+  if (hoy.year === CI_STATE.ano) {
+    CI_STATE.semana = Math.max(1, Math.min(52, hoy.week));
+    const slider = document.getElementById('ci-slider');
+    if (slider) slider.value = CI_STATE.semana;
+    ciSliderChange(CI_STATE.semana);
+  }
+}
+
+// Gráfica A: Conteo de proyectos activos por célula a lo largo del año
+function ciRenderConteoChart() {
+  const proyAno = ciProyectosDelAno();
+  const celulas = Object.entries(CELULAS_DATA);
+  const colores = { 'THE BIG DESING THEORY': '#f0c040', 'EL TRINOMIO DE ORO': '#40d080', 'DESING COMPAST': '#4de0c0', 'PePeCe': '#f09040', 'CLOPA': '#a060f0' };
+
+  const datasets = celulas.map(([id, info]) => {
+    const data = [];
+    for (let w = 1; w <= 52; w++) {
+      const count = proyAno.filter(p => p.celula === id && ciActivoEnSemana(p, w, CI_STATE.ano)).length;
+      data.push(count);
+    }
+    return {
+      label: info.label,
+      data,
+      backgroundColor: colores[id] || '#5080f0',
+      borderColor: colores[id] || '#5080f0',
+      borderWidth: 1,
+      stack: 'cell',
+    };
+  });
+
+  // Sin célula
+  const sinCelData = [];
+  for (let w = 1; w <= 52; w++) {
+    sinCelData.push(proyAno.filter(p => (!p.celula || p.celula === 'SIN CÉLULA') && ciActivoEnSemana(p, w, CI_STATE.ano)).length);
+  }
+  if (sinCelData.some(v => v > 0)) {
+    datasets.push({
+      label: 'Sin Célula', data: sinCelData,
+      backgroundColor: '#6b7494', borderColor: '#6b7494', borderWidth: 1, stack: 'cell'
+    });
+  }
+
+  const totalCap = ciCapacidadTotal();
+  // Etiquetas: ["S1", "Ene"] estilo array de array → Chart.js multi-line
+  // Solo poner el mes cuando es la primera semana de ese mes
+  const labels = [];
+  let lastMonth = '';
+  for (let i = 0; i < 52; i++) {
+    const w = i + 1;
+    const { start } = ciWeekToRange(w);
+    const month = CI_MESES[start.getMonth()];
+    if (month !== lastMonth) {
+      labels.push(['S' + w, month]);
+      lastMonth = month;
+    } else {
+      labels.push(['S' + w, '']);
+    }
+  }
+
+  const ctx = document.getElementById('ci-ch-conteo');
+  if (!ctx) return;
+  if (CI_STATE.charts.conteo) CI_STATE.charts.conteo.destroy();
+  CI_STATE.charts.conteo = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#8b90a8', font: { size: 10 }}},
+        tooltip: { mode: 'index', intersect: false },
+        annotation: {} // (no requerido)
+      },
+      scales: {
+        x: { stacked: true, ticks: { color: '#6b7494', font: { size: 8 }, autoSkip: false, maxRotation: 0 }, grid: { color: 'rgba(255,255,255,.04)' }},
+        y: { stacked: true, ticks: { color: '#6b7494', stepSize: 1 }, grid: { color: 'rgba(255,255,255,.04)' }, title: { display: true, text: 'Proyectos activos', color: '#6b7494', font: { size: 10 }}}
+      },
+      onClick: (evt, elements) => {
+        if (elements && elements.length) {
+          const idx = elements[0].index;
+          CI_STATE.semana = idx + 1;
+          const slider = document.getElementById('ci-slider');
+          if (slider) slider.value = CI_STATE.semana;
+          ciSliderChange(CI_STATE.semana);
+        }
+      }
+    }
+  });
+}
+
+// Gráfica B: Carga ponderada
+function ciRenderCargaChart() {
+  const proyAno = ciProyectosDelAno();
+  const totalCap = ciCapacidadTotal();
+  const cargaPorSemana = [];
+  for (let w = 1; w <= 52; w++) {
+    const carga = proyAno.filter(p => ciActivoEnSemana(p, w, CI_STATE.ano))
+                        .reduce((s,p) => s + ciCargaProyecto(p, w), 0);
+    cargaPorSemana.push(parseFloat(carga.toFixed(2)));
+  }
+
+  // Color de cada barra según si excede la capacidad
+  const bgColors = cargaPorSemana.map(v => v > totalCap ? 'rgba(224,80,96,.7)' : v > totalCap*0.8 ? 'rgba(240,192,64,.7)' : 'rgba(64,208,128,.65)');
+  // Etiquetas: ["S1", "Ene"] → multi-line en Chart.js, mes solo cuando cambia
+  const labels = [];
+  let lastMonthB = '';
+  for (let i = 0; i < 52; i++) {
+    const w = i + 1;
+    const { start } = ciWeekToRange(w);
+    const month = CI_MESES[start.getMonth()];
+    if (month !== lastMonthB) {
+      labels.push(['S' + w, month]);
+      lastMonthB = month;
+    } else {
+      labels.push(['S' + w, '']);
+    }
+  }
+
+  const datasets = [
+    {
+      label: 'Carga ponderada (diseñadores-equiv.)',
+      data: cargaPorSemana,
+      backgroundColor: bgColors,
+      borderRadius: 4,
+      borderWidth: 0,
+      type: 'bar'
+    },
+    {
+      label: `Capacidad (${totalCap})`,
+      data: Array(52).fill(totalCap),
+      borderColor: '#e05060',
+      borderWidth: 2,
+      borderDash: [6, 4],
+      pointRadius: 0,
+      backgroundColor: 'transparent',
+      type: 'line',
+      fill: false
+    }
+  ];
+
+  const ctx = document.getElementById('ci-ch-carga');
+  if (!ctx) return;
+  if (CI_STATE.charts.carga) CI_STATE.charts.carga.destroy();
+  CI_STATE.charts.carga = new Chart(ctx, {
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#8b90a8', font: { size: 10 }}},
+        tooltip: { callbacks: { afterLabel: ctx => {
+          if (ctx.dataset.type === 'bar') {
+            const pct = totalCap > 0 ? (ctx.raw / totalCap * 100).toFixed(0) + '%' : '—';
+            return 'Utilización: ' + pct;
+          }
+          return '';
+        }}}
+      },
+      scales: {
+        x: { ticks: { color: '#6b7494', font: { size: 8 }, autoSkip: false, maxRotation: 0 }, grid: { color: 'rgba(255,255,255,.04)' }},
+        y: { ticks: { color: '#6b7494' }, grid: { color: 'rgba(255,255,255,.04)' }, title: { display: true, text: 'Diseñadores-equivalentes', color: '#6b7494', font: { size: 10 }}}
+      },
+      onClick: (evt, elements) => {
+        if (elements && elements.length) {
+          const idx = elements[0].index;
+          CI_STATE.semana = idx + 1;
+          const slider = document.getElementById('ci-slider');
+          if (slider) slider.value = CI_STATE.semana;
+          ciSliderChange(CI_STATE.semana);
+        }
+      }
+    }
+  });
+}
+
+// Tabla: proyectos activos en la semana seleccionada
+function ciRenderTablaSemana() {
+  const lblEl = document.getElementById('ci-tbl-week-label');
+  if (lblEl) lblEl.textContent = `semana ${CI_STATE.semana}`;
+  const proyAno = ciProyectosDelAno();
+  const activos = proyAno.filter(p => ciActivoEnSemana(p, CI_STATE.semana, CI_STATE.ano));
+  const el = document.getElementById('ci-proyectos-semana');
+  if (!el) return;
+  if (activos.length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:11px">Sin proyectos activos en esta semana.</div>';
+    return;
+  }
+
+  // Agrupar por célula
+  const porCel = {};
+  activos.forEach(p => {
+    const cel = (!p.celula || p.celula === 'SIN CÉLULA') ? 'SIN CÉLULA' : p.celula;
+    if (!porCel[cel]) porCel[cel] = [];
+    porCel[cel].push(p);
+  });
+
+  let html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:12px">';
+  Object.entries(porCel).forEach(([cel, proys]) => {
+    const info = CELULAS_DATA[cel];
+    const color = info ? info.color : '#6b7494';
+    const icon = info ? info.icon : '◯';
+    const label = info ? info.label : 'Sin Célula';
+    const cap = CI_STATE.capacidades[cel] !== undefined ? CI_STATE.capacidades[cel] : '—';
+    const cargaCel = proys.reduce((s,p) => s + ciCargaProyecto(p, CI_STATE.semana), 0);
+
+    html += `
+      <div style="background:var(--bg3);border:1px solid var(--border);border-left:3px solid ${color};border-radius:8px;padding:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="color:${color};font-size:14px">${icon}</span>
+            <span style="font-size:10px;color:var(--text);font-weight:600;text-transform:uppercase;letter-spacing:1px">${label}</span>
+          </div>
+          <div style="font-size:9px;color:var(--muted)">${proys.length} proy · ${cargaCel.toFixed(1)}/${cap} carga</div>
+        </div>
+        <table style="width:100%;font-size:10px;border-collapse:collapse">
+          <thead><tr style="color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-size:8px">
+            <th style="text-align:left;padding:4px 4px 6px;font-weight:600">Proyecto</th>
+            <th style="text-align:left;padding:4px 4px 6px;font-weight:600">Coord.</th>
+            <th style="text-align:center;padding:4px 4px 6px;font-weight:600">Etapa</th>
+            <th style="text-align:right;padding:4px 4px 6px;font-weight:600">m²</th>
+            <th style="text-align:right;padding:4px 4px 6px;font-weight:600">Carga</th>
+          </tr></thead>
+          <tbody>`;
+    proys.sort((a,b) => ciCargaProyecto(b, CI_STATE.semana) - ciCargaProyecto(a, CI_STATE.semana))
+         .forEach(p => {
+      const etapa = ciEtapaEnSemana(p, CI_STATE.semana);
+      const carga = ciCargaProyecto(p, CI_STATE.semana);
+      const compl = ciComplejidad(p);
+      const complColor = compl === 'ALTA' ? 'var(--red)' : compl === 'MEDIA' ? 'var(--orange)' : 'var(--muted)';
+      html += `<tr style="border-top:1px solid rgba(255,255,255,.04)">
+        <td style="padding:6px 4px;color:var(--text)">${p.proyecto}</td>
+        <td style="padding:6px 4px;color:var(--muted2)">${(p.coordinador||'—').split(' ')[0]}</td>
+        <td style="padding:6px 4px;text-align:center"><span style="background:${color}22;color:${color};padding:2px 6px;border-radius:4px;font-weight:600">${etapa}</span></td>
+        <td style="padding:6px 4px;text-align:right;font-family:'Bebas Neue',sans-serif;color:${complColor}">${p.m2 ? Math.round(p.m2) : '—'}</td>
+        <td style="padding:6px 4px;text-align:right;font-family:'Bebas Neue',sans-serif;color:var(--cyan)">${carga.toFixed(1)}</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div>`;
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
 function renderProyeccion() {
   const data = filtered();
   const activos = data.filter(p => estadoEfectivo(p) === 'ACTIVO');
@@ -5558,6 +6151,7 @@ function renderAll(){
   else if(activeId==='tab-equipos') renderEquipos();
   else if(activeId==='tab-celulas') renderCelulas();
   else if(activeId==='tab-proyectos') renderProyectos();
+  else if(activeId==='tab-cargaInstalada') renderCargaInstalada();
   else if(activeId==='tab-proyeccion') renderProyeccion();
 }
 
@@ -8607,6 +9201,21 @@ function pygs_renderResumen() {
   se('kpi-revision-val', pygs_fmt(valRev) + ' en juego');
   se('kpi-ticket-prom', pygs_fmt(ticketProm));
 
+  // ─── Tiempo promedio de respuesta (días para producir el PYG) ───
+  // Usa la versión final de cada proyecto (no la suma de todas las versiones)
+  const avgDias = arr => {
+    const valid = arr.filter(p => p.dias > 0).map(p => p.dias);
+    return valid.length ? Math.round(valid.reduce((s,v)=>s+v,0)/valid.length) : null;
+  };
+  const respGan = avgDias(finalP.filter(p => p.resultado === 'GANADO'));
+  const respPer = avgDias(finalP.filter(p => p.resultado === 'PERDIDO'));
+  const respRev = avgDias(finalP.filter(p => p.resultado === 'EN REVISION'));
+  const respGlob = avgDias(finalP);
+  se('kpi-resp-gan', respGan !== null ? respGan + ' días' : '—');
+  se('kpi-resp-per', respPer !== null ? respPer + ' días' : '—');
+  se('kpi-resp-rev', respRev !== null ? respRev + ' días' : '—');
+  se('kpi-resp-glob', respGlob !== null ? respGlob + ' días' : '—');
+
   // Embudo
   const grupos = ['GANADO','EN REVISION','PERDIDO'];
   pygs_mkChart('ch-embudo', 'bar', {
@@ -8876,6 +9485,62 @@ function pygs_renderSweetSpot() {
       y: { ticks:{ color:'#6b7494', callback: v => v + '%' }, grid:{ color:'rgba(255,255,255,.04)' }, title:{ display:true, text:'% del precio total', color:'#6b7494', font:{ size:10 }}}
     }
   });
+
+  // ─── Tabla de Venta promedio por rango de m² (Arq vs Ing) ───
+  const rangos = [
+    { lbl:'0 – 500 m²',         lo:0,    hi:500 },
+    { lbl:'501 – 1.000 m²',     lo:501,  hi:1000 },
+    { lbl:'1.001 – 2.000 m²',   lo:1001, hi:2000 },
+    { lbl:'2.001 – 5.000 m²',   lo:2001, hi:5000 },
+    { lbl:'5.001 – 10.000 m²',  lo:5001, hi:10000 },
+    { lbl:'> 10.000 m²',        lo:10001,hi:Infinity }
+  ];
+  // Sólo proyectos con desglose financiero válido
+  const conDesglose = finalAll.filter(p => p.m2 > 0 && (p.arq + p.tec) > 0);
+  const avg = arr => arr.length ? arr.reduce((s,v)=>s+v,0)/arr.length : 0;
+  const tblM2 = document.getElementById('pygs-tbl-rangos-m2');
+  if (tblM2) {
+    const filas = rangos.map(r => {
+      const enRango = conDesglose.filter(p => p.m2 >= r.lo && p.m2 <= r.hi);
+      const gan = enRango.filter(p => p.resultado === 'GANADO');
+      const per = enRango.filter(p => p.resultado === 'PERDIDO');
+      // Arquitectura = ARQUITECTURA + IMPREVISTOS ARQ; Ingeniería = TECNICOS + IMPREVISTOS TEC
+      const arqGan = avg(gan.map(p => p.arq + p.imp_arq));
+      const ingGan = avg(gan.map(p => p.tec + p.imp_tec));
+      const arqPer = avg(per.map(p => p.arq + p.imp_arq));
+      const ingPer = avg(per.map(p => p.tec + p.imp_tec));
+      // $/m² promedio del precio total
+      const pmGan = gan.length ? avg(gan.map(p => p.precio / Math.max(p.m2, 1))) : 0;
+      const pmPer = per.length ? avg(per.map(p => p.precio / Math.max(p.m2, 1))) : 0;
+      return { ...r, gan, per, arqGan, ingGan, arqPer, ingPer, pmGan, pmPer };
+    });
+    const totalProy = conDesglose.length;
+    if (totalProy === 0) {
+      tblM2.innerHTML = '<tbody><tr><td style="text-align:center;padding:20px;color:var(--muted)">Sin proyectos con desglose financiero (Arquitectura/Técnicos) en este filtro.</td></tr></tbody>';
+    } else {
+      tblM2.innerHTML = `<thead><tr>
+        <th rowspan="2">Rango m²</th>
+        <th colspan="3" style="text-align:center;border-bottom:1px solid var(--border);background:rgba(64,208,128,.08)">GANADOS</th>
+        <th colspan="3" style="text-align:center;border-bottom:1px solid var(--border);background:rgba(224,80,96,.08)">PERDIDOS</th>
+      </tr><tr>
+        <th style="background:rgba(64,208,128,.04)">N</th>
+        <th style="background:rgba(64,208,128,.04)">$ Arquitectura Avg</th>
+        <th style="background:rgba(64,208,128,.04)">$ Ingenierías Avg</th>
+        <th style="background:rgba(224,80,96,.04)">N</th>
+        <th style="background:rgba(224,80,96,.04)">$ Arquitectura Avg</th>
+        <th style="background:rgba(224,80,96,.04)">$ Ingenierías Avg</th>
+      </tr></thead><tbody>` +
+      filas.map(f => `<tr>
+        <td style="color:var(--text);font-weight:500">${f.lbl}</td>
+        <td style="color:var(--green)">${f.gan.length || '—'}</td>
+        <td style="color:var(--green);font-family:'Bebas Neue',sans-serif">${f.gan.length ? pygs_fmt(f.arqGan) : '—'}</td>
+        <td style="color:var(--green);font-family:'Bebas Neue',sans-serif">${f.gan.length ? pygs_fmt(f.ingGan) : '—'}</td>
+        <td style="color:var(--red)">${f.per.length || '—'}</td>
+        <td style="color:var(--red);font-family:'Bebas Neue',sans-serif">${f.per.length ? pygs_fmt(f.arqPer) : '—'}</td>
+        <td style="color:var(--red);font-family:'Bebas Neue',sans-serif">${f.per.length ? pygs_fmt(f.ingPer) : '—'}</td>
+      </tr>`).join('') + `</tbody>`;
+    }
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
