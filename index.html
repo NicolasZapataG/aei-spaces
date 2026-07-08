@@ -688,7 +688,7 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
 .header{background:var(--bg2);border-bottom:1px solid rgba(240,192,64,.2);padding:16px 24px;display:flex;align-items:center;gap:16px;}#db-pygs .header-brand {font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--yellow);}#db-pygs .header-sub {font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;}#db-pygs .header-kpis {display:flex;gap:24px;margin-left:auto;}#db-pygs .hkpi {text-align:center;}#db-pygs .hkpi-label {font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;}#db-pygs .hkpi-val {font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}#db-pygs .hkpi-val.y {color:var(--yellow);}#db-pygs .hkpi-val.g {color:var(--green);}#db-pygs .hkpi-val.r {color:var(--red);}#db-pygs .hkpi-val.c {color:var(--cyan);}#db-pygs .hkpi-sub {font-size:9px;color:var(--muted);}
 
 /* ── TABS ── */
-.tabs-bar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;gap:0;padding:0 24px;overflow-x:auto;}#db-pygs .tab-btn {height:44px;padding:0 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s;}#db-pygs .tab-btn:hover {color:var(--text);}#db-pygs .tab-btn.active, #db-pygs .tab-btn.pygs-active {color:var(--yellow);border-bottom-color:var(--yellow);}#db-pygs .tab-panel {display:none;padding:24px;}#db-pygs .tab-panel.active, #db-pygs .tab-panel.pygs-active {display:block;}
+.tabs-bar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;gap:0;padding:0 24px;overflow-x:auto;}#db-pygs .tab-btn {height:44px;padding:0 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s;}#db-pygs .tab-btn:hover {color:var(--text);}#db-pygs .tab-btn.active {color:var(--yellow);border-bottom-color:var(--yellow);}#db-pygs .tab-panel {display:none;padding:24px;}#db-pygs .tab-panel.active {display:block;}
 
 /* ── GRID ── */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}#db-pygs .grid-3 {display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}#db-pygs .grid-4 {display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
@@ -723,6 +723,9 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
 .ing-filter-btn.active{background:rgba(77,224,192,.15);border-color:var(--cyan);color:var(--cyan);}
 .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
 @media(max-width:700px){.grid2{grid-template-columns:1fr;}}
+
+.horas-filter-btn{padding:4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:transparent;color:var(--muted);font-size:10px;cursor:pointer;transition:all .2s;font-family:"DM Sans",sans-serif;}
+.horas-filter-btn.active{background:rgba(77,224,192,.15);border-color:var(--cyan);color:var(--cyan);}
 </style>
 </head>
 <body>
@@ -834,8 +837,8 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
   <button class="tab-btn" onclick="showTab('equipos',this)">Equipos</button>
   <button class="tab-btn" onclick="showTab('celulas',this)">Células</button>
   <button class="tab-btn" onclick="showTab('proyectos',this)">Proyectos</button>
-  <button class="tab-btn" onclick="showTab('cargaInstalada',this)">⚡ Carga Instalada</button>
   <button class="tab-btn" onclick="showTab('proyeccion',this)">🔭 Proyección</button>
+  <button class="tab-btn" onclick="showTab('horas',this)">⏱ Horas Plan vs Ejec</button>
   <button onclick="toggleConfig()" style="margin-left:auto;padding:4px 12px;border-radius:20px;border:1px solid rgba(240,192,64,.2);background:transparent;color:var(--muted);font-size:10px;font-family:'DM Sans',sans-serif;cursor:pointer">⚙ SharePoint</button>
 </div>
 
@@ -1096,58 +1099,6 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
 </div>
 
 
-<!-- ============ TAB CARGA INSTALADA ============ -->
-<div id="tab-cargaInstalada" class="tab-panel">
-  <!-- KPIs principales -->
-  <div class="kpi-grid" id="kpis-carga"></div>
-
-  <!-- Slider de semanas -->
-  <div class="card" style="margin-top:16px;margin-bottom:16px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:12px">
-      <div class="card-title"><span class="dot" style="background:var(--cyan)"></span>📅 Línea de tiempo · Año 2026</div>
-      <div style="display:flex;align-items:center;gap:14px">
-        <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px">Semana</span>
-        <span id="ci-week-label" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--cyan);letter-spacing:1px">—</span>
-        <span id="ci-date-range" style="font-size:10px;color:var(--muted2)">—</span>
-        <button onclick="ciSetCurrentWeek()" style="padding:5px 12px;border-radius:18px;border:1px solid var(--cyan);background:transparent;color:var(--cyan);font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif">Hoy</button>
-      </div>
-    </div>
-    <input type="range" id="ci-slider" min="1" max="52" value="1" step="1" oninput="ciSliderChange(this.value)" style="width:100%;accent-color:#4de0c0">
-    <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:6px;padding:0 2px">
-      <span>Ene</span><span>Feb</span><span>Mar</span><span>Abr</span><span>May</span><span>Jun</span><span>Jul</span><span>Ago</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dic</span>
-    </div>
-  </div>
-
-  <!-- Panel configurar capacidad -->
-  <div class="card" style="margin-bottom:16px">
-    <div class="card-title"><span class="dot" style="background:var(--orange)"></span>⚙️ Configurar Capacidad por Célula — Simula escenarios sumando o restando integrantes</div>
-    <div id="ci-cap-config" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:12px"></div>
-    <div style="margin-top:14px;padding:10px 12px;background:rgba(64,208,128,.08);border-left:3px solid var(--green);border-radius:6px;font-size:11px;color:var(--text)">
-      <span id="ci-cap-summary">—</span>
-    </div>
-  </div>
-
-  <!-- Gráfica A: Proyectos activos por célula -->
-  <div class="card" style="margin-bottom:16px">
-    <div class="card-title"><span class="dot" style="background:var(--yellow)"></span>📊 Proyectos activos por semana — Por Célula</div>
-    <p style="font-size:11px;color:var(--muted);margin-bottom:12px">Cantidad de proyectos corriendo simultáneamente cada semana del año. La línea punteada marca el umbral de proyectos simultáneos manejables (= total diseñadores).</p>
-    <div style="position:relative;height:300px;width:100%"><canvas id="ci-ch-conteo" height="300"></canvas></div>
-  </div>
-
-  <!-- Gráfica B: Carga ponderada -->
-  <div class="card" style="margin-bottom:16px">
-    <div class="card-title"><span class="dot" style="background:var(--red)"></span>⚡ Carga ponderada — Etapa × Complejidad</div>
-    <p style="font-size:11px;color:var(--muted);margin-bottom:12px">Diseñadores-equivalentes ocupados cada semana, ponderado por etapa (AE 0.5× · EB 1× · AP 1.5× · PC 1.8× · IC 1× · AC 0.3×) y complejidad (Estándar 1× · Media 1.5× · Alta 2×). La línea roja es tu capacidad total. Por encima = sobrecarga.</p>
-    <div style="position:relative;height:300px;width:100%"><canvas id="ci-ch-carga" height="300"></canvas></div>
-  </div>
-
-  <!-- Tabla de proyectos activos en semana seleccionada -->
-  <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--green)"></span>📋 Proyectos activos en <span id="ci-tbl-week-label" style="color:var(--cyan)">semana —</span> · Agrupado por Célula</div>
-    <div id="ci-proyectos-semana" style="margin-top:12px"></div>
-  </div>
-</div>
-
 <!-- ============ TAB PROYECCIÓN ============ -->
 <div id="tab-proyeccion" class="tab-panel">
 
@@ -1213,6 +1164,58 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
   <div id="dp-body"></div>
 </div>
 
+
+<!-- TAB HORAS PLANEADAS VS EJECUTADAS -->
+<div id="tab-horas" class="tab-panel">
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;align-items:center">
+    <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Año:</span>
+    <button class="horas-filter-btn active" data-f="anio" data-v="TODOS" onclick="horasFilter(this)">Todos</button>
+    <button class="horas-filter-btn" data-f="anio" data-v="2025" onclick="horasFilter(this)">2025</button>
+    <button class="horas-filter-btn" data-f="anio" data-v="2026" onclick="horasFilter(this)">2026</button>
+    <div style="width:1px;height:20px;background:rgba(255,255,255,.1);margin:0 4px"></div>
+    <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Etapa:</span>
+    <button class="horas-filter-btn active" data-f="etapa" data-v="TODOS" onclick="horasFilter(this)">Todas</button>
+    <button class="horas-filter-btn" data-f="etapa" data-v="AE" onclick="horasFilter(this)">Análisis</button>
+    <button class="horas-filter-btn" data-f="etapa" data-v="EB" onclick="horasFilter(this)">Esquemático</button>
+    <button class="horas-filter-btn" data-f="etapa" data-v="AP" onclick="horasFilter(this)">Anteproyecto</button>
+    <button class="horas-filter-btn" data-f="etapa" data-v="PC" onclick="horasFilter(this)">Constructivos</button>
+    <div style="flex:1"></div>
+    <select id="horas-proy-select" onchange="renderHoras()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:8px;font-size:11px;font-family:'DM Sans',sans-serif">
+      <option value="">Todos los proyectos</option>
+    </select>
+  </div>
+
+  <div class="kpi-grid" id="kpis-horas"></div>
+
+  <div id="horas-nodata" style="display:none;padding:32px;text-align:center;color:var(--muted);font-size:12px;line-height:2">
+    🔗 <strong style="color:var(--text)">Conecta con SharePoint</strong> para ver horas planeadas vs ejecutadas.<br>
+    <small>Datos desde las hojas <em>Horas</em> y <em>Registro 25-26</em>.</small>
+  </div>
+
+  <div id="horas-content" style="display:none">
+    <div class="section-title" style="margin-top:12px">📊 Horas planeadas vs ejecutadas por proyecto</div>
+    <div class="card" style="margin-bottom:16px">
+      <div style="position:relative;height:400px"><canvas id="chart-horas-comparativo"></canvas></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Cumplimiento por etapa</div></div>
+        <div style="position:relative;height:240px"><canvas id="chart-horas-etapa"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="dot" style="background:var(--red)"></span>Top 10 mayor desviación</div></div>
+        <div style="position:relative;height:240px"><canvas id="chart-horas-desviacion"></canvas></div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px">📋 Detalle por proyecto y etapa</div>
+    <div class="card" style="padding:0;overflow-x:auto">
+      <table class="tbl" id="tbl-horas-detalle"></table>
+    </div>
+  </div>
+</div>
+
 <!-- ══ INNOVACIÓN DASHBOARD ═════════════════════════════════════════ -->
 <div class="db-wrapper" id="db-innov">
 <div class="gantt-tooltip" id="ganttTip"></div>
@@ -1250,8 +1253,7 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
     <div class="sub">Dashboard Innovación & Diseño · Registro de Concursos 2023–2025</div>
   </div>
   <div class="hit-boxes">
-    <div class="hit-box"><div class="lbl">Hit Rate Departamento</div><div class="val" id="hr-general">—</div><div class="sub2">Ganados / Competitivos</div></div>
-    <div class="hit-box"><div class="lbl">Hit Rate General</div><div class="val" id="hr-global">—</div><div class="sub2">Ganados / Total proyectos</div></div>
+    <div class="hit-box"><div class="lbl">Hit Rate General</div><div class="val" id="hr-general">—</div><div class="sub2">Ganados / Competitivos</div></div>
     <div class="hit-box"><div class="lbl">Proyectos</div><div class="val" id="hr-total">—</div><div class="sub2" id="hr-periodo">—</div></div>
   </div>
 </header>
@@ -1265,7 +1267,7 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
       <button class="chip" data-anio="2023" onclick="toggleAnio('2023',this)">2023</button>
       <button class="chip" data-anio="2024" onclick="toggleAnio('2024',this)">2024</button>
       <button class="chip" data-anio="2025" onclick="toggleAnio('2025',this)">2025</button>
-      <button class="chip" data-anio="2026" onclick="toggleAnio('2026',this)">2026</button>
+      <button class="dbi-active filter-btn" data-anio="2026" onclick="setAnioInnov(2026,this)">2026</button>
     </div>
     <div class="filter-sep"></div>
     <div class="filter-actions">
@@ -2454,133 +2456,41 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
 <!-- HEADER -->
 <div class="header">
   <div>
-    <div class="header-brand">AEI · PYGs</div>
-    <div class="header-sub" id="pygs-header-sub">Cotizaciones Comerciales</div>
+    <div class="header-brand">AEI · PYGs 2026</div>
+    <div class="header-sub">Dashboard de Cotizaciones · Actualizado al corte de datos</div>
   </div>
   <div class="header-kpis">
-    <div class="hkpi"><div class="hkpi-label">Proyectos</div><div class="hkpi-val y" id="hk-total">—</div><div class="hkpi-sub">únicos</div></div>
-    <div class="hkpi"><div class="hkpi-label">Valor Cotizado</div><div class="hkpi-val c" id="hk-valor">—</div><div class="hkpi-sub">última versión</div></div>
+    <div class="hkpi"><div class="hkpi-label">Total PYGs</div><div class="hkpi-val y" id="hk-total">—</div><div class="hkpi-sub">registros</div></div>
+    <div class="hkpi"><div class="hkpi-label">Valor Cotizado</div><div class="hkpi-val c" id="hk-valor">—</div><div class="hkpi-sub">COP total</div></div>
     <div class="hkpi"><div class="hkpi-label">En Revisión</div><div class="hkpi-val r" id="hk-revision">—</div><div class="hkpi-sub">pipeline activo</div></div>
-    <div class="hkpi"><div class="hkpi-label">Hit Rate</div><div class="hkpi-val g" id="hk-hitrate">—</div><div class="hkpi-sub">competitivo</div></div>
-    <div class="hkpi"><div class="hkpi-label">Hit Rate Gral.</div><div class="hkpi-val" style="color:var(--cyan)" id="hk-hitrate-gral">—</div><div class="hkpi-sub">vs total</div></div>
-    <div class="hkpi"><div class="hkpi-label">Versiones Avg</div><div class="hkpi-val o" id="hk-ver">—</div><div class="hkpi-sub">por proyecto</div></div>
+    <div class="hkpi"><div class="hkpi-label">Días Promedio</div><div class="hkpi-val g" id="hk-dias">—</div><div class="hkpi-sub">por cotización</div></div>
+    <div class="hkpi"><div class="hkpi-label">Versiones Avg</div><div class="hkpi-val o" id="hk-ver">—</div></div><div class="hkpi"><div class="hkpi-label">Hit Rate</div><div class="hkpi-val" style="color:var(--green)" id="hk-hitrate">—</div><div class="hkpi-sub">iteraciones</div></div>
   </div>
-</div>
-
-<!-- FILTROS -->
-<div style="background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;font-family:'DM Sans',sans-serif;">
-  <span style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;">Año</span>
-  <div id="pygs-chips-anio" style="display:flex;gap:6px;flex-wrap:wrap;">
-    <button class="chip pygs-chip active" data-anio="todos" onclick="pygsToggleAnio('todos',this)">Todos</button>
-    <button class="chip pygs-chip" data-anio="2023" onclick="pygsToggleAnio('2023',this)">2023</button>
-    <button class="chip pygs-chip" data-anio="2024" onclick="pygsToggleAnio('2024',this)">2024</button>
-    <button class="chip pygs-chip" data-anio="2025" onclick="pygsToggleAnio('2025',this)">2025</button>
-    <button class="chip pygs-chip" data-anio="2026" onclick="pygsToggleAnio('2026',this)">2026</button>
-  </div>
-  <span style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-left:12px;">Comercial</span>
-  <select id="pygs-sel-comercial" onchange="pygsSetComercial(this.value)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:6px;font-size:11px;font-family:'DM Sans',sans-serif;min-width:160px;">
-    <option value="todos">Todos</option>
-  </select>
-  <button id="pygs-eafit-btn" onclick="pygsToggleEAFIT()" style="margin-left:auto;padding:5px 12px;border-radius:20px;border:1px solid rgba(224,80,96,.4);background:transparent;color:#e05060;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif">Excluir EAFIT</button>
-  <span id="pygs-info-filtros" style="font-size:10px;color:var(--muted);">—</span>
 </div>
 
 <!-- TABS -->
+<div style="text-align:right;padding:4px 24px 0"><button id="pygs-eafit-btn" onclick="pygsToggleEAFIT()" style="padding:4px 12px;border-radius:20px;border:1px solid rgba(224,80,96,.4);background:transparent;color:#e05060;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif">Excluir EAFIT</button></div>
 <div class="tabs-bar">
-  <button class="tab-btn pygs-active" onclick="pygs_showTab('resumen',this)">📊 Resumen Ejecutivo</button>
-  <button class="tab-btn" onclick="pygs_showTab('sweetspot',this)">🎯 Sweet Spot</button>
-  <button class="tab-btn" onclick="pygs_showTab('versiones',this)">🔁 Versiones</button>
-  <button class="tab-btn" onclick="pygs_showTab('comerciales',this)">👤 Comerciales</button>
-  <button class="tab-btn" onclick="pygs_showTab('pipeline',this)">📈 Pipeline & Tendencias</button>
+  <button class="tab-btn" onclick="pygs_showTab('pipeline',this)">📊 Pipeline</button>
+  <button class="tab-btn" onclick="pygs_showTab('financiero',this)">💰 Financiero</button>
+  <button class="tab-btn" onclick="pygs_showTab('eficiencia',this)">⚡ Eficiencia</button>
+  <button class="tab-btn" onclick="pygs_showTab('comerciales',this)">Comerciales</button>
+  <button class="tab-btn" onclick="pygs_showTab('mercado',this)">🗺 Mercado</button>
 </div>
 
-<!-- TAB RESUMEN -->
-<div class="tab-panel pygs-active" id="pygs-tab-resumen">
+<!-- TAB PIPELINE -->
+<div class="tab-panel" id="pygs-tab-pipeline">
   <div class="grid-4">
     <div class="kpi-card g"><div class="kpi-label">Ganados</div><div class="kpi-val" id="kpi-ganados" style="color:var(--green)">—</div><div class="kpi-sub" id="kpi-ganados-val">—</div></div>
     <div class="kpi-card r"><div class="kpi-label">Perdidos</div><div class="kpi-val" id="kpi-perdidos" style="color:var(--red)">—</div><div class="kpi-sub" id="kpi-perdidos-val">—</div></div>
     <div class="kpi-card y"><div class="kpi-label">En Revisión</div><div class="kpi-val" id="kpi-revision" style="color:var(--yellow)">—</div><div class="kpi-sub" id="kpi-revision-val">—</div></div>
-    <div class="kpi-card c"><div class="kpi-label">Ticket Promedio Ganado</div><div class="kpi-val" id="kpi-ticket-prom" style="color:var(--cyan)">—</div><div class="kpi-sub">ganados</div></div>
+    <div class="kpi-card c"><div class="kpi-label">Entregados</div><div class="kpi-val" id="kpi-entregados" style="color:var(--cyan)">—</div><div class="kpi-sub">total entregados</div></div>
   </div>
-  <div class="grid-4">
-    <div class="kpi-card g"><div class="kpi-label">⏱ Días Avg Respuesta — Ganados</div><div class="kpi-val" id="kpi-resp-gan" style="color:var(--green)">—</div><div class="kpi-sub">producción del PYG</div></div>
-    <div class="kpi-card r"><div class="kpi-label">⏱ Días Avg Respuesta — Perdidos</div><div class="kpi-val" id="kpi-resp-per" style="color:var(--red)">—</div><div class="kpi-sub">producción del PYG</div></div>
-    <div class="kpi-card y"><div class="kpi-label">⏱ Días Avg Respuesta — Revisión</div><div class="kpi-val" id="kpi-resp-rev" style="color:var(--yellow)">—</div><div class="kpi-sub">producción del PYG</div></div>
-    <div class="kpi-card b"><div class="kpi-label">⏱ Días Avg Respuesta — Global</div><div class="kpi-val" id="kpi-resp-glob" style="color:var(--blue)">—</div><div class="kpi-sub">todos los proyectos</div></div>
-  </div>
-  <div class="grid-2">
-    <div class="card"><div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Embudo de resultados — Valor en COP (M)</div><div class="chart-wrap"><canvas id="ch-embudo"></canvas></div></div>
-    <div class="card"><div class="card-title"><span class="dot" style="background:var(--cyan)"></span>Tipo de cotización (proyectos únicos)</div><div class="chart-wrap"><canvas id="ch-tipos-pie"></canvas></div></div>
-  </div>
-  <div class="card" style="margin-bottom:16px"><div class="card-title"><span class="dot" style="background:var(--orange)"></span>⚠ Propuestas en revisión hace más tiempo (acción comercial)</div><div id="pygs-alertas-revision" style="display:flex;flex-direction:column;gap:6px;"></div></div>
-  <div class="card"><div class="card-title"><span class="dot" style="background:var(--green)"></span>🏆 Top Comerciales — Por Hit Rate y Valor Ganado</div><div style="overflow-x:auto"><table class="tbl" id="pygs-top-comerciales"></table></div></div>
-  <div class="card"><div class="card-title"><span class="dot" style="background:var(--blue)"></span>🤝 Top Clientes Recurrentes — Quién cotiza más y con quién ganamos</div><div style="overflow-x:auto"><table class="tbl" id="pygs-top-clientes"></table></div></div>
-</div>
 
-<!-- TAB SWEET SPOT -->
-<div class="tab-panel" id="pygs-tab-sweetspot">
-  <div class="card" style="margin-bottom:16px"><div class="card-title"><span class="dot" style="background:var(--green)"></span>🎯 Tu Sweet Spot — Recomendaciones por Alcance × Complejidad</div><div id="pygs-ss-recos" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;"></div></div>
   <div class="grid-2">
-    <div class="card"><div class="card-title"><span class="dot" style="background:var(--cyan)"></span>Distribución Precio/m² — Ganados vs Perdidos</div><div class="chart-wrap-lg"><canvas id="ch-ss-scatter"></canvas></div></div>
-    <div class="card"><div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Histograma Precio/m² Ganados</div><div class="chart-wrap-lg"><canvas id="ch-ss-hist"></canvas></div></div>
-  </div>
-  <div class="card" style="margin-bottom:16px"><div class="card-title"><span class="dot" style="background:var(--orange)"></span>Tabla Cruce — Alcance × Complejidad</div><div style="overflow-x:auto"><table class="tbl" id="pygs-tbl-cruce"></table></div></div>
-  <div class="grid-4">
-    <div class="kpi-card g"><div class="kpi-label">% Arq. (proyectos ganados)</div><div class="kpi-val" id="kpi-pct-arq-gan" style="color:var(--green)">—</div><div class="kpi-sub">del precio total</div></div>
-    <div class="kpi-card c"><div class="kpi-label">% Téc. (proyectos ganados)</div><div class="kpi-val" id="kpi-pct-tec-gan" style="color:var(--cyan)">—</div><div class="kpi-sub">del precio total</div></div>
-    <div class="kpi-card r"><div class="kpi-label">% Arq. (proyectos perdidos)</div><div class="kpi-val" id="kpi-pct-arq-per" style="color:var(--red)">—</div><div class="kpi-sub">del precio total</div></div>
-    <div class="kpi-card o"><div class="kpi-label">% Téc. (proyectos perdidos)</div><div class="kpi-val" id="kpi-pct-tec-per" style="color:var(--orange)">—</div><div class="kpi-sub">del precio total</div></div>
-  </div>
-  <div class="card"><div class="card-title"><span class="dot" style="background:var(--blue)"></span>💰 Composición Arquitectura vs Técnicos — ¿Estamos cobrando bien la parte técnica?</div><div class="chart-wrap"><canvas id="ch-arq-tec"></canvas></div></div>
-  <div class="card"><div class="card-title"><span class="dot" style="background:var(--cyan)"></span>📐 Venta promedio por rango de m² — Arquitectura e Ingenierías (Ganados vs Perdidos)</div><div style="overflow-x:auto"><table class="tbl" id="pygs-tbl-rangos-m2"></table></div><div style="font-size:9px;color:var(--muted2);margin-top:8px;padding:0 4px">* Arquitectura incluye Imprev. Arq · Ingenierías incluye Técnicos + Imprev. Téc · Solo proyectos con desglose financiero disponible</div></div>
-</div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Embudo de resultados — Valor en COP</div>
 
-<!-- TAB VERSIONES -->
-<div class="tab-panel" id="pygs-tab-versiones">
-  <div class="grid-4">
-    <div class="kpi-card y"><div class="kpi-label">Versiones Avg Ganados</div><div class="kpi-val" id="kpi-ver-gan" style="color:var(--green)">—</div></div>
-    <div class="kpi-card r"><div class="kpi-label">Versiones Avg Perdidos</div><div class="kpi-val" id="kpi-ver-per" style="color:var(--red)">—</div></div>
-    <div class="kpi-card o"><div class="kpi-label">Proyectos con V3+</div><div class="kpi-val" id="kpi-v3plus" style="color:var(--orange)">—</div><div class="kpi-sub">señal de sobre-negociación</div></div>
-    <div class="kpi-card c"><div class="kpi-label">Descuento Promedio V1→Final</div><div class="kpi-val" id="kpi-descuento" style="color:var(--cyan)">—</div><div class="kpi-sub">en ganados</div></div>
-  </div>
-  <div class="grid-4">
-    <div class="kpi-card g"><div class="kpi-label">⚡ Días Avg V1→Cierre Ganados</div><div class="kpi-val" id="kpi-vel-gan" style="color:var(--green)">—</div><div class="kpi-sub">decisión rápida</div></div>
-    <div class="kpi-card r"><div class="kpi-label">🐢 Días Avg V1→Cierre Perdidos</div><div class="kpi-val" id="kpi-vel-per" style="color:var(--red)">—</div><div class="kpi-sub">decisión lenta</div></div>
-    <div class="kpi-card y"><div class="kpi-label">⏱ Días Avg V1→Última Versión Revisión</div><div class="kpi-val" id="kpi-vel-rev" style="color:var(--yellow)">—</div><div class="kpi-sub">pipeline activo</div></div>
-    <div class="kpi-card b"><div class="kpi-label">⚠ Umbral de fuga</div><div class="kpi-val" id="kpi-umbral" style="color:var(--blue)">—</div><div class="kpi-sub">días tras los cuales hit rate cae</div></div>
-  </div>
-  <div class="grid-2">
-    <div class="card"><div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Distribución de versiones</div><div class="chart-wrap"><canvas id="ch-ver-dist"></canvas></div></div>
-    <div class="card"><div class="card-title"><span class="dot" style="background:var(--orange)"></span>Hit Rate por # de versiones</div><div class="chart-wrap"><canvas id="ch-ver-hr"></canvas></div></div>
-  </div>
-  <div class="card" style="margin-bottom:16px"><div class="card-title"><span class="dot" style="background:var(--cyan)"></span>📊 Velocidad de decisión — Días desde V1 hasta cierre (Ganados vs Perdidos)</div><div class="chart-wrap"><canvas id="ch-velocidad"></canvas></div></div>
-  <div class="card"><div class="card-title"><span class="dot" style="background:var(--red)"></span>⚠ Proyectos en revisión con muchas versiones (riesgo)</div><div style="overflow-x:auto"><table class="tbl" id="pygs-tbl-versiones-riesgo"></table></div></div>
-</div>
-
-<!-- TAB COMERCIALES -->
-<div class="tab-panel" id="pygs-tab-comerciales">
-  <div class="grid-2">
-    <div class="card"><div class="card-title"><span class="dot" style="background:var(--green)"></span>Hit Rate por Comercial (mín. 5 propuestas)</div><div class="chart-wrap-lg"><canvas id="ch-com-hr"></canvas></div></div>
-    <div class="card"><div class="card-title"><span class="dot" style="background:var(--cyan)"></span>Valor Ganado por Comercial (M COP)</div><div class="chart-wrap-lg"><canvas id="ch-com-val"></canvas></div></div>
-  </div>
-  <div class="card"><div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Especialización — Tipo de proyecto por Comercial</div><div style="overflow-x:auto"><table class="tbl" id="pygs-tbl-com-tipo"></table></div></div>
-  <div class="card"><div class="card-title"><span class="dot" style="background:var(--orange)"></span>Tabla detallada por Comercial</div><div style="overflow-x:auto"><table class="tbl" id="pygs-tbl-comerciales"></table></div></div>
-</div>
-
-<!-- TAB PIPELINE & TENDENCIAS -->
-<div class="tab-panel" id="pygs-tab-pipeline">
-  <div class="grid-2">
-    <div class="card"><div class="card-title"><span class="dot" style="background:var(--cyan)"></span>Hit Rate mensual</div><div class="chart-wrap"><canvas id="ch-trend-hr"></canvas></div></div>
-    <div class="card"><div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Volumen mensual (proyectos)</div><div class="chart-wrap"><canvas id="ch-trend-vol"></canvas></div></div>
-  </div>
-  <div class="card" style="margin-bottom:16px"><div class="card-title"><span class="dot" style="background:var(--green)"></span>📈 Pipeline activo — Propuestas en revisión por valor</div><div id="pygs-pipeline-list" style="display:flex;flex-direction:column;gap:6px;"></div></div>
-  <div class="grid-2">
-    <div class="card"><div class="card-title"><span class="dot" style="background:var(--orange)"></span>Por Sector — Hit Rate</div><div class="chart-wrap"><canvas id="ch-sector-hr"></canvas></div></div>
-    <div class="card"><div class="card-title"><span class="dot" style="background:var(--blue)"></span>Por País — Volumen</div><div class="chart-wrap"><canvas id="ch-pais-vol"></canvas></div></div>
-  </div>
-</div>
-
-</div><!-- /db-pygs -->
 
 <!-- ING -->
 
@@ -2770,7 +2680,7 @@ function switchDashboard(id) {
     _innovInit=true;
   }
   if(id==='pygs'&&!_pygsInit){
-    setTimeout(()=>{try{pygs_renderHeader();const w=document.getElementById('db-pygs');if(w){const fp=w.querySelector('.tab-panel');const fb=w.querySelector('.tab-btn');if(fp)fp.classList.add('pygs-active');if(fb)fb.classList.add('pygs-active');}pygs_renderResumen();}catch(e){console.warn('pygs:',e);}},50);
+    setTimeout(()=>{try{pygs_renderHeader();const w=document.getElementById('db-pygs');if(w){const fp=w.querySelector('.tab-panel');const fb=w.querySelector('.tab-btn');if(fp)fp.classList.add('pygs-active');if(fb)fb.classList.add('pygs-active');}pygs_renderPipeline();}catch(e){console.warn('pygs:',e);}},50);
     _pygsInit=true;
   }
   if(id==='ing'&&!_ingInit){
@@ -2816,6 +2726,8 @@ const SP_CONFIG = {
   sheetNamePYGs:'Seguimiento PYGS',
   sheetNameInnov:'Seguimiento Innovacion',
   sheetNameIng: 'ING-BASE DE DATOS',
+  sheetNameHoras: 'Horas',
+  sheetNameRegistro: 'Registro 25-26',
   siteUrl:     'https://aeicol-my.sharepoint.com/personal/nzapata_aeispaces_com',
   listName:    'AEI_Overrides',
   refreshInterval: 15,
@@ -2958,7 +2870,16 @@ function setFilter(btn) {
     document.querySelectorAll('[data-k="celula"]').forEach(b=>b.classList.remove('active'));
   }
   if (btn) btn.classList.add('active');
-  setTimeout(() => { try { renderAll(); } catch(e) {} }, 30);
+  // Tab-specific renders
+  const RENDER_ALL_TABS = ['general','intel','cargabilidad','gantt','equipos','celulas','proyectos','proyeccion'];
+  if (RENDER_ALL_TABS.includes(id)) {
+    setTimeout(() => { try { renderAll(); } catch(e) {} }, 30);
+  }
+  if (id === 'horas')     setTimeout(() => renderHoras(), 30);
+  if (id === 'carg_bim')  setTimeout(() => renderCargBIM(), 30);
+  if (id === 'carg_pmo')  setTimeout(() => renderCargPMO(), 30);
+  if (id === 'carg_ing')  setTimeout(() => renderCargIngenieria(), 30);
+  if (id === 'exp')       setTimeout(() => renderEXP(document.getElementById('exp-select')?.value||''), 30);
 }
 
 function clearAll() {
@@ -2997,6 +2918,7 @@ function showTab(id, btn) {
       id === 'proyectos' || id === 'proyeccion') {
     setTimeout(() => { try { renderAll(); } catch(e) {} }, 30);
   }
+  if (id === 'horas')     setTimeout(() => renderHoras(), 30);
   if (id === 'carg_bim')  setTimeout(() => renderCargBIM(), 30);
   if (id === 'carg_pmo')  setTimeout(() => renderCargPMO(), 30);
   if (id === 'carg_ing')  setTimeout(() => renderCargIngenieria(), 30);
@@ -3336,20 +3258,6 @@ function parseExcelRows(rows) {
       tipo_proyecto: row[66] ? row[66].toString().trim().replace(/^(N\/A|FALSO|FALSE|)$/i,'') : '',
     });
   }
-  // Diagnóstico
-  if (result.length > 0) {
-    const porEstado = {};
-    result.forEach(p => { porEstado[p.estado || '—'] = (porEstado[p.estado || '—']||0) + 1; });
-    const porCelula = {};
-    result.forEach(p => { porCelula[p.celula] = (porCelula[p.celula]||0) + 1; });
-    const conFin = result.filter(p => p.fecha_fin_real || p.fecha_fin_prog).length;
-    console.log('[Diseño] Proyectos parseados:', result.length);
-    console.log('[Diseño] Por estado:', porEstado);
-    console.log('[Diseño] Por célula:', porCelula);
-    console.log('[Diseño] Con fecha fin (real o prog):', conFin, '| Sin fecha fin:', result.length - conFin);
-  } else {
-    console.warn('[Diseño] ⚠ Sin proyectos parseados');
-  }
   return result.length > 0 ? result : null;
 }
 
@@ -3383,149 +3291,28 @@ async function fetchInnovFromExcel(token) {
   } catch(e){console.warn('Innov:',e);return null;}
 }
 function parseInnovRows(rows) {
-  if(!rows||rows.length<2) { console.warn('[Innov] Sin filas o solo header'); return null; }
-  // Normalizar header: uppercase, trim, sin acentos, sin espacios duplicados
-  const norm = s => (s||'').toString().toUpperCase().trim()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')  // quita acentos (Ñ→N, Á→A)
-    .replace(/\s+/g,'_');
-
-  // ─── Auto-detectar fila de header (escaneo hasta 30 filas + fallback fila 14) ───
-  // El usuario confirmó que en el Excel el header está en B15 (fila 15 de Excel = índice 14)
-  const expectedSubstrings=['ANO','ANIO','TIPO','RESULTADO','MES','PROYECTO','COMERCIAL','DIRECTOR','EQUIPO','PRECIO','SECTOR','FECHA'];
-  let headerRow=-1;
-  let bestMatches=0;
-  const maxScan=Math.min(rows.length,30);
-  for(let r=0;r<maxScan;r++){
-    if(!rows[r]) continue;
-    const normRow=rows[r].map(c=>norm(c));
-    const matches=normRow.filter(cell=>cell&&expectedSubstrings.some(k=>cell.includes(k))).length;
-    if(matches>=3&&matches>bestMatches){bestMatches=matches;headerRow=r;}
-  }
-  // Fallback: si no se encontró nada confiable, forzar fila 14 (B15 en Excel)
-  if(headerRow<0||bestMatches<3){
-    console.warn('[Innov] No se detectó header automáticamente. Forzando fila 14 (B15 según config).');
-    headerRow=14;
-  }
-  console.log('[Innov] Fila de header usada:', headerRow, '(equivale a fila', headerRow+1, 'en Excel) | matches:', bestMatches);
-
-  const hdrsRaw = rows[headerRow].map(h=>(h||'').toString());
-  const hdrs = hdrsRaw.map(norm);
-  window._innovHeadersRaw = hdrsRaw;
-  window._innovHeaders = hdrs;
-  window._innovRows = rows;
-  window._innovHeaderRow = headerRow;
-  console.log('[Innov] Headers RAW:', hdrsRaw.join(' | '));
-  console.log('[Innov] Headers normalizados:', hdrs.join(' | '));
-  console.log('[Innov] Primera fila de datos:', rows[headerRow+1]);
-  console.log('[Innov] Total filas de datos a procesar:', rows.length-headerRow-1);
-
-  // findCol: busca columna por keywords con MATCH POR SUBSTRING (acepta "Año del Concurso", etc.)
-  const findCol=(...keywords)=>{
-    for(const kw of keywords){
-      const nk=norm(kw);
-      // 1. exact match
-      const exact=hdrs.indexOf(nk);
-      if(exact>=0) return exact;
-      // 2. substring match (header contiene la keyword)
-      const partial=hdrs.findIndex(h=>h&&h.includes(nk));
-      if(partial>=0) return partial;
-    }
-    return -1;
-  };
-  const g=(row,...keys)=>{
-    const i=findCol(...keys);
-    return i>=0?(row[i]||'').toString().trim():'';
-  };
-  const cn=v=>{const n=parseFloat(String(v||'').replace(/[$.\s]/g,'').replace(',','.'));return isNaN(n)?0:n;};
+  if(!rows||rows.length<2) return null;
+  const hdrs=rows[0].map(h=>(h||'').toString().toUpperCase().trim());
+  const g=(row,k)=>{const i=hdrs.indexOf(k);return i>=0?(row[i]||'').toString().trim():'';};
+  const cn=v=>{const n=parseFloat(v.replace(',','.'));return isNaN(n)?0:n;};
   const MM={enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,octubre:10,noviembre:11,diciembre:12};
-
-  // Helper: extraer año de un valor de fecha (varios formatos)
-  const extractYear=(val)=>{
-    if(!val) return 0;
-    const s=String(val).trim();
-    let m=s.match(/(20\d{2})/);  // busca 20XX en cualquier parte
-    if(m){const y=parseInt(m[1]);if(y>=2020&&y<=2035)return y;}
-    // Excel serial number
-    if(/^\d+(\.\d+)?$/.test(s)){
-      const serial=parseFloat(s);
-      if(serial>40000&&serial<60000){
-        const date=new Date((serial-25569)*86400*1000);
-        const y=date.getFullYear();
-        if(y>=2020&&y<=2035)return y;
-      }
-    }
-    return 0;
-  };
-
   const result=[];
-  const skip={sinAnio:0,sinTipo:0,total:0};
-  const sample=[];
-  // Encontrar índice columna AÑO una sola vez para diagnóstico
-  const idxAnio=['ANO','ANIO','ANOS','YEAR','ANO_INICIO','ANIO_INICIO'].map(k=>hdrs.indexOf(k)).find(i=>i>=0);
-  if(idxAnio>=0){
-    console.log('[Innov] Columna Año encontrada en índice', idxAnio, '— header raw:', hdrsRaw[idxAnio]);
-    const muestraRows=[rows[headerRow+1],rows[headerRow+2],rows[headerRow+3]];
-    console.log('[Innov] Valores año primeras 3 filas datos:', muestraRows.map(r=>r?r[idxAnio]:'(vacío)'));
-  } else {
-    console.warn('[Innov] ⚠ NO se encontró columna de año entre los headers normalizados');
-  }
-
-  for(let i=headerRow+1;i<rows.length;i++){
+  for(let i=1;i<rows.length;i++){
     const row=rows[i];
-    if(!row||row.every(c=>c===''||c===null||c===undefined)) continue;  // saltar filas vacías
-    skip.total++;
-
-    // Leer valor crudo de la columna Año
-    const rawAnio=g(row,'AÑO','ANIO','ANO','AÑOS','YEAR','AÑO_INICIO','ANIO_INICIO');
-    let anio=0;
-    // Caso 1: ya viene como número de año válido (2020-2035)
-    const direct=parseInt(rawAnio);
-    if(direct>=2020&&direct<=2035){anio=direct;}
-    // Caso 2: viene como serial date Excel o texto con fecha
-    else if(rawAnio){anio=extractYear(rawAnio);}
-    // Caso 3: fallback a columnas de fecha
-    if(!anio||anio<2020){
-      anio=extractYear(g(row,'FECHA_INICIO','FECHA INICIO','FECHA','FECHA_ENTRADA','FECHA ENTRADA','FECHA_FIN','FECHA FIN'));
-    }
-
-    if(!anio||anio<2020){
-      skip.sinAnio++;
-      if(sample.length<3) sample.push({fila:i+1, valorAnio:rawAnio, fila_completa:row});
-      continue;
-    }
-
+    const anio=parseInt(g(row,'AÑO')||g(row,'ANIO')||'0');
+    if(!anio||anio<2020) continue;
     const mesStr=(g(row,'MES')||'').toLowerCase();
-    const mes=MM[mesStr]||parseInt(g(row,'MES_N','MES_NUM','MES NUMERO')||'0')||0;
-    const tipo=g(row,'TIPO','TIPO_CONCURSO','TIPO CONCURSO');
-    const res=g(row,'RESULTADO','ESTADO')||'EN REVISION';
-    if(!tipo){skip.sinTipo++;continue;}
-
-    result.push({anio,mes,
-      dir:g(row,'COMERCIAL','DIRECTOR','DIRECTOR_COMERCIAL'),
-      equipo:g(row,'EQUIPO_DISEÑO','EQUIPO_DISENO','EQUIPO DISEÑO','EQUIPO DISENO','EQUIPO'),
-      tipo,resultado:res,
-      precio:cn(g(row,'PRECIO_COP','PRECIO COP','PRECIO','VALOR','VALOR_COP')||'0'),
-      dias:cn(g(row,'DIAS','DIAS_TRABAJADOS')||'0'),
-      dis:cn(g(row,'NUM_DISENADORES','NUM DISEÑADORES','NUM DISENADORES','NUMERO_DISENADORES','DISEÑADORES','DISENADORES')||'1')||1,
-      fi:g(row,'FECHA_INICIO','FECHA INICIO','FECHA'),
-      ff:g(row,'FECHA_FIN','FECHA FIN','FECHA_FINAL'),
-      proy:g(row,'PROYECTO','NOMBRE_PROYECTO','NOMBRE PROYECTO','NOMBRE'),
-      m2:cn(g(row,'AREA_M2','AREA M2','M2','AREA','METROS')||'0'),
-      sector:g(row,'SECTOR')||'CORPORATIVO',
-      pais:g(row,'PAIS','PAÍS')||'Colombia'});
+    const mes=MM[mesStr]||parseInt(g(row,'MES_N')||'0')||0;
+    const tipo=g(row,'TIPO'); const res=g(row,'RESULTADO');
+    if(!tipo||!res) continue;
+    result.push({anio,mes,dir:g(row,'COMERCIAL')||g(row,'DIRECTOR'),
+      equipo:g(row,'EQUIPO_DISEÑO')||g(row,'EQUIPO_DISENO')||g(row,'EQUIPO'),
+      tipo,resultado:res,precio:cn(g(row,'PRECIO_COP')||g(row,'PRECIO')||'0'),
+      dias:cn(g(row,'DIAS')||'0'),dis:cn(g(row,'NUM_DISENADORES')||'1')||1,
+      fi:g(row,'FECHA_INICIO'),ff:g(row,'FECHA_FIN'),proy:g(row,'PROYECTO'),
+      m2:cn(g(row,'AREA_M2')||g(row,'M2')||'0'),
+      sector:g(row,'SECTOR')||'CORPORATIVO',pais:g(row,'PAIS')||'Colombia'});
   }
-
-  // Diagnóstico
-  const porAnio={};
-  result.forEach(r=>{porAnio[r.anio]=(porAnio[r.anio]||0)+1;});
-  console.log('[Innov] Parseadas:', result.length, '| Sin AÑO:', skip.sinAnio, '| Sin TIPO:', skip.sinTipo);
-  console.log('[Innov] Distribución por año:', porAnio);
-  if(skip.sinAnio>0&&sample.length){
-    console.warn('[Innov] Muestras filas descartadas (sin año detectable):');
-    sample.forEach(s=>console.warn('  Fila',s.fila,'| valor leído en col Año:',JSON.stringify(s.valorAnio),'| fila completa:',s.fila_completa));
-    console.warn('[Innov] → Si el "valor leído" es un número grande (ej: 46023) es serial date Excel — debería autoconvertirse. Si está vacío, la celda está vacía en SharePoint.');
-  }
-  if(!porAnio[2026]) console.warn('[Innov] ⚠ Sin registros de 2026.');
   return result.length?result:null;
 }
 
@@ -3539,147 +3326,24 @@ async function fetchPYGsFromExcel(token) {
   } catch(e){console.warn('PYGs:',e);return null;}
 }
 function parsePYGsRows(rows) {
-  if(!rows||rows.length<2) { console.warn('[PYGS] Sin filas o solo header'); return null; }
-  const norm = s => (s||'').toString().toUpperCase().trim()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/\s+/g,'_');
-
-  // ─── Auto-detectar fila de header ───
-  const expectedSubstrings=['ANO','ANIO','VERSION','CLIENTE','PROYECTO','TIPO','SECTOR','ALCANCE','COMPLEJIDAD','PRECIO','RESULTADO','COMERCIAL','COD'];
-  let headerRow=-1; let bestMatches=0;
-  const maxScan=Math.min(rows.length,30);
-  for(let r=0;r<maxScan;r++){
-    if(!rows[r]) continue;
-    const normRow=rows[r].map(c=>norm(c));
-    const matches=normRow.filter(cell=>cell&&expectedSubstrings.some(k=>cell.includes(k))).length;
-    if(matches>=4&&matches>bestMatches){bestMatches=matches;headerRow=r;}
+  if(!rows||rows.length<9) return null;
+  const cn=v=>{const n=parseFloat(String(v||'').replace(/[$. ]/g,'').replace(',','.'));return isNaN(n)?0:n;};
+  const res=[];
+  for(let i=9;i<rows.length;i++){
+    const row=rows[i]; const cod=String(row[0]||'').trim();
+    if(!cod.startsWith('PYG')) continue;
+    res.push({cod,año:String(row[1]||''),mes:String(row[2]||'').toLowerCase(),
+      version:parseInt(String(row[3]||'1').replace(/[^0-9]/g,''))||1,
+      cliente:String(row[4]||''),proyecto:String(row[5]||''),
+      ciudad:String(row[6]||''),pais:String(row[7]||''),estado:String(row[8]||''),
+      f_ini:String(row[9]||''),f_fin:String(row[10]||''),tipo:String(row[11]||''),
+      sector:String(row[12]||''),alcance:String(row[14]||''),complejidad:String(row[15]||''),
+      renders:cn(row[16]),m2:cn(String(row[17]||'').replace('m2','')),
+      precio:cn(row[18]),arq:cn(row[19]),imp_arq:cn(row[20]),tec:cn(row[21]),
+      imp_tec:cn(row[22]),precio_m2:cn(row[23]),dias:cn(row[24]),
+      director:String(row[25]||''),resultado:String(row[26]||''),dias_real:cn(row[24])});
   }
-  if(headerRow<0||bestMatches<4){
-    console.warn('[PYGS] No se detectó header automáticamente. Forzando fila 8 (fila 9 en Excel — formato típico).');
-    headerRow=8;
-  }
-  console.log('[PYGS] Fila de header usada:', headerRow, '(equivale a fila', headerRow+1, 'en Excel) | matches:', bestMatches);
-
-  const hdrsRaw=rows[headerRow].map(h=>(h||'').toString());
-  const hdrs=hdrsRaw.map(norm);
-  window._pygsHeadersRaw=hdrsRaw; window._pygsHeaders=hdrs; window._pygsRows=rows;
-  console.log('[PYGS] Headers RAW:', hdrsRaw.join(' | '));
-  console.log('[PYGS] Headers normalizados:', hdrs.join(' | '));
-  console.log('[PYGS] Total filas de datos:', rows.length-headerRow-1);
-
-  // findCol: match exacto + substring
-  const findCol=(...keywords)=>{
-    for(const kw of keywords){
-      const nk=norm(kw);
-      const exact=hdrs.indexOf(nk); if(exact>=0) return exact;
-      const partial=hdrs.findIndex(h=>h&&h.includes(nk)); if(partial>=0) return partial;
-    }
-    return -1;
-  };
-  const g=(row,...keys)=>{const i=findCol(...keys);return i>=0?(row[i]||'').toString().trim():'';};
-  const cn=v=>{
-    const s=String(v||'').trim();
-    if(s===''||s==='-'||s==='—'||s==='#¡VALOR!'||s==='#VALUE!'||s==='N/A'||/^\s*$/.test(s)) return 0;
-    const n=parseFloat(s.replace(/[$\s]/g,'').replace(/\./g,'').replace(',','.'));
-    return isNaN(n)?0:n;
-  };
-  const extractYear=val=>{
-    if(!val) return 0;
-    const s=String(val).trim();
-    const m=s.match(/(20\d{2})/); if(m){const y=parseInt(m[1]);if(y>=2020&&y<=2035)return y;}
-    if(/^\d+(\.\d+)?$/.test(s)){
-      const serial=parseFloat(s);
-      if(serial>40000&&serial<60000){
-        const d=new Date((serial-25569)*86400*1000); const y=d.getFullYear();
-        if(y>=2020&&y<=2035) return y;
-      }
-    }
-    return 0;
-  };
-
-  const result=[]; const skip={sinCod:0,sinAno:0,total:0}; const sample=[];
-  for(let i=headerRow+1;i<rows.length;i++){
-    const row=rows[i];
-    if(!row||row.every(c=>c===''||c===null||c===undefined)) continue;
-    skip.total++;
-
-    const cod=g(row,'COD_PROYECT','COD._PROYECT','COD.PROYECT','COD','CODIGO','CODIGO_PROYECTO');
-    const proyecto=g(row,'PROYECTO','NOMBRE_PROYECTO','NOMBRE');
-    // Saltar filas resumen/total
-    if(!cod||/^total/i.test(cod)||/^total/i.test(proyecto)){skip.sinCod++;continue;}
-
-    // Año
-    const rawAno=g(row,'AÑO','ANIO','ANO','YEAR');
-    let anio=parseInt(rawAno);
-    if(!(anio>=2020&&anio<=2035)){anio=extractYear(rawAno);}
-    if(!anio){anio=extractYear(g(row,'FECHA_INICIO','FECHA INICIO','FECHA'));}
-    if(!anio){
-      skip.sinAno++;
-      if(sample.length<3) sample.push({fila:i+1,cod,valorAno:rawAno});
-      continue;
-    }
-
-    // Versión: extraer número de "V1", "V2", "V3"
-    const rawVer=g(row,'VERSION','VER','V');
-    const versionNum=parseInt(rawVer.replace(/[^0-9]/g,''))||1;
-
-    // Resultado normalizado
-    let resultado=g(row,'RESULTADO','ESTADO_RESULTADO').toUpperCase();
-    if(resultado.includes('GANAD')) resultado='GANADO';
-    else if(resultado.includes('PERDID')) resultado='PERDIDO';
-    else if(resultado.includes('REVISION')||resultado.includes('REVISIÓN')) resultado='EN REVISION';
-    // Otros valores se conservan tal cual
-
-    // m2 puede venir como "214,0 m2" — limpiar sufijo y separador decimal
-    const cleanM2 = v => {
-      const s = String(v||'').replace(/\s*m2\s*$/i,'').trim();
-      return cn(s);
-    };
-
-    result.push({
-      cod, proyecto,
-      anio, mes:g(row,'MES_LETRA','MES LETRA','MES'),
-      version:rawVer||('V'+versionNum), versionNum,
-      cliente:g(row,'CLIENTE'),
-      ciudad:g(row,'CIUDAD'), pais:g(row,'PAIS','PAÍS'),
-      estado:g(row,'ESTADO'),
-      f_ini:g(row,'FECHA_INICIO','FECHA INICIO','FECHA_ENTRADA'),
-      f_fin:g(row,'FECHA_ENTREGA','FECHA ENTREGA','FECHA_FIN'),
-      tipo:g(row,'TIPO'), sector:g(row,'SECTOR'),
-      diseno_const:g(row,'DISENO/CONST','DISEÑO/CONST','DISENO_CONST'),
-      alcance:g(row,'ALCANCE'),
-      complejidad:g(row,'COMPLEJIDAD'),
-      m2:cleanM2(g(row,'AREA/M2','AREA_M2','M2','AREA','METROS')),
-      precio:cn(g(row,'PRECIO/PESOS','PRECIO_PESOS','PRECIO','VALOR','VALOR_COP')),
-      // Subtotales financieros (importantes para análisis de margen)
-      arq:cn(g(row,'ARQUITECTURA')),
-      imp_arq:cn(g(row,'IMPREVISTOS_ARQ','IMPREVISTOS ARQ')),
-      tec:cn(g(row,'TECNICOS')),
-      imp_tec:cn(g(row,'IMPREVISTOS_TEC','IMPREVISTOS','IMP_TEC')),
-      precio_m2:cn(g(row,'PRECIO_X_M2','PRECIO/M2','PRECIO_M2')),
-      dias:cn(g(row,'TIEMPO/DIAS','TIEMPO_DIAS','DIAS','TIEMPO')),
-      director:g(row,'DIRECTOR_COMERCIAL','DIRECTOR COMERCIAL','COMERCIAL','DIRECTOR'),
-      resultado,
-      // legacy compat para código viejo
-      año:String(anio), dias_real:cn(g(row,'TIEMPO/DIAS','TIEMPO_DIAS','DIAS','TIEMPO')),
-      arq:0, imp_arq:0, tec:0
-    });
-  }
-
-  // Diagnóstico
-  const porAno={}, porRes={};
-  result.forEach(r=>{porAno[r.anio]=(porAno[r.anio]||0)+1; porRes[r.resultado]=(porRes[r.resultado]||0)+1;});
-  console.log('[PYGS] Parseadas:', result.length, '| Sin COD:', skip.sinCod, '| Sin Año:', skip.sinAno);
-  console.log('[PYGS] Distribución por año:', porAno);
-  console.log('[PYGS] Distribución por resultado:', porRes);
-  // Conteo único por proyecto
-  const proyectosUnicos=new Set(result.map(r=>r.cod)).size;
-  console.log('[PYGS] Proyectos únicos (por COD):', proyectosUnicos, '| Versiones totales:', result.length);
-  if(skip.sinAno>0&&sample.length){
-    console.warn('[PYGS] Muestras filas descartadas:');
-    sample.forEach(s=>console.warn('  Fila',s.fila,'| cod:',s.cod,'| valor año:',JSON.stringify(s.valorAno)));
-  }
-  return result.length?result:null;
+  return res.length?res:null;
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -3900,41 +3564,36 @@ async function initConnection() {
       proyectos.forEach(p => RAW.push(p));
     }
 
-    // Cargar datos de Innovación desde Excel
-    try {
-      const innovData = await fetchInnovFromExcel(token);
-      if (innovData && innovData.length && typeof INNOV_RAW !== 'undefined') {
-        INNOV_RAW.length = 0;
-        innovData.forEach(r => INNOV_RAW.push(r));
-        console.log('[Innov] INNOV_RAW actualizado. Total registros:', INNOV_RAW.length);
-        console.log('[Innov] Registros 2026:', INNOV_RAW.filter(r=>r.anio===2026).length);
-        if (typeof innovRefresh === 'function') {
-          try { innovRefresh(); } catch(e) { console.warn('innovRefresh tras carga:', e); }
-        }
-      } else {
-        console.warn('[Innov] fetchInnovFromExcel devolvió vacío o nulo. Manteniendo datos hardcodeados.');
-      }
-    } catch(e) { console.warn('Innov load:', e); }
-
-    // Cargar datos de PYGs desde Excel
-    try {
-      const pygsData = await fetchPYGsFromExcel(token);
-      if (pygsData && pygsData.length && typeof PYGS_DATA !== 'undefined') {
-        PYGS_DATA.length = 0;
-        pygsData.forEach(r => PYGS_DATA.push(r));
-        console.log('[PYGS] PYGS_DATA actualizado. Total registros:', PYGS_DATA.length);
-        console.log('[PYGS] Registros 2026:', PYGS_DATA.filter(r=>r.anio===2026).length);
-        if (typeof pygs_refresh === 'function') {
-          try { pygs_refresh(); } catch(e) { console.warn('pygs_refresh tras carga:', e); }
-        }
-      } else {
-        console.warn('[PYGS] fetchPYGsFromExcel devolvió vacío o nulo. Manteniendo datos hardcodeados.');
-      }
-    } catch(e) { console.warn('PYGs load:', e); }
-
     // Cargar overrides desde SharePoint List
     const ovs = await fetchOverridesFromSP(token);
     Object.assign(OVERRIDES, ovs);
+    try{const _sv=localStorage.getItem('aei_overrides');if(_sv)Object.assign(OVERRIDES,JSON.parse(_sv));}catch(e){}
+
+    // Cargar Innovación
+    try{
+      const iNv = await fetchInnovFromExcel(token);
+      if(iNv && iNv.length){ INNOV_RAW.length=0; iNv.forEach(p=>INNOV_RAW.push(p)); if(_innovInit) innovRefresh(); }
+    }catch(e){console.warn('innov fetch:',e);}
+
+    // Cargar PYGs
+    try{
+      const pL = await fetchPYGsFromExcel(token);
+      if(pL && pL.length){
+        RAW_PYGS.length=0; pL.forEach(p=>RAW_PYGS.push(p));
+        PYGS_DATA.length=0; RAW_PYGS.filter(p=>p.cod&&p.proyecto).forEach(p=>PYGS_DATA.push(p));
+        if(_pygsInit){ Object.keys(PYGS__rendered).forEach(k=>delete PYGS__rendered[k]); pygs_renderHeader(); pygs_renderPipeline(); }
+      }
+    }catch(e){console.warn('pygs fetch:',e);}
+
+    // Cargar Horas planeadas vs ejecutadas
+    try{
+      const [hP,hE] = await Promise.all([fetchHorasFromExcel(token), fetchRegistroFromExcel(token)]);
+      if(hP) HORAS_PLAN = hP;
+      if(hE) HORAS_EJEC = hE;
+      horasBuildCruce();
+      const horasTab = document.getElementById('tab-horas');
+      if(horasTab && horasTab.classList.contains('active')) renderHoras();
+    }catch(e){console.warn('horas fetch:',e);}
 
     CONN.ready = true;
     CONN.lastSync = new Date();
@@ -3945,24 +3604,9 @@ async function initConnection() {
       setInterval(async () => {
         const ps = await fetchProyectosFromExcel(CONN.token);
         if (ps) { RAW.length = 0; ps.forEach(p => RAW.push(p)); renderAll(); }
-        // Refrescar también Innovación
-        try {
-          const inv = await fetchInnovFromExcel(CONN.token);
-          if (inv && inv.length && typeof INNOV_RAW !== 'undefined') {
-            INNOV_RAW.length = 0;
-            inv.forEach(r => INNOV_RAW.push(r));
-            if (typeof innovRefresh === 'function') innovRefresh();
-          }
-        } catch(e) { console.warn('Innov refresh:', e); }
-        // Refrescar también PYGs
-        try {
-          const pg = await fetchPYGsFromExcel(CONN.token);
-          if (pg && pg.length && typeof PYGS_DATA !== 'undefined') {
-            PYGS_DATA.length = 0;
-            pg.forEach(r => PYGS_DATA.push(r));
-            if (typeof pygs_refresh === 'function') pygs_refresh();
-          }
-        } catch(e) { console.warn('PYGs refresh:', e); }
+        try{const iNv=await fetchInnovFromExcel(CONN.token);if(iNv&&iNv.length){INNOV_RAW.length=0;iNv.forEach(p=>INNOV_RAW.push(p));if(_innovInit)innovRefresh();}}catch(e){}
+        try{const pL=await fetchPYGsFromExcel(CONN.token);if(pL&&pL.length){RAW_PYGS.length=0;pL.forEach(p=>RAW_PYGS.push(p));PYGS_DATA.length=0;RAW_PYGS.filter(p=>p.cod&&p.proyecto).forEach(p=>PYGS_DATA.push(p));if(_pygsInit){Object.keys(PYGS__rendered).forEach(k=>delete PYGS__rendered[k]);pygs_renderHeader();pygs_renderPipeline();}}}catch(e){}
+        try{const[hP,hE]=await Promise.all([fetchHorasFromExcel(CONN.token),fetchRegistroFromExcel(CONN.token)]);if(hP)HORAS_PLAN=hP;if(hE)HORAS_EJEC=hE;horasBuildCruce();const ht=document.getElementById('tab-horas');if(ht&&ht.classList.contains('active'))renderHoras();}catch(e){}
         CONN.lastSync = new Date();
         updateSyncBadge('live', CONN.lastSync);
       }, SP_CONFIG.refreshInterval * 60000);
@@ -4353,16 +3997,14 @@ function renderCargabilidad() {
   const act=activos.length;
   const hold=data.filter(p=>p.estado==='HOLD').length;
   const m2Act=activos.reduce((s,p)=>s+(p.m2||0),0);
-  const m2Total=data.reduce((s,p)=>s+(p.m2||0),0);
-  const m2Cerrado=data.filter(p=>p.estado==='CERRADO').reduce((s,p)=>s+(p.m2||0),0);
   const avgAct=coords.length?activos.length/coords.length:0;
 
   document.getElementById('kpis-carg').innerHTML=`
-    <div class="kpi-card g"><div class="kpi-label">Proyectos Activos</div><div class="kpi-val g">${act}</div><div class="kpi-sub">en cronograma</div></div>
-    <div class="kpi-card c"><div class="kpi-label">M² en Diseño Activo</div><div class="kpi-val c">${N(m2Act)}</div><div class="kpi-sub">m² actualmente</div></div>
-    <div class="kpi-card y"><div class="kpi-label">M² Diseñados Total</div><div class="kpi-val y">${N(m2Total)}</div><div class="kpi-sub">${N(m2Cerrado)} m² cerrados</div></div>
+    <div class="kpi-card g"><div class="kpi-label">Proyectos Activos</div><div class="kpi-val g">${act}</div><div class="kpi-sub">${N(m2Act)} m² activos</div></div>
     <div class="kpi-card o"><div class="kpi-label">En Hold</div><div class="kpi-val o">${hold}</div><div class="kpi-sub">Pendientes</div></div>
-    <div class="kpi-card p"><div class="kpi-label">Coordinadores</div><div class="kpi-val p">${coords.length}</div><div class="kpi-sub">${N(avgAct,1)} proy/coord</div></div>
+    <div class="kpi-card y"><div class="kpi-label">Coordinadores</div><div class="kpi-val y">${coords.length}</div><div class="kpi-sub">Activos en equipo</div></div>
+    <div class="kpi-card c"><div class="kpi-label">Prom. Activos/Coord.</div><div class="kpi-val c">${N(avgAct,1)}</div><div class="kpi-sub">proyectos por coordinador</div></div>
+    <div class="kpi-card p"><div class="kpi-label">Células con Carga</div><div class="kpi-val p">${CELULAS.filter(c=>activos.some(p=>p.celula===c)).length}</div><div class="kpi-sub">de ${CELULAS.length} células</div></div>
   `;
 
   // Utilización = proyectos activos / capacidad razonable (4 proyectos simultáneos por coordinador)
@@ -5292,540 +4934,6 @@ function setSim(v) {
   renderProyeccion();
 }
 
-
-// ═══════════════════════════════════════════════════════════════
-// CARGA INSTALADA — Estado y configuración
-// ═══════════════════════════════════════════════════════════════
-const CI_STATE = {
-  semana: 1,                    // semana seleccionada (1-52)
-  capacidades: null,            // se inicializa con base en CELULAS_DATA
-  ano: 2026,
-  charts: { conteo: null, carga: null }
-};
-
-// Pesos por etapa (impacto en carga)
-const CI_PESO_ETAPA = {
-  'AE': 0.5,  'EB': 1.0,  'AP': 1.5,  'PC': 1.8,
-  'IC': 1.0,  'AO': 0.3,  'AC': 0.3,  'C':  1.5,  'MA': 0.7,  'WF': 0.4
-};
-// Pesos por complejidad
-const CI_PESO_COMPL = { 'ALTA': 2.0, 'MEDIA': 1.5, 'ESTANDAR': 1.0, 'ESTÁNDAR': 1.0 };
-
-// Inicializar capacidades a partir de CELULAS_DATA
-function ciInitCapacidades() {
-  if (CI_STATE.capacidades) return;
-  CI_STATE.capacidades = {};
-  Object.entries(CELULAS_DATA).forEach(([id, info]) => {
-    CI_STATE.capacidades[id] = info.diseñadores.length;
-  });
-}
-
-// Capacidad total (suma de todas las células)
-function ciCapacidadTotal() {
-  ciInitCapacidades();
-  return Object.values(CI_STATE.capacidades).reduce((s,v) => s+v, 0);
-}
-
-// Helper: parsear fecha YYYY-MM-DD
-function ciParseDate(s) {
-  if (!s) return null;
-  const m = String(s).match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
-  if (!m) return null;
-  const dt = new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
-  return isNaN(dt.getTime()) ? null : dt;
-}
-
-// Calcular el ISO week (1-52) y año de una fecha
-function ciWeekOfYear(date) {
-  const d = new Date(date.getTime());
-  d.setHours(0,0,0,0);
-  // Jueves de la semana ISO
-  d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
-  const yearStart = new Date(d.getFullYear(), 0, 1);
-  return { week: Math.ceil((((d - yearStart) / 86400000) + 1) / 7), year: d.getFullYear() };
-}
-
-// Convertir semana (1-52) del CI_STATE.ano a fechas inicio/fin (lunes/domingo)
-function ciWeekToRange(week) {
-  const ano = CI_STATE.ano;
-  // 4 de enero siempre cae en la semana 1 ISO
-  const enero4 = new Date(ano, 0, 4);
-  const dow = (enero4.getDay() + 6) % 7;  // 0=lun, 6=dom
-  const week1Monday = new Date(enero4); week1Monday.setDate(enero4.getDate() - dow);
-  const start = new Date(week1Monday); start.setDate(week1Monday.getDate() + (week-1)*7);
-  const end = new Date(start); end.setDate(start.getDate() + 6);
-  return { start, end };
-}
-
-// Obtener nombre corto del mes (Ene, Feb...) de una semana del año
-const CI_MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-function ciSemanaToMes(week) {
-  const { start } = ciWeekToRange(week);
-  return CI_MESES[start.getMonth()];
-}
-
-// Determinar fechas inicio/fin de un proyecto.
-// Lógica para proyectos ACTIVOS:
-//   - Si tiene fecha_fin_prog en el FUTURO → úsala (es una proyección válida del cronograma)
-//   - Si fecha_fin_prog ya pasó → ignórala y asume hasta HOY + 15 días (proyección conservadora)
-//   - Si no hay fecha_fin_prog → asume hasta HOY + 15 días
-// Lógica para proyectos CERRADOS:
-//   - Usa fecha_fin_real, o fecha_fin_prog como fallback
-function ciProyectoRango(p) {
-  // Inicio: prefer fecha real, sino programada, sino fecha_ae como último fallback
-  const inicioStr = p.fecha_inicio_r || p.fecha_inicio || p.fecha_ae_r || p.fecha_ae;
-  const inicio = ciParseDate(inicioStr);
-  if (!inicio) return null;
-
-  const estado = (p.estado || '').toUpperCase().trim();
-  let fin;
-
-  if (estado === 'ACTIVO' || estado === 'EN CURSO' || estado === 'HOLD' || estado === '') {
-    // PROYECTO ACTIVO: revisar si la fecha programada de fin está en el futuro
-    const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
-    const finProgStr = p.fecha_fin_prog || p.fecha_ic_r || p.fecha_ic;
-    const finProg = ciParseDate(finProgStr);
-
-    if (finProg && finProg > hoy) {
-      // Fecha programada está en el futuro → confiar en ella (proyección del cronograma)
-      fin = finProg;
-    } else {
-      // Fecha programada ya pasó (o no existe) → asumir hasta HOY + 15 días
-      fin = new Date(hoy);
-      fin.setDate(hoy.getDate() + 15);
-      fin.setHours(23, 59, 59, 999);
-    }
-  } else {
-    // PROYECTO CERRADO/TERMINADO: usa fecha real, o programada como fallback
-    const finStr = p.fecha_fin_real || p.fecha_fin_prog || p.fecha_ic_r || p.fecha_ic || p.fecha_pc_r || p.fecha_pc;
-    fin = ciParseDate(finStr);
-    if (!fin) return null;
-  }
-  if (fin < inicio) return null;
-  return { inicio, fin };
-}
-
-// ¿Está activo este proyecto en esta semana del año?
-function ciActivoEnSemana(p, week, ano) {
-  const rng = ciProyectoRango(p);
-  if (!rng) return false;
-  const { start, end } = ciWeekToRange(week);
-  // Activo si su rango se traslapa con la semana
-  return rng.inicio <= end && rng.fin >= start;
-}
-
-// Etapa estimada del proyecto en una semana dada (mira las fechas de cada etapa)
-function ciEtapaEnSemana(p, week) {
-  const { start } = ciWeekToRange(week);
-  // Fechas de las etapas (preferir reales, fallback programadas)
-  const etapas = [
-    { cod: 'AE', f: ciParseDate(p.fecha_ae_r || p.fecha_ae) },
-    { cod: 'EB', f: ciParseDate(p.fecha_eb_r || p.fecha_eb) },
-    { cod: 'AP', f: ciParseDate(p.fecha_ap_r || p.fecha_ap) },
-    { cod: 'PC', f: ciParseDate(p.fecha_pc_r || p.fecha_pc) },
-    { cod: 'IC', f: ciParseDate(p.fecha_ic_r || p.fecha_ic) }
-  ].filter(e => e.f);
-  // La etapa actual en una semana es la última etapa cuyo inicio es <= start
-  let actual = 'AE';
-  for (const e of etapas) {
-    if (e.f <= start) actual = e.cod;
-  }
-  return actual;
-}
-
-// Calcular complejidad como string normalizado
-function ciComplejidad(p) {
-  const c = String(p.complejidad || 'ESTANDAR').toUpperCase().trim().replace('Á','A');
-  return c.includes('ALTA') ? 'ALTA' : c.includes('MEDIA') ? 'MEDIA' : 'ESTANDAR';
-}
-
-// Carga ponderada de un proyecto en una semana
-function ciCargaProyecto(p, week) {
-  const etapa = ciEtapaEnSemana(p, week);
-  const pesoE = CI_PESO_ETAPA[etapa] || 1.0;
-  const compl = ciComplejidad(p);
-  const pesoC = CI_PESO_COMPL[compl] || 1.0;
-  return pesoE * pesoC;
-}
-
-// Obtener proyectos activos del año (filtrando los que tienen al menos una semana activa en el año actual)
-function ciProyectosDelAno() {
-  return RAW.filter(p => {
-    const rng = ciProyectoRango(p);
-    if (!rng) return false;
-    const inicioYear = rng.inicio.getFullYear();
-    const finYear = rng.fin.getFullYear();
-    // Activo si traslapa el año
-    return inicioYear <= CI_STATE.ano && finYear >= CI_STATE.ano;
-  });
-}
-
-// ═══════════════════════════════════════════════════════════════
-// RENDER PRINCIPAL
-// ═══════════════════════════════════════════════════════════════
-function renderCargaInstalada() {
-  ciInitCapacidades();
-  // Ajustar slider a la semana actual la primera vez
-  if (CI_STATE.semana === 1 && new Date().getFullYear() === CI_STATE.ano) {
-    const hoy = ciWeekOfYear(new Date());
-    if (hoy.year === CI_STATE.ano) {
-      CI_STATE.semana = Math.max(1, Math.min(52, hoy.week));
-      const slider = document.getElementById('ci-slider');
-      if (slider) slider.value = CI_STATE.semana;
-    }
-  }
-  ciRenderKPIs();
-  ciRenderCapConfig();
-  ciRenderSliderLabel();
-  ciRenderConteoChart();
-  ciRenderCargaChart();
-  ciRenderTablaSemana();
-}
-
-// KPIs principales
-function ciRenderKPIs() {
-  const totalDis = ciCapacidadTotal();
-  const proyAno = ciProyectosDelAno();
-  // Proyectos activos en la semana seleccionada
-  const activosSem = proyAno.filter(p => ciActivoEnSemana(p, CI_STATE.semana, CI_STATE.ano));
-  // Carga total ponderada en la semana
-  const cargaSem = activosSem.reduce((s, p) => s + ciCargaProyecto(p, CI_STATE.semana), 0);
-  const utilizacion = totalDis > 0 ? (cargaSem / totalDis * 100) : 0;
-  let statusColor = 'var(--green)', statusLabel = '🟢 Saludable';
-  if (utilizacion > 100) { statusColor = 'var(--red)'; statusLabel = '🔴 Sobrecargado'; }
-  else if (utilizacion > 80) { statusColor = 'var(--yellow)'; statusLabel = '🟡 Tensionado'; }
-  else if (utilizacion < 40) { statusColor = 'var(--cyan)'; statusLabel = '🔵 Sub-utilizado'; }
-
-  const html = `
-    <div class="kpi-card y">
-      <div class="kpi-label">Capacidad total</div>
-      <div class="kpi-val y">${totalDis}</div>
-      <div class="kpi-sub">diseñadores · 5 células</div>
-    </div>
-    <div class="kpi-card c">
-      <div class="kpi-label">Proyectos activos · Sem ${CI_STATE.semana}</div>
-      <div class="kpi-val c">${activosSem.length}</div>
-      <div class="kpi-sub">en cronograma</div>
-    </div>
-    <div class="kpi-card g">
-      <div class="kpi-label">Carga ponderada · Sem ${CI_STATE.semana}</div>
-      <div class="kpi-val" style="color:${statusColor}">${cargaSem.toFixed(1)}</div>
-      <div class="kpi-sub">de ${totalDis} diseñadores</div>
-    </div>
-    <div class="kpi-card r">
-      <div class="kpi-label">Utilización · Sem ${CI_STATE.semana}</div>
-      <div class="kpi-val" style="color:${statusColor}">${utilizacion.toFixed(0)}%</div>
-      <div class="kpi-sub">${statusLabel}</div>
-    </div>`;
-  const el = document.getElementById('kpis-carga');
-  if (el) el.innerHTML = html;
-}
-
-// Panel configurar capacidad
-function ciRenderCapConfig() {
-  const el = document.getElementById('ci-cap-config');
-  if (!el) return;
-  el.innerHTML = Object.entries(CELULAS_DATA).map(([id, info]) => {
-    const cap = CI_STATE.capacidades[id];
-    const original = info.diseñadores.length;
-    const delta = cap - original;
-    const deltaStr = delta === 0 ? '' : (delta > 0 ? `<span style="color:var(--green);font-size:10px"> (+${delta})</span>` : `<span style="color:var(--red);font-size:10px"> (${delta})</span>`);
-    return `
-      <div style="background:var(--bg3);border:1px solid var(--border);border-left:3px solid ${info.color};border-radius:8px;padding:10px 12px">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
-          <span style="color:${info.color};font-size:14px">${info.icon}</span>
-          <span style="font-size:10px;color:var(--text);font-weight:600;text-transform:uppercase;letter-spacing:1px">${info.label}</span>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-          <button onclick="ciAjustarCap('${id}',-1)" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;font-size:14px">−</button>
-          <div style="text-align:center;flex:1">
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:${info.color};letter-spacing:1px">${cap}${deltaStr}</div>
-            <div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">diseñadores</div>
-          </div>
-          <button onclick="ciAjustarCap('${id}',1)" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;font-size:14px">+</button>
-        </div>
-      </div>`;
-  }).join('');
-  // Resumen
-  const total = ciCapacidadTotal();
-  const totalOrig = Object.values(CELULAS_DATA).reduce((s,c) => s + c.diseñadores.length, 0);
-  const diff = total - totalOrig;
-  const diffStr = diff === 0 ? '' : ` (${diff > 0 ? '+' : ''}${diff} vs original ${totalOrig})`;
-  const sumEl = document.getElementById('ci-cap-summary');
-  if (sumEl) sumEl.innerHTML = `<strong>Capacidad simulada total: ${total} diseñadores${diffStr}</strong> · Usa los botones +/− para simular escenarios y ver cómo cambia la carga del equipo.`;
-}
-
-// Ajustar capacidad de una célula
-function ciAjustarCap(id, delta) {
-  if (!CI_STATE.capacidades[id] && CI_STATE.capacidades[id] !== 0) return;
-  const nuevo = Math.max(0, CI_STATE.capacidades[id] + delta);
-  CI_STATE.capacidades[id] = nuevo;
-  ciRenderKPIs();
-  ciRenderCapConfig();
-  ciRenderConteoChart();
-  ciRenderCargaChart();
-}
-
-// Slider label
-function ciRenderSliderLabel() {
-  const { start, end } = ciWeekToRange(CI_STATE.semana);
-  const fmt = d => d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short' });
-  const lbl = document.getElementById('ci-week-label');
-  const rng = document.getElementById('ci-date-range');
-  if (lbl) lbl.textContent = 'S' + CI_STATE.semana;
-  if (rng) rng.textContent = fmt(start) + ' – ' + fmt(end);
-}
-
-function ciSliderChange(val) {
-  CI_STATE.semana = parseInt(val);
-  ciRenderSliderLabel();
-  ciRenderKPIs();
-  ciRenderTablaSemana();
-}
-
-function ciSetCurrentWeek() {
-  const hoy = ciWeekOfYear(new Date());
-  if (hoy.year === CI_STATE.ano) {
-    CI_STATE.semana = Math.max(1, Math.min(52, hoy.week));
-    const slider = document.getElementById('ci-slider');
-    if (slider) slider.value = CI_STATE.semana;
-    ciSliderChange(CI_STATE.semana);
-  }
-}
-
-// Gráfica A: Conteo de proyectos activos por célula a lo largo del año
-function ciRenderConteoChart() {
-  const proyAno = ciProyectosDelAno();
-  const celulas = Object.entries(CELULAS_DATA);
-  const colores = { 'THE BIG DESING THEORY': '#f0c040', 'EL TRINOMIO DE ORO': '#40d080', 'DESING COMPAST': '#4de0c0', 'PePeCe': '#f09040', 'CLOPA': '#a060f0' };
-
-  const datasets = celulas.map(([id, info]) => {
-    const data = [];
-    for (let w = 1; w <= 52; w++) {
-      const count = proyAno.filter(p => p.celula === id && ciActivoEnSemana(p, w, CI_STATE.ano)).length;
-      data.push(count);
-    }
-    return {
-      label: info.label,
-      data,
-      backgroundColor: colores[id] || '#5080f0',
-      borderColor: colores[id] || '#5080f0',
-      borderWidth: 1,
-      stack: 'cell',
-    };
-  });
-
-  // Sin célula
-  const sinCelData = [];
-  for (let w = 1; w <= 52; w++) {
-    sinCelData.push(proyAno.filter(p => (!p.celula || p.celula === 'SIN CÉLULA') && ciActivoEnSemana(p, w, CI_STATE.ano)).length);
-  }
-  if (sinCelData.some(v => v > 0)) {
-    datasets.push({
-      label: 'Sin Célula', data: sinCelData,
-      backgroundColor: '#6b7494', borderColor: '#6b7494', borderWidth: 1, stack: 'cell'
-    });
-  }
-
-  const totalCap = ciCapacidadTotal();
-  // Etiquetas: ["S1", "Ene"] estilo array de array → Chart.js multi-line
-  // Solo poner el mes cuando es la primera semana de ese mes
-  const labels = [];
-  let lastMonth = '';
-  for (let i = 0; i < 52; i++) {
-    const w = i + 1;
-    const { start } = ciWeekToRange(w);
-    const month = CI_MESES[start.getMonth()];
-    if (month !== lastMonth) {
-      labels.push(['S' + w, month]);
-      lastMonth = month;
-    } else {
-      labels.push(['S' + w, '']);
-    }
-  }
-
-  const ctx = document.getElementById('ci-ch-conteo');
-  if (!ctx) return;
-  if (CI_STATE.charts.conteo) CI_STATE.charts.conteo.destroy();
-  CI_STATE.charts.conteo = new Chart(ctx, {
-    type: 'bar',
-    data: { labels, datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color: '#8b90a8', font: { size: 10 }}},
-        tooltip: { mode: 'index', intersect: false },
-        annotation: {} // (no requerido)
-      },
-      scales: {
-        x: { stacked: true, ticks: { color: '#6b7494', font: { size: 8 }, autoSkip: false, maxRotation: 0 }, grid: { color: 'rgba(255,255,255,.04)' }},
-        y: { stacked: true, ticks: { color: '#6b7494', stepSize: 1 }, grid: { color: 'rgba(255,255,255,.04)' }, title: { display: true, text: 'Proyectos activos', color: '#6b7494', font: { size: 10 }}}
-      },
-      onClick: (evt, elements) => {
-        if (elements && elements.length) {
-          const idx = elements[0].index;
-          CI_STATE.semana = idx + 1;
-          const slider = document.getElementById('ci-slider');
-          if (slider) slider.value = CI_STATE.semana;
-          ciSliderChange(CI_STATE.semana);
-        }
-      }
-    }
-  });
-}
-
-// Gráfica B: Carga ponderada
-function ciRenderCargaChart() {
-  const proyAno = ciProyectosDelAno();
-  const totalCap = ciCapacidadTotal();
-  const cargaPorSemana = [];
-  for (let w = 1; w <= 52; w++) {
-    const carga = proyAno.filter(p => ciActivoEnSemana(p, w, CI_STATE.ano))
-                        .reduce((s,p) => s + ciCargaProyecto(p, w), 0);
-    cargaPorSemana.push(parseFloat(carga.toFixed(2)));
-  }
-
-  // Color de cada barra según si excede la capacidad
-  const bgColors = cargaPorSemana.map(v => v > totalCap ? 'rgba(224,80,96,.7)' : v > totalCap*0.8 ? 'rgba(240,192,64,.7)' : 'rgba(64,208,128,.65)');
-  // Etiquetas: ["S1", "Ene"] → multi-line en Chart.js, mes solo cuando cambia
-  const labels = [];
-  let lastMonthB = '';
-  for (let i = 0; i < 52; i++) {
-    const w = i + 1;
-    const { start } = ciWeekToRange(w);
-    const month = CI_MESES[start.getMonth()];
-    if (month !== lastMonthB) {
-      labels.push(['S' + w, month]);
-      lastMonthB = month;
-    } else {
-      labels.push(['S' + w, '']);
-    }
-  }
-
-  const datasets = [
-    {
-      label: 'Carga ponderada (diseñadores-equiv.)',
-      data: cargaPorSemana,
-      backgroundColor: bgColors,
-      borderRadius: 4,
-      borderWidth: 0,
-      type: 'bar'
-    },
-    {
-      label: `Capacidad (${totalCap})`,
-      data: Array(52).fill(totalCap),
-      borderColor: '#e05060',
-      borderWidth: 2,
-      borderDash: [6, 4],
-      pointRadius: 0,
-      backgroundColor: 'transparent',
-      type: 'line',
-      fill: false
-    }
-  ];
-
-  const ctx = document.getElementById('ci-ch-carga');
-  if (!ctx) return;
-  if (CI_STATE.charts.carga) CI_STATE.charts.carga.destroy();
-  CI_STATE.charts.carga = new Chart(ctx, {
-    data: { labels, datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color: '#8b90a8', font: { size: 10 }}},
-        tooltip: { callbacks: { afterLabel: ctx => {
-          if (ctx.dataset.type === 'bar') {
-            const pct = totalCap > 0 ? (ctx.raw / totalCap * 100).toFixed(0) + '%' : '—';
-            return 'Utilización: ' + pct;
-          }
-          return '';
-        }}}
-      },
-      scales: {
-        x: { ticks: { color: '#6b7494', font: { size: 8 }, autoSkip: false, maxRotation: 0 }, grid: { color: 'rgba(255,255,255,.04)' }},
-        y: { ticks: { color: '#6b7494' }, grid: { color: 'rgba(255,255,255,.04)' }, title: { display: true, text: 'Diseñadores-equivalentes', color: '#6b7494', font: { size: 10 }}}
-      },
-      onClick: (evt, elements) => {
-        if (elements && elements.length) {
-          const idx = elements[0].index;
-          CI_STATE.semana = idx + 1;
-          const slider = document.getElementById('ci-slider');
-          if (slider) slider.value = CI_STATE.semana;
-          ciSliderChange(CI_STATE.semana);
-        }
-      }
-    }
-  });
-}
-
-// Tabla: proyectos activos en la semana seleccionada
-function ciRenderTablaSemana() {
-  const lblEl = document.getElementById('ci-tbl-week-label');
-  if (lblEl) lblEl.textContent = `semana ${CI_STATE.semana}`;
-  const proyAno = ciProyectosDelAno();
-  const activos = proyAno.filter(p => ciActivoEnSemana(p, CI_STATE.semana, CI_STATE.ano));
-  const el = document.getElementById('ci-proyectos-semana');
-  if (!el) return;
-  if (activos.length === 0) {
-    el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:11px">Sin proyectos activos en esta semana.</div>';
-    return;
-  }
-
-  // Agrupar por célula
-  const porCel = {};
-  activos.forEach(p => {
-    const cel = (!p.celula || p.celula === 'SIN CÉLULA') ? 'SIN CÉLULA' : p.celula;
-    if (!porCel[cel]) porCel[cel] = [];
-    porCel[cel].push(p);
-  });
-
-  let html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:12px">';
-  Object.entries(porCel).forEach(([cel, proys]) => {
-    const info = CELULAS_DATA[cel];
-    const color = info ? info.color : '#6b7494';
-    const icon = info ? info.icon : '◯';
-    const label = info ? info.label : 'Sin Célula';
-    const cap = CI_STATE.capacidades[cel] !== undefined ? CI_STATE.capacidades[cel] : '—';
-    const cargaCel = proys.reduce((s,p) => s + ciCargaProyecto(p, CI_STATE.semana), 0);
-
-    html += `
-      <div style="background:var(--bg3);border:1px solid var(--border);border-left:3px solid ${color};border-radius:8px;padding:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">
-          <div style="display:flex;align-items:center;gap:6px">
-            <span style="color:${color};font-size:14px">${icon}</span>
-            <span style="font-size:10px;color:var(--text);font-weight:600;text-transform:uppercase;letter-spacing:1px">${label}</span>
-          </div>
-          <div style="font-size:9px;color:var(--muted)">${proys.length} proy · ${cargaCel.toFixed(1)}/${cap} carga</div>
-        </div>
-        <table style="width:100%;font-size:10px;border-collapse:collapse">
-          <thead><tr style="color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-size:8px">
-            <th style="text-align:left;padding:4px 4px 6px;font-weight:600">Proyecto</th>
-            <th style="text-align:left;padding:4px 4px 6px;font-weight:600">Coord.</th>
-            <th style="text-align:center;padding:4px 4px 6px;font-weight:600">Etapa</th>
-            <th style="text-align:right;padding:4px 4px 6px;font-weight:600">m²</th>
-            <th style="text-align:right;padding:4px 4px 6px;font-weight:600">Carga</th>
-          </tr></thead>
-          <tbody>`;
-    proys.sort((a,b) => ciCargaProyecto(b, CI_STATE.semana) - ciCargaProyecto(a, CI_STATE.semana))
-         .forEach(p => {
-      const etapa = ciEtapaEnSemana(p, CI_STATE.semana);
-      const carga = ciCargaProyecto(p, CI_STATE.semana);
-      const compl = ciComplejidad(p);
-      const complColor = compl === 'ALTA' ? 'var(--red)' : compl === 'MEDIA' ? 'var(--orange)' : 'var(--muted)';
-      html += `<tr style="border-top:1px solid rgba(255,255,255,.04)">
-        <td style="padding:6px 4px;color:var(--text)">${p.proyecto}</td>
-        <td style="padding:6px 4px;color:var(--muted2)">${(p.coordinador||'—').split(' ')[0]}</td>
-        <td style="padding:6px 4px;text-align:center"><span style="background:${color}22;color:${color};padding:2px 6px;border-radius:4px;font-weight:600">${etapa}</span></td>
-        <td style="padding:6px 4px;text-align:right;font-family:'Bebas Neue',sans-serif;color:${complColor}">${p.m2 ? Math.round(p.m2) : '—'}</td>
-        <td style="padding:6px 4px;text-align:right;font-family:'Bebas Neue',sans-serif;color:var(--cyan)">${carga.toFixed(1)}</td>
-      </tr>`;
-    });
-    html += `</tbody></table></div>`;
-  });
-  html += '</div>';
-  el.innerHTML = html;
-}
 function renderProyeccion() {
   const data = filtered();
   const activos = data.filter(p => estadoEfectivo(p) === 'ACTIVO');
@@ -6168,7 +5276,6 @@ function renderAll(){
   else if(activeId==='tab-equipos') renderEquipos();
   else if(activeId==='tab-celulas') renderCelulas();
   else if(activeId==='tab-proyectos') renderProyectos();
-  else if(activeId==='tab-cargaInstalada') renderCargaInstalada();
   else if(activeId==='tab-proyeccion') renderProyeccion();
 }
 
@@ -6560,17 +5667,12 @@ function innovRefresh(){
   // KPI Dpto. Innovación: solo Ganados ÷ (Ganados + Perdidos)
   const compHR=gan+perH;
   const hr=compHR>0?(gan/compHR*100).toFixed(1)+'%':'—';
-  // KPI Hit Rate General: Ganados ÷ Total de proyectos (incluye en revisión, en curso, etc.)
-  const hrGlobal=total>0?(gan/total*100).toFixed(1)+'%':'—';
   const anStr=selAnios.has('todos')?'2023–2025':[...selAnios].sort().join(', ');
   document.getElementById('hr-general').textContent=hr;
-  document.getElementById('hr-global').textContent=hrGlobal;
   document.getElementById('hr-total').textContent=total;
   document.getElementById('hr-periodo').textContent=anStr;
   document.getElementById('filter-info').textContent=`${total} proyectos · ${anStr}`;
-  const innovRoot=document.getElementById('db-innov');
-  const activeP=innovRoot?innovRoot.querySelector('.tab-panel.active'):null;
-  const tab=activeP?activeP.id.replace('tab-',''):'general';
+  const tab=document.querySelector('.tab-panel.active').id.replace('tab-','');
   if(tab==='general')buildGeneral(data);
   else if(tab==='comerciales')buildDirectores(data);
   else if(tab==='disenadores')buildDisenadores(data);
@@ -6586,12 +5688,9 @@ function innovRefresh(){
 }
 
 function innovSwitchTab(name,btn){
-  const root=document.getElementById('db-innov');
-  root.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  root.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  const target=root.querySelector('#tab-'+name);
-  if(target) target.classList.add('active');
-  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');btn.classList.add('active');
   const data=innovGetFiltered();
   if(name==='general')buildGeneral(data);
   else if(name==='comerciales')buildDirectores(data);
@@ -8998,12 +8097,12 @@ function calcScore_disabled(){// removed
 // ═══════════════════════════════════════════════════════════════
 // PYGS_DATA
 // ═══════════════════════════════════════════════════════════════
-const RAW_PYGS = [];
+const RAW_PYGS = [{"cod":"PYG-01","año":"2026","mes":"enero","version":1,"cliente":"SURA","proyecto":"SURA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"20/01/26","f_fin":"21/01/26","tipo":"RECOMPRA","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":1,"m2":214.0,"precio":37756783.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":176433.6,"dias":2,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-02","año":"2026","mes":"enero","version":1,"cliente":"DISUIZA","proyecto":"DISUIZA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"22/01/26","f_fin":"23/01/26","tipo":"OTROS","sector":"RETAIL","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":8,"m2":180.0,"precio":41671459.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":231508.1,"dias":2,"director":"OTROS","resultado":"PERDIDO","dias_real":1},{"cod":"PYG-03","año":"2026","mes":"enero","version":1,"cliente":"PLATZI","proyecto":"PLATZI","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"05/01/26","f_fin":"06/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":272.0,"precio":15545631.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":57153.1,"dias":2,"director":"JIMENA CARO","resultado":"PERDIDO","dias_real":1},{"cod":"PYG-04","año":"2026","mes":"enero","version":1,"cliente":"FASECOLDA","proyecto":"FASECOLDA - BAÑOS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"13/01/26","f_fin":"16/01/26","tipo":"RECOMPRA","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":0,"m2":78.0,"precio":15365865.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":196998.3,"dias":4,"director":"ADICIONAL","resultado":"GANADO","dias_real":3},{"cod":"PYG-05","año":"2026","mes":"enero","version":3,"cliente":"CONSTRUCTORA BOLIVAR","proyecto":"MARAWA 2 COSNTRUCTORA BOLIVAR","ciudad":"SANTA MARTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"19/01/26","f_fin":"21/01/26","tipo":"RECOMPRA","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":6,"m2":3251.0,"precio":147871015.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":45484.8,"dias":3,"director":"JIMENA CARO","resultado":"PERDIDO","dias_real":2},{"cod":"PYG-06","año":"2026","mes":"enero","version":2,"cliente":"FITCH  RATINGS","proyecto":"FITCH  RATINGS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"20/01/26","f_fin":"21/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":32.0,"precio":48564549.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":1517642.2,"dias":2,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":1},{"cod":"PYG-07","año":"2026","mes":"enero","version":3,"cliente":"FITCH  RATINGS","proyecto":"FITCH  RATINGS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"20/01/26","f_fin":"21/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":589.0,"precio":96791043.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":164331.1,"dias":2,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-08","año":"2026","mes":"enero","version":3,"cliente":"OMNICOM","proyecto":"OMNICOM","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"20/01/26","f_fin":"21/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":580.0,"precio":65104106.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":112248.5,"dias":2,"director":"JIMENA CARO","resultado":"GANADO","dias_real":1},{"cod":"PYG-09","año":"2026","mes":"enero","version":1,"cliente":"COMFANDI","proyecto":"COMFANDI","ciudad":"CALI","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"19/01/26","f_fin":"02/02/26","tipo":"LICITACION","sector":"EDUCATIVO","alcance":"ARQUITECTURA","complejidad":"ALTA","renders":0,"m2":0,"precio":0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":0,"dias":11,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":14},{"cod":"PYG-10","año":"2025","mes":"diciembre","version":3,"cliente":"HENKEL","proyecto":"HENKEL","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"23/12/25","f_fin":"05/01/26","tipo":"CONCURSO","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":5,"m2":1600.0,"precio":188973777.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":118108.6,"dias":10,"director":"MARIA PAULA MARTINEZ","resultado":"GANADO","dias_real":13},{"cod":"PYG-11","año":"2026","mes":"enero","version":1,"cliente":"KROLL","proyecto":"KROLL","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"14/01/26","f_fin":"21/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":405.0,"precio":34781154.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":85879.4,"dias":6,"director":"MARIA PAULA MARTINEZ","resultado":"EN REVISION","dias_real":7},{"cod":"PYG-12","año":"2026","mes":"enero","version":2,"cliente":"ARTURO CALLE","proyecto":"ARTURO CALLE MANUAL","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"05/01/26","f_fin":"16/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA","complejidad":"MEDIA","renders":0,"m2":0,"precio":153399079.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":0,"dias":10,"director":"MARIA PAULA MARTINEZ","resultado":"PERDIDO","dias_real":11},{"cod":"PYG-13","año":"2026","mes":"enero","version":3,"cliente":"NESPRESSO","proyecto":"NESPRESSO","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"14/01/26","f_fin":"20/01/26","tipo":"CONCURSO","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":456.0,"precio":46530902.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":102041.5,"dias":5,"director":"ROBERTO OJEDA","resultado":"EN REVISION","dias_real":6},{"cod":"PYG-14","año":"2026","mes":"enero","version":1,"cliente":"AVIANCA","proyecto":"AVIANCA COUNTERS RIONEGRO","ciudad":"MEDELLIN","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"19/01/2026","f_fin":"4/02/2026","tipo":"RECOMPRA","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"MEDIA","renders":0,"m2":58012.0,"precio":4446332673.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":76645.1,"dias":13,"director":"","resultado":"EN REVISION","dias_real":16},{"cod":"PYG-15","año":"2026","mes":"enero","version":2,"cliente":"ARTURO CALLE","proyecto":"ARTURO CALLE","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"19/01/26","f_fin":"28/01/26","tipo":"INVITACION","sector":"RETAIL","alcance":"ARQUITECTURA","complejidad":"MEDIA","renders":2,"m2":500.0,"precio":41165622.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":82331.2,"dias":8,"director":"MARIA PAULA MARTINEZ","resultado":"EN REVISION","dias_real":9},{"cod":"PYG-16","año":"2026","mes":"enero","version":1,"cliente":"RECKITT","proyecto":"RECKITT","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"22/01/26","f_fin":"27/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":725.0,"precio":79789722.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":110054.8,"dias":4,"director":"ANGELICA SANDOVAL","resultado":"EN REVISION","dias_real":5},{"cod":"PYG-17","año":"2026","mes":"enero","version":1,"cliente":"PROVE","proyecto":"PROVE FABRICA","ciudad":"SIBERIA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"23/01/26","f_fin":"27/01/26","tipo":"INVITACION","sector":"RETAIL","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":2,"m2":80.0,"precio":28203536.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":352544.2,"dias":3,"director":"ROBERTO OJEDA","resultado":"EN REVISION","dias_real":4},{"cod":"PYG-18","año":"2026","mes":"enero","version":1,"cliente":"EL MACHETAZO","proyecto":"EL MACHETAZO","ciudad":"CIUDAD DE PANAMA","pais":"PANAMA","estado":"ENTREGADO","f_ini":"23/01/26","f_fin":"02/02/26","tipo":"LICITACION","sector":"RETAIL","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ALTA","renders":8,"m2":9900.0,"precio":717796833.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":72504.7,"dias":7,"director":"LINA GUTIERREZ","resultado":"EN REVISION","dias_real":10},{"cod":"PYG-19","año":"2026","mes":"enero","version":1,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BUCARAMANGA","ciudad":"BUCARAMANGA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"27/01/26","f_fin":"30/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":951.0,"precio":134175520.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":141088.9,"dias":4,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":3},{"cod":"PYG-20","año":"2026","mes":"enero","version":1,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - PLAYBOOK","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"27/01/26","f_fin":"30/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":0.0,"precio":12229302.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":0,"dias":4,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":3},{"cod":"PYG-21","año":"2026","mes":"enero","version":1,"cliente":"CLUB EL RANCHO","proyecto":"CLUB EL RANCHO LICENCIA CONSTRUCCION","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"28/01/26","f_fin":"28/01/26","tipo":"RECOMPRA","sector":"HOSPITALITY","alcance":"ARQUITECTURA","complejidad":"MEDIA","renders":0,"m2":288.0,"precio":19992589.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":69418.7,"dias":1,"director":"ANGELICA SANDOVAL","resultado":"EN REVISION","dias_real":0},{"cod":"PYG-22","año":"2026","mes":"enero","version":1,"cliente":"MASTERCARD","proyecto":"MASTERCARD SALA LOUNGE","ciudad":"CIUDAD DE MEXICO","pais":"MEXICO","estado":"ENTREGADO","f_ini":"29/01/26","f_fin":"","tipo":"RECOMPRA","sector":"HOSPITALITY","alcance":"ARQUITECTURA","complejidad":"MEDIA","renders":0,"m2":552.0,"precio":0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":0.0,"dias":0,"director":"","resultado":"GANADO","dias_real":0},{"cod":"PYG-23","año":"2026","mes":"enero","version":1,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BARRANQUILLA","ciudad":"BARRANQUILLA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"27/01/26","f_fin":"30/01/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":872.0,"precio":125185501.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":143561.4,"dias":4,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":3},{"cod":"PYG-24","año":"2026","mes":"enero","version":1,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BOGOTA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"27/01/26","f_fin":"03/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":380.0,"precio":34867341.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":91756.2,"dias":6,"director":"ROBERTO OJEDA","resultado":"PERDIDO","dias_real":7},{"cod":"PYG-25","año":"2026","mes":"enero","version":2,"cliente":"PWC","proyecto":"PWC FACHADA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"30/01/26","f_fin":"13/03/26","tipo":"CONCURSO","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ALTA","renders":2,"m2":1236.0,"precio":119077961.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":96341.4,"dias":31,"director":"ANGELICA SANDOVAL","resultado":"EN REVISION","dias_real":42},{"cod":"PYG-26","año":"2026","mes":"enero","version":2,"cliente":"DISUIZA","proyecto":"DISUIZA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"30/01/26","f_fin":"02/02/26","tipo":"INVITACION","sector":"RETAIL","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":8,"m2":180.0,"precio":18454893.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":102527.2,"dias":2,"director":"OTROS","resultado":"GANADO","dias_real":3},{"cod":"PYG-27","año":"2026","mes":"febrero","version":1,"cliente":"SURA CALLE 100 CURADURIA","proyecto":"SURA CALLE 100","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"02/02/26","f_fin":"03/02/26","tipo":"RECOMPRA","sector":"SALUD","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":3923.0,"precio":36057817.0,"arq":9445035.0,"imp_arq":627997.0,"tec":18086357.0,"imp_tec":542591.0,"precio_m2":9191.4,"dias":2,"director":"ADICIONAL","resultado":"GANADO","dias_real":1},{"cod":"PYG-28","año":"2026","mes":"febrero","version":1,"cliente":"TRAFIGURA","proyecto":"TRAFIGURA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"03/02/26","f_fin":"04/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":895.0,"precio":95068670.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":106222.0,"dias":2,"director":"JUAN MANUEL CORTES","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-29","año":"2026","mes":"febrero","version":1,"cliente":"ARENA PRIMAVERAS","proyecto":"ARENA PRIMAVERA","ciudad":"MEDELLIN","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"02/02/26","f_fin":"04/02/26","tipo":"INVITACION","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"MEDIA","renders":13,"m2":11470.0,"precio":458635124.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":39985.6,"dias":3,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":2},{"cod":"PYG-30","año":"2026","mes":"febrero","version":1,"cliente":"DISUIZA","proyecto":"DISUIZA","ciudad":"BARRANQUILLA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"04/02/26","f_fin":"04/02/26","tipo":"INVITACION","sector":"RETAIL","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":6,"m2":304.0,"precio":31119458.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":102366.6,"dias":1,"director":"OTROS","resultado":"GANADO","dias_real":0},{"cod":"PYG-31","año":"2026","mes":"febrero","version":2,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BARRANQUILLA","ciudad":"BARRANQUILLA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"03/02/26","f_fin":"04/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":872.0,"precio":132387487.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":151820.5,"dias":2,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":1},{"cod":"PYG-32","año":"2026","mes":"febrero","version":2,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BOGOTA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"03/02/26","f_fin":"04/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":380.0,"precio":76357750.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":200941.4,"dias":2,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":1},{"cod":"PYG-33","año":"2026","mes":"febrero","version":2,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BUCARAMANGA","ciudad":"BUCARAMANGA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"03/02/26","f_fin":"04/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":951.0,"precio":141991145.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":149307.2,"dias":2,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":1},{"cod":"PYG-34","año":"2026","mes":"febrero","version":2,"cliente":"CONFENALCO","proyecto":"CONFENALCO CARTAGENA","ciudad":"CARTAGENA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"03/02/26","f_fin":"04/02/26","tipo":"RECOMPRA","sector":"HOSPITALITY","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":3,"m2":454.0,"precio":50732435.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":111745.5,"dias":2,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-35","año":"2026","mes":"febrero","version":2,"cliente":"OLIMPIA","proyecto":"OLIMPIA ESCALERA + ILUMINACION","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"05/02/26","f_fin":"09/02/26","tipo":"RECOMPRA","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":0,"m2":10.0,"precio":3160224.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":316022.4,"dias":3,"director":"OTROS","resultado":"EN REVISION","dias_real":4},{"cod":"PYG-36","año":"2026","mes":"febrero","version":3,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BARRANQUILLA","ciudad":"BARRANQUILLA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"05/02/26","f_fin":"09/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":872.0,"precio":126503656.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":145073.0,"dias":3,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":4},{"cod":"PYG-37","año":"2026","mes":"febrero","version":3,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BOGOTA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"05/02/26","f_fin":"09/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":380.0,"precio":67593546.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":177877.8,"dias":3,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":4},{"cod":"PYG-38","año":"2026","mes":"febrero","version":3,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - BUCARAMANGA","ciudad":"BUCARAMANGA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"05/02/26","f_fin":"09/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":951.0,"precio":137964423.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":145073.0,"dias":3,"director":"CATALINA OSORIO","resultado":"PERDIDO","dias_real":4},{"cod":"PYG-39","año":"2026","mes":"febrero","version":2,"cliente":"COMFENALCO","proyecto":"CONFENALCO CARTAGENA","ciudad":"CARTAGENA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"09/02/26","f_fin":"09/02/26","tipo":"INVITACION","sector":"HOSPITALITY","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":4,"m2":1032.0,"precio":83574557.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":80983.1,"dias":1,"director":"OTROS","resultado":"EN REVISION","dias_real":0},{"cod":"PYG-40","año":"2026","mes":"febrero","version":1,"cliente":"KPMG","proyecto":"KPMG - ASESORIA ACCESIBILIDAD UNIVERSAL","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"03/02/26","f_fin":"12/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":3632.0,"precio":27792446.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":7652.1,"dias":8,"director":"MARIA PAULA MARTINEZ","resultado":"EN REVISION","dias_real":9},{"cod":"PYG-41","año":"2026","mes":"febrero","version":1,"cliente":"CASA 237","proyecto":"CASA 237","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"05/02/26","f_fin":"11/02/26","tipo":"INVITACION","sector":"RESIDENCIAL","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":710.0,"precio":34698728.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":48871.4,"dias":5,"director":"ANGELICA SANDOVAL","resultado":"EN REVISION","dias_real":6},{"cod":"PYG-42","año":"2026","mes":"febrero","version":1,"cliente":"COMPENSAR","proyecto":"COMPENSAR GYMS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"07/02/26","f_fin":"17/02/26","tipo":"CONCURSO","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":8,"m2":2230.0,"precio":178250059.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":79932.8,"dias":7,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":10},{"cod":"PYG-43","año":"2026","mes":"febrero","version":2,"cliente":"PLATZI","proyecto":"PLATZI","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"10/02/26","f_fin":"12/02/26","tipo":"CONCURSO","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":0,"m2":272.0,"precio":13082883.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":48098.8,"dias":3,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":2},{"cod":"PYG-44","año":"2026","mes":"febrero","version":1,"cliente":"DELOITTE","proyecto":"DELOITTE","ciudad":"GUAYAQUIL","pais":"ECUADOR","estado":"ENTREGADO","f_ini":"11/02/26","f_fin":"13/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":500.0,"precio":68636100.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":137272.2,"dias":3,"director":"ROBERTO OJEDA","resultado":"EN REVISION","dias_real":2},{"cod":"PYG-45","año":"2026","mes":"febrero","version":4,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - COMPILADO RANGOS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"11/02/26","f_fin":"13/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":1000.0,"precio":0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":145073.0,"dias":3,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":2},{"cod":"PYG-46","año":"2026","mes":"febrero","version":1,"cliente":"MASTER PLAN BAVARIA","proyecto":"MASTER PLAN BAVARIA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"11/02/26","f_fin":"12/02/26","tipo":"INVITACION","sector":"RETAIL","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":4,"m2":1700.0,"precio":55176114.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":32456.5,"dias":2,"director":"ROBERTO OJEDA","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-47","año":"2026","mes":"febrero","version":4,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - COMPILADO RANGOS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"11/02/26","f_fin":"13/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":2000.0,"precio":0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":122821.0,"dias":3,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":2},{"cod":"PYG-48","año":"2026","mes":"febrero","version":5,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - COMPILADO RANGOS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"16/02/26","f_fin":"17/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":500.0,"precio":0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":177878.0,"dias":2,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-49","año":"2026","mes":"febrero","version":5,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - COMPILADO RANGOS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"16/02/26","f_fin":"17/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":1000.0,"precio":0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":145073.0,"dias":2,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-50","año":"2026","mes":"febrero","version":5,"cliente":"LEAN SOLUTIONS","proyecto":"LEAN SOLUTIONS - COMPILADO RANGOS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"16/02/26","f_fin":"17/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":2000.0,"precio":0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":122821.0,"dias":2,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-51","año":"2026","mes":"febrero","version":3,"cliente":"CONSTRUCTORA BOLIVAR","proyecto":"MARAWA 2 COSNTRUCTORA BOLIVAR","ciudad":"SANTA MARTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"16/02/26","f_fin":"17/02/26","tipo":"RECOMPRA","sector":"HOSPITALITY","alcance":"TECNICO","complejidad":"ESTANDAR","renders":0,"m2":12171.0,"precio":20597077.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":1692.3,"dias":2,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-52","año":"2026","mes":"febrero","version":3,"cliente":"LA CARDIO","proyecto":"LA CARDIO SUITE BENEFACTORES","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"17/02/26","f_fin":"17/02/26","tipo":"RECOMPRA","sector":"SALUD","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":84.0,"precio":25341220.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":301681.2,"dias":1,"director":"ADICIONAL","resultado":"EN REVISION","dias_real":0},{"cod":"PYG-53","año":"2026","mes":"febrero","version":1,"cliente":"CLINICA EL COUNTRY","proyecto":"DESCANSOS MEDICOS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"15/02/26","f_fin":"20/02/26","tipo":"INVITACION","sector":"SALUD","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":2,"m2":219.0,"precio":33932401.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":154942.5,"dias":5,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":5},{"cod":"PYG-54","año":"2026","mes":"febrero","version":2,"cliente":"DELOITTE","proyecto":"DELOITTE","ciudad":"GUAYAQUIL","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"20/02/26","f_fin":"23/02/26","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":500.0,"precio":68636100.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":137272.2,"dias":2,"director":"ROBERTO OJEDA","resultado":"EN REVISION","dias_real":3},{"cod":"PYG-55","año":"2026","mes":"febrero","version":1,"cliente":"AON","proyecto":"AON","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"23/02/26","f_fin":"06/03/26","tipo":"CONCURSO","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":5,"m2":3884.0,"precio":225552421.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":58072.2,"dias":10,"director":"MARIA PAULA MARTINEZ","resultado":"PERDIDO","dias_real":11},{"cod":"PYG-56","año":"2026","mes":"febrero","version":1,"cliente":"COLLIERS BROKER","proyecto":"COLLIERS BROKER","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"23/02/2026","f_fin":"25/02/2026","tipo":"PM","sector":"CORPORATIVO","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":150.0,"precio":2933958.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":19559.7,"dias":3,"director":"MARIA PAULA MARTINEZ","resultado":"EN REVISION","dias_real":2},{"cod":"PYG-57","año":"2026","mes":"febrero","version":1,"cliente":"INVERSION COMERCIAL","proyecto":"INVERSION COMERCIAL OFICINAS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"24/02/2026","f_fin":"25/02/2026","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":1,"m2":105.0,"precio":36868643.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":351129.9,"dias":2,"director":"MARIA PAULA MARTINEZ","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-58","año":"2026","mes":"febrero","version":2,"cliente":"ARENA PRIMAVERAS","proyecto":"ARENA PRIMAVERA","ciudad":"MEDELLIN","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"24/02/2026","f_fin":"25/02/2026","tipo":"INVITACION","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"MEDIA","renders":13,"m2":8132.0,"precio":422561125.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":51962.8,"dias":2,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-60","año":"2026","mes":"marzo","version":1,"cliente":"CONSTRUCTORA BOLIVAR","proyecto":"BOSQUES DE LA VICTORIA","ciudad":"IBAGUE","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"3/03/2026","f_fin":"4/03/2026","tipo":"RECOMPRA","sector":"RESIDENCIAL","alcance":"ARQUITECTURA","complejidad":"BAJA","renders":6,"m2":455.0,"precio":51006587.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":112102.4,"dias":2,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-61","año":"2026","mes":"febrero","version":1,"cliente":"FLORMORADO","proyecto":"FLORMORADO OFICINAS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"25/02/2026","f_fin":"4/03/2026","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":1200.0,"precio":117350338.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":97791.9,"dias":6,"director":"ANGELICA SANDOVAL","resultado":"EN REVISION","dias_real":7},{"cod":"PYG-62","año":"2026","mes":"marzo","version":3,"cliente":"ARENA PRIMAVERAS","proyecto":"ARENA PRIMAVERA","ciudad":"MEDELLIN","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"2/03/2026","f_fin":"10/03/2026","tipo":"INVITACION","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"MEDIA","renders":13,"m2":5520.0,"precio":355350014.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":64375.0,"dias":7,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":8},{"cod":"PYG-63","año":"2026","mes":"marzo","version":1,"cliente":"BEATHUB Y BREAKFAST LIVE","proyecto":"BEATHUB Y BREAKFAST LIVE","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"3/03/2026","f_fin":"10/03/2026","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":4,"m2":500.0,"precio":64377840.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":128755.7,"dias":6,"director":"MARIA PAULA MARTINEZ","resultado":"EN REVISION","dias_real":7},{"cod":"PYG-64","año":"2026","mes":"marzo","version":1,"cliente":"BEYOND ONE","proyecto":"BEYONDE ONE","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"9/03/2026","f_fin":"10/03/2026","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":2,"m2":250.0,"precio":39440708.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":157762.8,"dias":2,"director":"ANGELICA SANDOVAL","resultado":"EN REVISION","dias_real":1},{"cod":"PYG-65","año":"2026","mes":"marzo","version":1,"cliente":"OFICINAS DISUIZA","proyecto":"OFICINAS DISUIZA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"8/03/2026","f_fin":"10/03/2026","tipo":"RECOMPRA","sector":"CORPORATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ESTANDAR","renders":3,"m2":277.0,"precio":63549570.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":229420.8,"dias":2,"director":"OTROS","resultado":"EN REVISION","dias_real":2},{"cod":"PYG-66","año":"2026","mes":"marzo","version":1,"cliente":"UNIVERSIDAD EAFIT","proyecto":"UNIVERSIDAD EAFIT","ciudad":"MEDELLIN","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"4/03/2026","f_fin":"13/03/2026","tipo":"INVITACION","sector":"EDUCATIVO","alcance":"ARQUITECTURA Y TECNICO","complejidad":"ALTA","renders":8,"m2":42341.0,"precio":8012811250.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":189244.7,"dias":8,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":9},{"cod":"PYG-67","año":"2026","mes":"marzo","version":1,"cliente":"AVIANCA","proyecto":"SALA GOLD BOGOTA","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"3/03/2026","f_fin":"17/03/2026","tipo":"INVITACION","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"MEDIA","renders":5,"m2":1174.0,"precio":216976281.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":184818.0,"dias":11,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":14},{"cod":"PYG-68","año":"2026","mes":"marzo","version":1,"cliente":"AVIANCA","proyecto":"SALA GOLD SALVADOR","ciudad":"EL SALVADOR","pais":"EL SALVADOR","estado":"ENTREGADO","f_ini":"3/03/2026","f_fin":"17/03/2026","tipo":"INVITACION","sector":"HOSPITALITY","alcance":"ARQUITECTURA","complejidad":"MEDIA","renders":8,"m2":650.0,"precio":99080847.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":152432.1,"dias":11,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":14},{"cod":"PYG-69","año":"2026","mes":"marzo","version":1,"cliente":"AVIANCA","proyecto":"SALA DIAMOND MEDELLIN","ciudad":"MEDELLIN","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"3/03/2026","f_fin":"17/03/2026","tipo":"INVITACION","sector":"HOSPITALITY","alcance":"ARQUITECTURA Y TECNICO","complejidad":"MEDIA","renders":4,"m2":350.0,"precio":150776410.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":430789.7,"dias":11,"director":"CATALINA OSORIO","resultado":"EN REVISION","dias_real":14},{"cod":"PYG-70","año":"2026","mes":"marzo","version":4,"cliente":"FITCH  RATINGS","proyecto":"FITCH  RATINGS","ciudad":"BOGOTA","pais":"COLOMBIA","estado":"ENTREGADO","f_ini":"19/03/2026","f_fin":"24/03/2026","tipo":"INVITACION","sector":"CORPORATIVO","alcance":"ARQUITECTURA","complejidad":"ESTANDAR","renders":0,"m2":500.0,"precio":7039139.0,"arq":0,"imp_arq":0,"tec":0,"imp_tec":0,"precio_m2":14078.3,"dias":4,"director":"JIMENA CARO","resultado":"EN REVISION","dias_real":5}];
 
 // Filter valid projects
 let PYGS_DATA = RAW_PYGS.filter(p => p.cod && p.proyecto);
 let _pygsExcludeEAFIT=false;
-function pygsToggleEAFIT(){_pygsExcludeEAFIT=!_pygsExcludeEAFIT;const b=document.getElementById("pygs-eafit-btn");if(b)b.textContent=_pygsExcludeEAFIT?"✓ EAFIT excluido":"Excluir EAFIT";pygs_refresh();}
+function pygsToggleEAFIT(){_pygsExcludeEAFIT=!_pygsExcludeEAFIT;const b=document.getElementById("pygs-eafit-btn");if(b)b.textContent=_pygsExcludeEAFIT?"✓ EAFIT excluido":"Excluir EAFIT";Object.keys(PYGS__rendered).forEach(k=>delete PYGS__rendered[k]);pygs_renderHeader();pygs_renderPipeline();}
 function pygsGetData(){return _pygsExcludeEAFIT?PYGS_DATA.filter(p=>!p.proyecto.toUpperCase().includes("EAFIT")):PYGS_DATA;}
 
 // ═══════════════════════════════════════════════════════════════
@@ -9064,838 +8163,501 @@ function pygs_showTab(id, btn) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// PYGS — FILTROS Y DATA HELPERS
-// ═══════════════════════════════════════════════════════════════
-const PYGS_FILTROS = { anios: new Set(['todos']), comercial: 'todos' };
-
-function pygsToggleAnio(a, btn) {
-  const f = PYGS_FILTROS;
-  if (a === 'todos') { f.anios.clear(); f.anios.add('todos'); }
-  else {
-    if (f.anios.has('todos')) f.anios.clear();
-    if (f.anios.has(a)) f.anios.delete(a); else f.anios.add(a);
-    if (f.anios.size === 0) f.anios.add('todos');
-  }
-  document.querySelectorAll('#pygs-chips-anio .pygs-chip').forEach(b => {
-    const v = b.dataset.anio;
-    b.classList.toggle('active', f.anios.has(v));
-  });
-  pygs_refresh();
-}
-function pygsSetComercial(v) { PYGS_FILTROS.comercial = v; pygs_refresh(); }
-
-// Devuelve PYGS_DATA filtrado por año/comercial/EAFIT
-function pygs_getFiltered() {
-  let d = (typeof pygsGetData === 'function') ? pygsGetData() : PYGS_DATA;
-  d = d.filter(p => p.proyecto && p.cod);
-  if (!PYGS_FILTROS.anios.has('todos')) {
-    d = d.filter(p => PYGS_FILTROS.anios.has(String(p.anio || p.año)));
-  }
-  if (PYGS_FILTROS.comercial !== 'todos') {
-    d = d.filter(p => (p.director || '').toUpperCase() === PYGS_FILTROS.comercial.toUpperCase());
-  }
-  return d;
-}
-
-// Agrupa versiones por COD: devuelve un proyecto único por código,
-// usando el resultado de la versión MÁXIMA. Útil para Hit Rate y conteos.
-// Helper: parsea fechas DD/MM/YY o DD/MM/YYYY
-function pygs_parseDate(s) {
-  if (!s) return null;
-  const str = String(s).trim();
-  const m = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
-  if (!m) return null;
-  let yr = parseInt(m[3]);
-  if (yr < 100) yr += 2000;
-  const dt = new Date(yr, parseInt(m[2])-1, parseInt(m[1]));
-  return isNaN(dt.getTime()) ? null : dt;
-}
-
-function pygs_uniqueProjects(data) {
-  const byCod = {};
-  data.forEach(p => {
-    if (!byCod[p.cod] || p.versionNum > byCod[p.cod].versionNum) byCod[p.cod] = p;
-  });
-  return Object.values(byCod);
-}
-
-// Para sweet spot: el precio real de un proyecto es el de su versión GANADA.
-// Si nunca ganó, usar última versión.
-function pygs_finalVersion(data) {
-  const byCod = {};
-  data.forEach(p => {
-    const cur = byCod[p.cod];
-    if (!cur) { byCod[p.cod] = p; return; }
-    // Preferir GANADO sobre cualquier otra
-    if (p.resultado === 'GANADO' && cur.resultado !== 'GANADO') byCod[p.cod] = p;
-    else if (cur.resultado !== 'GANADO' && p.versionNum > cur.versionNum) byCod[p.cod] = p;
-  });
-  return Object.values(byCod);
-}
-
-// Inicializar selector de comerciales
-function pygs_initComercialesDropdown() {
-  const sel = document.getElementById('pygs-sel-comercial');
-  if (!sel) return;
-  const comerciales = [...new Set(PYGS_DATA.map(p => (p.director || '').trim()).filter(Boolean))].sort();
-  sel.innerHTML = '<option value="todos">Todos</option>' + comerciales.map(c => `<option value="${c}">${c}</option>`).join('');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// REFRESH MAESTRO
-// ═══════════════════════════════════════════════════════════════
-function pygs_refresh() {
-  PYGS__rendered = {};
-  pygs_initComercialesDropdown();
-  pygs_renderHeader();
-  // Re-renderizar la pestaña activa actualmente
-  const root = document.getElementById('db-pygs');
-  const active = root ? root.querySelector('.tab-panel.pygs-active') : null;
-  const tabId = active ? active.id.replace('pygs-tab-', '') : 'resumen';
-  pygs_renderTab(tabId);
-}
-
-// ═══════════════════════════════════════════════════════════════
-// HEADER KPIs
+// RENDER HEADER KPIs
 // ═══════════════════════════════════════════════════════════════
 function pygs_renderHeader() {
-  const data = pygs_getFiltered();
-  const proyectos = pygs_uniqueProjects(data);  // proyectos únicos
-  const ganados = proyectos.filter(p => p.resultado === 'GANADO');
-  const perdidos = proyectos.filter(p => p.resultado === 'PERDIDO');
-  const revision = proyectos.filter(p => p.resultado === 'EN REVISION');
-  const competitivos = ganados.length + perdidos.length;
-  const hr = competitivos > 0 ? (ganados.length / competitivos * 100).toFixed(1) + '%' : '—';
-  const hrGral = proyectos.length > 0 ? (ganados.length / proyectos.length * 100).toFixed(1) + '%' : '—';
-  // Valor cotizado: precio de la versión final/ganada
-  const finalP = pygs_finalVersion(data);
-  const totalVal = pygs_sumBy(finalP, 'precio');
-  const valRevision = pygs_sumBy(finalP.filter(p => p.resultado === 'EN REVISION'), 'precio');
-  // Versiones promedio por proyecto
-  const maxV = {};
-  data.forEach(p => { if (!maxV[p.cod] || p.versionNum > maxV[p.cod]) maxV[p.cod] = p.versionNum; });
-  const verAvg = Object.values(maxV).length ? (Object.values(maxV).reduce((s,v)=>s+v,0)/Object.values(maxV).length).toFixed(1) : '—';
-
-  const se = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  se('hk-total', proyectos.length);
-  se('hk-valor', pygs_fmt(totalVal));
-  se('hk-revision', pygs_fmt(valRevision));
-  se('hk-hitrate', hr);
-  se('hk-hitrate-gral', hrGral);
-  se('hk-ver', verAvg);
-
-  // Subtítulo dinámico
-  const anStr = PYGS_FILTROS.anios.has('todos') ? 'Todos los años' : [...PYGS_FILTROS.anios].sort().join(', ');
-  const comStr = PYGS_FILTROS.comercial === 'todos' ? '' : ' · ' + PYGS_FILTROS.comercial;
-  const sub = document.getElementById('pygs-header-sub');
-  if (sub) sub.textContent = 'Cotizaciones · ' + anStr + comStr;
-  const info = document.getElementById('pygs-info-filtros');
-  if (info) info.textContent = `${proyectos.length} proyectos · ${data.length} versiones`;
+  const _d=typeof pygsGetData==='function'?pygsGetData():PYGS_DATA;
+  const PYGS_valid=_d.filter(p=>p.proyecto);
+  const ganados=PYGS_valid.filter(p=>p.resultado==='GANADO');
+  const perdidos=PYGS_valid.filter(p=>p.resultado==='PERDIDO');
+  const withRes=ganados.length+perdidos.length;
+  const hitRate=withRes>0?(ganados.length/withRes*100).toFixed(1)+'%':'—';
+  const totalVal=pygs_sumBy(PYGS_valid,'precio');
+  const enRev=PYGS_valid.filter(p=>p.resultado==='EN REVISION');
+  const diasArr=PYGS_valid.filter(p=>p.dias_real>0&&p.dias_real<100);
+  const diasAvg=diasArr.length>0?(pygs_sumBy(diasArr,'dias_real')/diasArr.length).toFixed(1):'—';
+  const maxV={};PYGS_valid.forEach(p=>{if(!maxV[p.cod]||p.version>maxV[p.cod])maxV[p.cod]=p.version;});
+  const verAvg=Object.values(maxV).length>0?(Object.values(maxV).reduce((s,v)=>s+v,0)/Object.values(maxV).length).toFixed(1):'—';
+  const se=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  se('hk-total',PYGS_valid.length);se('hk-valor',pygs_fmt(totalVal));
+  se('hk-revision',pygs_fmtM(pygs_sumBy(enRev,'precio')));
+  se('hk-dias',diasAvg);se('hk-ver',verAvg);se('hk-hitrate',hitRate);
+  se('kpi-ganados',ganados.length);se('kpi-ganados-val',pygs_fmtM(pygs_sumBy(ganados,'precio')));
+  se('kpi-perdidos',perdidos.length);se('kpi-perdidos-val',pygs_fmtM(pygs_sumBy(perdidos,'precio')));
+  const revEl=document.getElementById('kpi-revision');if(revEl)revEl.textContent=enRev.length;
 }
 
 // ═══════════════════════════════════════════════════════════════
-// TAB 1 — RESUMEN EJECUTIVO
+// TAB PIPELINE
 // ═══════════════════════════════════════════════════════════════
-function pygs_renderResumen() {
-  const data = pygs_getFiltered();
-  const proyectos = pygs_uniqueProjects(data);
-  const finalP = pygs_finalVersion(data);
-  const ganados = proyectos.filter(p => p.resultado === 'GANADO');
-  const perdidos = proyectos.filter(p => p.resultado === 'PERDIDO');
-  const revision = proyectos.filter(p => p.resultado === 'EN REVISION');
+function pygs_renderPipeline() {
+  const ganados   = PYGS_DATA.filter(p => p.resultado === 'GANADO');
+  const perdidos  = PYGS_DATA.filter(p => p.resultado === 'PERDIDO');
+  const revision  = PYGS_DATA.filter(p => p.resultado === 'EN REVISION');
+  const entregados = PYGS_DATA.filter(p => p.estado === 'ENTREGADO');
 
-  const valGan = pygs_sumBy(finalP.filter(p => p.resultado === 'GANADO'), 'precio');
-  const valPer = pygs_sumBy(finalP.filter(p => p.resultado === 'PERDIDO'), 'precio');
-  const valRev = pygs_sumBy(finalP.filter(p => p.resultado === 'EN REVISION'), 'precio');
-  const ticketProm = ganados.length > 0 ? valGan / ganados.length : 0;
+  document.getElementById('kpi-ganados').textContent = ganados.length;
+  document.getElementById('kpi-ganados-val').textContent = pygs_fmtM(pygs_sumBy(ganados,'precio'));
+  document.getElementById('kpi-perdidos').textContent = perdidos.length;
+  document.getElementById('kpi-perdidos-val').textContent = pygs_fmtM(pygs_sumBy(perdidos,'precio'));
+  document.getElementById('kpi-revision').textContent = revision.length;
+  document.getElementById('kpi-revision-val').textContent = pygs_fmtM(pygs_sumBy(revision,'precio')) + ' en juego';
+  document.getElementById('kpi-entregados').textContent = entregados.length;
 
-  const se = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  se('kpi-ganados', ganados.length);
-  se('kpi-ganados-val', pygs_fmt(valGan));
-  se('kpi-perdidos', perdidos.length);
-  se('kpi-perdidos-val', pygs_fmt(valPer));
-  se('kpi-revision', revision.length);
-  se('kpi-revision-val', pygs_fmt(valRev) + ' en juego');
-  se('kpi-ticket-prom', pygs_fmt(ticketProm));
-
-  // ─── Tiempo promedio de respuesta (días para producir el PYG) ───
-  // Usa la versión final de cada proyecto (no la suma de todas las versiones)
-  const avgDias = arr => {
-    const valid = arr.filter(p => p.dias > 0).map(p => p.dias);
-    return valid.length ? Math.round(valid.reduce((s,v)=>s+v,0)/valid.length) : null;
-  };
-  const respGan = avgDias(finalP.filter(p => p.resultado === 'GANADO'));
-  const respPer = avgDias(finalP.filter(p => p.resultado === 'PERDIDO'));
-  const respRev = avgDias(finalP.filter(p => p.resultado === 'EN REVISION'));
-  const respGlob = avgDias(finalP);
-  se('kpi-resp-gan', respGan !== null ? respGan + ' días' : '—');
-  se('kpi-resp-per', respPer !== null ? respPer + ' días' : '—');
-  se('kpi-resp-rev', respRev !== null ? respRev + ' días' : '—');
-  se('kpi-resp-glob', respGlob !== null ? respGlob + ' días' : '—');
-
-  // Embudo
-  const grupos = ['GANADO','EN REVISION','PERDIDO'];
+  // Chart: embudo de resultados
+  const grupos = ['GANADO','PERDIDO','EN REVISION','PENDIENTE'];
   pygs_mkChart('ch-embudo', 'bar', {
-    labels: ['Ganado','En Revisión','Perdido'],
+    labels: grupos,
     datasets: [{
-      label: 'M COP',
-      data: [valGan/1e6, valRev/1e6, valPer/1e6],
-      backgroundColor: ['#40d080','#f0c040','#e05060'],
-      borderRadius: 6
+      label: 'Valor (M COP)',
+      data: grupos.map(g => pygs_sumBy(PYGS_DATA.filter(p=>p.resultado===g),'precio')/1e6),
+      backgroundColor: grupos.map(g => PYGS_RES_COLORS[g] || '#6b7494'),
+      borderRadius: 6,
     }]
-  }, { plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>' $'+c.raw.toFixed(0)+'M'}}},
-       scales:{ x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-                y:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}}});
+  }, {
+    plugins: { legend: { display: false } },
+    scales: { y: { ticks: { callback: v => '$'+v+'M', color:'#6b7494', font:{size:10} }, grid:{color:'rgba(255,255,255,.04)'} }, x:{ticks:{color:'#6b7494'}, grid:{color:'rgba(255,255,255,.04)'}}}
+  });
 
-  // Tipos pie
-  const tipoG = pygs_groupBy(proyectos, 'tipo');
-  const tipoLabels = Object.keys(tipoG).filter(k=>k);
+  // Chart: tipos pie
+  const tipoGroups = pygs_groupBy(PYGS_DATA, 'tipo');
+  const tipoLabels = Object.keys(tipoGroups).filter(k=>k&&k!=='—');
   pygs_mkChart('ch-tipos-pie', 'doughnut', {
     labels: tipoLabels,
-    datasets: [{ data: tipoLabels.map(t=>tipoG[t].length),
-      backgroundColor: ['#5080f0','#f0c040','#40d080','#a060f0','#f09040','#4de0c0','#e05060','#6b7494'],
-      borderWidth: 2, borderColor:'#0f1421' }]
-  }, { plugins:{ legend:{labels:{color:'#8b90a8',font:{size:10}}}}});
+    datasets: [{ data: tipoLabels.map(t=>tipoGroups[t].length), backgroundColor: tipoLabels.map(t=>PYGS_TIPO_COLORS[t]||'#6b7494'), borderWidth:0, hoverOffset:6 }]
+  });
 
-  // Alertas: revisiones más antiguas
-  const alertEl = document.getElementById('pygs-alertas-revision');
-  if (alertEl) {
-    const sorted = revision.slice().sort((a,b) => (b.precio||0)-(a.precio||0)).slice(0, 8);
-    if (sorted.length === 0) {
-      alertEl.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:8px;">Sin propuestas en revisión.</div>';
-    } else {
-      alertEl.innerHTML = sorted.map(p => `
-        <div class="pipe-row">
-          <div class="pipe-dot" style="background:${p.precio>500e6?'#e05060':p.precio>100e6?'#f09040':'#f0c040'}"></div>
-          <div class="pipe-cod">${p.cod}</div>
-          <div class="pipe-name">${p.proyecto}</div>
-          <div class="pipe-dir">${p.director||'—'}</div>
-          <div class="pipe-tipo"><span class="badge badge-y">${p.version||'V1'}</span></div>
-          <div class="pipe-val">${pygs_fmt(p.precio)}</div>
-        </div>`).join('');
-    }
-  }
-
-  // Top comerciales
-  const tblEl = document.getElementById('pygs-top-comerciales');
-  if (tblEl) {
-    const byCom = {};
-    proyectos.forEach(p => {
-      const c = p.director || '—';
-      if (!byCom[c]) byCom[c] = { prop:0, gan:0, per:0, val:0 };
-      byCom[c].prop++;
-      if (p.resultado === 'GANADO') { byCom[c].gan++; byCom[c].val += p.precio || 0; }
-      if (p.resultado === 'PERDIDO') byCom[c].per++;
-    });
-    const rows = Object.entries(byCom)
-      .filter(([c,d]) => c !== '—' && d.prop >= 3)
-      .map(([c,d]) => {
-        const comp = d.gan + d.per;
-        const hr = comp > 0 ? (d.gan/comp*100) : 0;
-        return { c, ...d, hr };
-      })
-      .sort((a,b) => b.val - a.val)
-      .slice(0, 10);
-    tblEl.innerHTML = `<thead><tr><th>Comercial</th><th>Propuestas</th><th>Ganadas</th><th>Hit Rate</th><th>Valor Ganado</th></tr></thead><tbody>` +
-      rows.map(r => `<tr>
-        <td style="color:var(--text);font-weight:500">${r.c}</td>
-        <td>${r.prop}</td>
-        <td style="color:var(--green)">${r.gan}</td>
-        <td><span class="badge ${r.hr>=40?'badge-g':r.hr>=25?'badge-y':'badge-r'}">${r.hr.toFixed(0)}%</span></td>
-        <td style="color:var(--cyan);font-family:'Bebas Neue',sans-serif">${pygs_fmt(r.val)}</td>
-      </tr>`).join('') + `</tbody>`;
-  }
-
-  // Top Clientes Recurrentes
-  const tblCliEl = document.getElementById('pygs-top-clientes');
-  if (tblCliEl) {
-    const byCli = {};
-    proyectos.forEach(p => {
-      const c = (p.cliente || '—').trim();
-      if (c === '—' || !c) return;
-      if (!byCli[c]) byCli[c] = { cli:c, cot:0, gan:0, per:0, rev:0, val:0, comerciales:new Set() };
-      byCli[c].cot++;
-      if (p.resultado === 'GANADO') byCli[c].gan++;
-      if (p.resultado === 'PERDIDO') byCli[c].per++;
-      if (p.resultado === 'EN REVISION') byCli[c].rev++;
-      if (p.director) byCli[c].comerciales.add(p.director);
-    });
-    // Sumar valor ganado de la versión final
-    finalP.filter(p => p.resultado === 'GANADO').forEach(p => {
-      const c = (p.cliente || '—').trim();
-      if (byCli[c]) byCli[c].val += p.precio || 0;
-    });
-    const rows = Object.values(byCli)
-      .filter(r => r.cot >= 2)  // solo clientes con 2+ cotizaciones (recurrentes)
-      .sort((a,b) => b.cot - a.cot)
-      .slice(0, 15);
-    if (rows.length === 0) {
-      tblCliEl.innerHTML = '<tbody><tr><td style="text-align:center;padding:20px;color:var(--muted)">Sin clientes recurrentes (con 2+ cotizaciones) en este filtro.</td></tr></tbody>';
-    } else {
-      tblCliEl.innerHTML = `<thead><tr><th>Cliente</th><th>Cotizaciones</th><th>Ganadas</th><th>Hit Rate</th><th>Valor Ganado</th><th>Comerciales</th></tr></thead><tbody>` +
-        rows.map(r => {
-          const comp = r.gan + r.per;
-          const hr = comp > 0 ? (r.gan/comp*100) : 0;
-          const coms = [...r.comerciales].slice(0,3).join(', ') + (r.comerciales.size > 3 ? ` +${r.comerciales.size-3}` : '');
-          return `<tr>
-            <td style="color:var(--text);font-weight:500">${r.cli}</td>
-            <td>${r.cot}</td>
-            <td style="color:var(--green)">${r.gan}</td>
-            <td><span class="badge ${hr>=40?'badge-g':hr>=25?'badge-y':'badge-r'}">${comp>0?hr.toFixed(0)+'%':'—'}</span></td>
-            <td style="color:var(--cyan);font-family:'Bebas Neue',sans-serif">${pygs_fmt(r.val)}</td>
-            <td style="font-size:9px;color:var(--muted2)">${coms}</td>
-          </tr>`;
-        }).join('') + `</tbody>`;
-    }
-  }
+  // Pipeline list
+  const pipelineEl = document.getElementById('pipeline-list');
+  const sorted = [...revision].filter(p=>p.precio>0).sort((a,b)=>b.precio-a.precio);
+  pipelineEl.innerHTML = sorted.map(p => {
+    const dot = p.precio > 500e6 ? '#e05060' : p.precio > 100e6 ? '#f09040' : '#f0c040';
+    const badge = p.tipo ? `<span class="badge badge-b">${p.tipo}</span>` : '';
+    return `<div class="pipe-row">
+      <div class="pipe-dot" style="background:${dot}"></div>
+      <div class="pipe-cod">${p.cod}</div>
+      <div class="pipe-name">${p.proyecto}</div>
+      <div class="pipe-dir">${p.director||'—'}</div>
+      <div class="pipe-tipo">${badge}</div>
+      <div class="pipe-val">${pygs_fmtM(p.precio)}</div>
+    </div>`;
+  }).join('');
 }
 
 // ═══════════════════════════════════════════════════════════════
-// TAB 2 — SWEET SPOT (Alcance × Complejidad + Arq vs Téc)
+// TAB FINANCIERO
 // ═══════════════════════════════════════════════════════════════
-function pygs_renderSweetSpot() {
-  const data = pygs_getFiltered();
-  const finalP = pygs_finalVersion(data).filter(p => p.precio_m2 > 0 && p.precio_m2 < 2000000 && p.alcance && p.complejidad);
+function pygs_renderFinanciero() {
+  const withPrice = PYGS_DATA.filter(p => p.precio > 0);
+  const totalVal = pygs_sumBy(withPrice, 'precio');
+  const avgVal = totalVal / withPrice.length;
+  const maxP = withPrice.reduce((m,p) => p.precio > m.precio ? p : m, withPrice[0]);
+  const withPM2 = PYGS_DATA.filter(p => p.precio_m2 > 0 && p.precio_m2 < 2000000);
+  const avgPM2 = withPM2.length > 0 ? pygs_sumBy(withPM2,'precio_m2')/withPM2.length : 0;
 
-  // Cruce alcance × complejidad
-  const cruce = {};
-  finalP.forEach(p => {
-    const k = p.alcance + '|||' + p.complejidad;
-    if (!cruce[k]) cruce[k] = { alcance:p.alcance, complejidad:p.complejidad, gan:[], per:[], rev:[] };
-    if (p.resultado === 'GANADO') cruce[k].gan.push(p);
-    else if (p.resultado === 'PERDIDO') cruce[k].per.push(p);
-    else if (p.resultado === 'EN REVISION') cruce[k].rev.push(p);
-  });
+  document.getElementById('kpi-fin-total').textContent = pygs_fmt(totalVal);
+  document.getElementById('kpi-fin-avg').textContent = pygs_fmtM(avgVal);
+  document.getElementById('kpi-fin-max').textContent = pygs_fmtM(maxP.precio);
+  document.getElementById('kpi-fin-max-name').textContent = maxP.proyecto.substring(0,20);
+  document.getElementById('kpi-fin-pm2').textContent = '$' + Math.round(avgPM2/1000) + 'K/m²';
 
-  // Recomendaciones (sweet spot por celda con datos)
-  const recos = Object.values(cruce)
-    .filter(c => c.gan.length >= 2)
-    .map(c => {
-      const ganPM = c.gan.map(p=>p.precio_m2).sort((a,b)=>a-b);
-      const min = ganPM[Math.floor(ganPM.length*0.25)] || ganPM[0];
-      const max = ganPM[Math.floor(ganPM.length*0.75)] || ganPM[ganPM.length-1];
-      const med = ganPM[Math.floor(ganPM.length/2)];
-      return { ...c, min, max, med, n: c.gan.length };
-    })
-    .sort((a,b) => b.n - a.n)
-    .slice(0, 12);
+  // Evolución mensual por tipo
+  const meses = ['diciembre','enero','febrero','marzo'];
+  const tipos = ['INVITACION','RECOMPRA','CONCURSO','LICITACION','OTROS'];
+  const mesData = meses.reduce((acc, m) => { acc[m] = {}; tipos.forEach(t => acc[m][t]=0); return acc; }, {});
+  PYGS_DATA.forEach(p => { if (mesData[p.mes] && mesData[p.mes][p.tipo] !== undefined) mesData[p.mes][p.tipo] += p.precio/1e6; });
 
-  const recosEl = document.getElementById('pygs-ss-recos');
-  if (recosEl) {
-    if (recos.length === 0) {
-      recosEl.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:12px;grid-column:1/-1;">Sin suficientes datos ganados para calcular sweet spot. Necesitas al menos 2 proyectos ganados por combinación Alcance × Complejidad.</div>';
-    } else {
-      recosEl.innerHTML = recos.map(r => `
-        <div style="background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;padding:12px;">
-          <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">${r.alcance}</div>
-          <div style="font-size:11px;color:var(--text);font-weight:600;margin:2px 0;">${r.complejidad}</div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--green);letter-spacing:1px;">$${(r.med/1000).toFixed(0)}k/m²</div>
-          <div style="font-size:9px;color:var(--muted);">Rango: $${(r.min/1000).toFixed(0)}k–$${(r.max/1000).toFixed(0)}k</div>
-          <div style="font-size:9px;color:var(--muted2);margin-top:4px;">${r.n} ganados · ${r.per.length} perdidos</div>
-        </div>`).join('');
-    }
-  }
-
-  // Scatter ganados vs perdidos (m2 vs precio_m2)
-  const ganDots = finalP.filter(p => p.resultado === 'GANADO' && p.m2 > 0).map(p => ({ x: p.m2, y: p.precio_m2 }));
-  const perDots = finalP.filter(p => p.resultado === 'PERDIDO' && p.m2 > 0).map(p => ({ x: p.m2, y: p.precio_m2 }));
-  pygs_mkChart('ch-ss-scatter', 'scatter', {
-    datasets: [
-      { label: 'Ganado', data: ganDots, backgroundColor: 'rgba(64,208,128,.7)', pointRadius: 4 },
-      { label: 'Perdido', data: perDots, backgroundColor: 'rgba(224,80,96,.5)', pointRadius: 4 }
-    ]
+  pygs_mkChart('ch-mensual-tipo', 'bar', {
+    labels: ['Dic','Ene','Feb','Mar'],
+    datasets: tipos.map(t => ({
+      label: t,
+      data: meses.map(m => mesData[m][t] || 0),
+      backgroundColor: PYGS_TIPO_COLORS[t] || '#6b7494',
+      borderRadius: 4,
+    }))
   }, {
-    plugins: { legend: { labels: { color:'#8b90a8' }}},
     scales: {
-      x: { type: 'logarithmic', title: { display:true, text:'m² (log)', color:'#6b7494' }, ticks:{color:'#6b7494'}, grid:{color:'rgba(255,255,255,.04)'}},
-      y: { type: 'logarithmic', title: { display:true, text:'$/m² (log)', color:'#6b7494' }, ticks:{color:'#6b7494'}, grid:{color:'rgba(255,255,255,.04)'}}
+      x: { stacked: true, ticks:{color:'#6b7494'}, grid:{color:'rgba(255,255,255,.04)'} },
+      y: { stacked: true, ticks:{callback:v=>'$'+v+'M',color:'#6b7494'}, grid:{color:'rgba(255,255,255,.04)'} }
     }
   });
 
-  // Histograma precio/m² ganados
-  const ganP = finalP.filter(p => p.resultado === 'GANADO' && p.precio_m2 > 0).map(p => p.precio_m2);
-  const buckets = [0, 25000, 50000, 75000, 100000, 150000, 200000, 300000, 500000, 1000000];
-  const counts = new Array(buckets.length-1).fill(0);
-  ganP.forEach(v => {
-    for (let i=0; i<buckets.length-1; i++) {
-      if (v >= buckets[i] && v < buckets[i+1]) { counts[i]++; break; }
-    }
-  });
-  const labels = buckets.slice(0,-1).map((b,i) => `$${(b/1000).toFixed(0)}–${(buckets[i+1]/1000).toFixed(0)}k`);
-  pygs_mkChart('ch-ss-hist', 'bar', {
-    labels, datasets: [{ label:'Proyectos ganados', data:counts, backgroundColor:'#40d080', borderRadius:6 }]
-  }, { plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'#6b7494',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#6b7494',stepSize:1},grid:{color:'rgba(255,255,255,.04)'}}}});
-
-  // Tabla cruce
-  const tblEl = document.getElementById('pygs-tbl-cruce');
-  if (tblEl) {
-    const all = Object.values(cruce);
-    if (all.length === 0) {
-      tblEl.innerHTML = '<tbody><tr><td style="text-align:center;padding:20px;color:var(--muted)">Sin datos de Alcance × Complejidad para mostrar.</td></tr></tbody>';
-    } else {
-      const sorted = all.sort((a,b) => (b.gan.length+b.per.length+b.rev.length) - (a.gan.length+a.per.length+a.rev.length));
-      tblEl.innerHTML = `<thead><tr><th>Alcance</th><th>Complejidad</th><th>Ganados</th><th>Perdidos</th><th>Revisión</th><th>Hit Rate</th><th>$/m² Ganado Avg</th><th>$/m² Perdido Avg</th></tr></thead><tbody>` +
-        sorted.map(c => {
-          const comp = c.gan.length + c.per.length;
-          const hr = comp > 0 ? (c.gan.length/comp*100) : 0;
-          const avgG = c.gan.length ? c.gan.reduce((s,p)=>s+p.precio_m2,0)/c.gan.length : 0;
-          const avgP = c.per.length ? c.per.reduce((s,p)=>s+p.precio_m2,0)/c.per.length : 0;
-          return `<tr><td style="color:var(--text)">${c.alcance}</td><td>${c.complejidad}</td>
-            <td style="color:var(--green)">${c.gan.length}</td><td style="color:var(--red)">${c.per.length}</td>
-            <td style="color:var(--yellow)">${c.rev.length}</td>
-            <td><span class="badge ${hr>=40?'badge-g':hr>=25?'badge-y':'badge-r'}">${comp>0?hr.toFixed(0)+'%':'—'}</span></td>
-            <td style="color:var(--green);font-family:'Bebas Neue',sans-serif">${avgG?'$'+(avgG/1000).toFixed(0)+'k':'—'}</td>
-            <td style="color:var(--red);font-family:'Bebas Neue',sans-serif">${avgP?'$'+(avgP/1000).toFixed(0)+'k':'—'}</td>
-          </tr>`;
-        }).join('') + `</tbody>`;
-    }
-  }
-
-  // ─── Arquitectura vs Técnicos (composición de precio) ───
-  // Trabaja con el conjunto completo (no solo precio_m2 valido)
-  const finalAll = pygs_finalVersion(data);
-  const ganP_at = finalAll.filter(p => p.resultado === 'GANADO' && p.precio > 0);
-  const perP_at = finalAll.filter(p => p.resultado === 'PERDIDO' && p.precio > 0);
-  // Solo proyectos con desglose Arq+Téc disponible (col ARQUITECTURA o TECNICOS llenas)
-  const ganDes = ganP_at.filter(p => (p.arq + p.tec) > 0);
-  const perDes = perP_at.filter(p => (p.arq + p.tec) > 0);
-  const sumPct = (arr, fld) => {
-    if (!arr.length) return 0;
-    const totales = arr.map(p => {
-      const total = p.arq + p.imp_arq + p.tec + p.imp_tec;
-      return total > 0 ? p[fld] / total * 100 : 0;
-    }).filter(v => v > 0);
-    return totales.length ? totales.reduce((s,v)=>s+v,0)/totales.length : 0;
-  };
-  const pctArqGan = sumPct(ganDes, 'arq');
-  const pctTecGan = sumPct(ganDes, 'tec');
-  const pctArqPer = sumPct(perDes, 'arq');
-  const pctTecPer = sumPct(perDes, 'tec');
-  const seSS = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  seSS('kpi-pct-arq-gan', ganDes.length ? pctArqGan.toFixed(0) + '%' : '—');
-  seSS('kpi-pct-tec-gan', ganDes.length ? pctTecGan.toFixed(0) + '%' : '—');
-  seSS('kpi-pct-arq-per', perDes.length ? pctArqPer.toFixed(0) + '%' : '—');
-  seSS('kpi-pct-tec-per', perDes.length ? pctTecPer.toFixed(0) + '%' : '—');
-
-  // Gráfica composición — barras agrupadas comparando Ganados vs Perdidos
-  pygs_mkChart('ch-arq-tec', 'bar', {
-    labels: ['Arquitectura', 'Imprev. Arq', 'Técnicos', 'Imprev. Téc'],
-    datasets: [
-      { label:'Ganados (%)', data:[
-        sumPct(ganDes, 'arq'), sumPct(ganDes, 'imp_arq'),
-        sumPct(ganDes, 'tec'), sumPct(ganDes, 'imp_tec')
-      ].map(v => v.toFixed(1)),
-        backgroundColor:'#40d080', borderRadius:6 },
-      { label:'Perdidos (%)', data:[
-        sumPct(perDes, 'arq'), sumPct(perDes, 'imp_arq'),
-        sumPct(perDes, 'tec'), sumPct(perDes, 'imp_tec')
-      ].map(v => v.toFixed(1)),
-        backgroundColor:'#e05060', borderRadius:6 }
-    ]
-  }, {
-    plugins: {
-      legend: { labels: { color:'#8b90a8', font:{ size:10 }}},
-      tooltip: { callbacks: { label: c => ' ' + c.dataset.label + ': ' + c.raw + '%' }}
-    },
-    scales: {
-      x: { ticks:{ color:'#6b7494' }, grid:{ color:'rgba(255,255,255,.04)' }},
-      y: { ticks:{ color:'#6b7494', callback: v => v + '%' }, grid:{ color:'rgba(255,255,255,.04)' }, title:{ display:true, text:'% del precio total', color:'#6b7494', font:{ size:10 }}}
-    }
-  });
-
-  // ─── Tabla de Venta promedio por rango de m² (Arq vs Ing) ───
-  const rangos = [
-    { lbl:'0 – 500 m²',         lo:0,    hi:500 },
-    { lbl:'501 – 1.000 m²',     lo:501,  hi:1000 },
-    { lbl:'1.001 – 2.000 m²',   lo:1001, hi:2000 },
-    { lbl:'2.001 – 5.000 m²',   lo:2001, hi:5000 },
-    { lbl:'5.001 – 10.000 m²',  lo:5001, hi:10000 },
-    { lbl:'> 10.000 m²',        lo:10001,hi:Infinity }
-  ];
-  // Sólo proyectos con desglose financiero válido
-  const conDesglose = finalAll.filter(p => p.m2 > 0 && (p.arq + p.tec) > 0);
-  const avg = arr => arr.length ? arr.reduce((s,v)=>s+v,0)/arr.length : 0;
-  const tblM2 = document.getElementById('pygs-tbl-rangos-m2');
-  if (tblM2) {
-    const filas = rangos.map(r => {
-      const enRango = conDesglose.filter(p => p.m2 >= r.lo && p.m2 <= r.hi);
-      const gan = enRango.filter(p => p.resultado === 'GANADO');
-      const per = enRango.filter(p => p.resultado === 'PERDIDO');
-      // Arquitectura = ARQUITECTURA + IMPREVISTOS ARQ; Ingeniería = TECNICOS + IMPREVISTOS TEC
-      const arqGan = avg(gan.map(p => p.arq + p.imp_arq));
-      const ingGan = avg(gan.map(p => p.tec + p.imp_tec));
-      const arqPer = avg(per.map(p => p.arq + p.imp_arq));
-      const ingPer = avg(per.map(p => p.tec + p.imp_tec));
-      // $/m² promedio del precio total
-      const pmGan = gan.length ? avg(gan.map(p => p.precio / Math.max(p.m2, 1))) : 0;
-      const pmPer = per.length ? avg(per.map(p => p.precio / Math.max(p.m2, 1))) : 0;
-      return { ...r, gan, per, arqGan, ingGan, arqPer, ingPer, pmGan, pmPer };
-    });
-    const totalProy = conDesglose.length;
-    if (totalProy === 0) {
-      tblM2.innerHTML = '<tbody><tr><td style="text-align:center;padding:20px;color:var(--muted)">Sin proyectos con desglose financiero (Arquitectura/Técnicos) en este filtro.</td></tr></tbody>';
-    } else {
-      tblM2.innerHTML = `<thead><tr>
-        <th rowspan="2">Rango m²</th>
-        <th colspan="3" style="text-align:center;border-bottom:1px solid var(--border);background:rgba(64,208,128,.08)">GANADOS</th>
-        <th colspan="3" style="text-align:center;border-bottom:1px solid var(--border);background:rgba(224,80,96,.08)">PERDIDOS</th>
-      </tr><tr>
-        <th style="background:rgba(64,208,128,.04)">N</th>
-        <th style="background:rgba(64,208,128,.04)">$ Arquitectura Avg</th>
-        <th style="background:rgba(64,208,128,.04)">$ Ingenierías Avg</th>
-        <th style="background:rgba(224,80,96,.04)">N</th>
-        <th style="background:rgba(224,80,96,.04)">$ Arquitectura Avg</th>
-        <th style="background:rgba(224,80,96,.04)">$ Ingenierías Avg</th>
-      </tr></thead><tbody>` +
-      filas.map(f => `<tr>
-        <td style="color:var(--text);font-weight:500">${f.lbl}</td>
-        <td style="color:var(--green)">${f.gan.length || '—'}</td>
-        <td style="color:var(--green);font-family:'Bebas Neue',sans-serif">${f.gan.length ? pygs_fmt(f.arqGan) : '—'}</td>
-        <td style="color:var(--green);font-family:'Bebas Neue',sans-serif">${f.gan.length ? pygs_fmt(f.ingGan) : '—'}</td>
-        <td style="color:var(--red)">${f.per.length || '—'}</td>
-        <td style="color:var(--red);font-family:'Bebas Neue',sans-serif">${f.per.length ? pygs_fmt(f.arqPer) : '—'}</td>
-        <td style="color:var(--red);font-family:'Bebas Neue',sans-serif">${f.per.length ? pygs_fmt(f.ingPer) : '—'}</td>
-      </tr>`).join('') + `</tbody>`;
-    }
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════
-// TAB 3 — VERSIONES
-// ═══════════════════════════════════════════════════════════════
-function pygs_renderVersiones() {
-  const data = pygs_getFiltered();
-  // Para cada proyecto, contar versiones y obtener resultado final + fechas
-  const byCod = {};
-  data.forEach(p => {
-    if (!byCod[p.cod]) byCod[p.cod] = { cod:p.cod, proyecto:p.proyecto, director:p.director, versiones:[], maxV:0, finalRes:null, finalPrecio:0, v1Precio:0, fechaV1:null, fechaFinal:null };
-    byCod[p.cod].versiones.push(p);
-    if (p.versionNum > byCod[p.cod].maxV) {
-      byCod[p.cod].maxV = p.versionNum;
-      byCod[p.cod].finalRes = p.resultado;
-      byCod[p.cod].finalPrecio = p.precio || 0;
-      byCod[p.cod].fechaFinal = pygs_parseDate(p.f_ini);
-    }
-    if (p.versionNum === 1) {
-      byCod[p.cod].v1Precio = p.precio || 0;
-      byCod[p.cod].fechaV1 = pygs_parseDate(p.f_ini);
-    }
-  });
-  const proyectos = Object.values(byCod);
-
-  // Versiones avg ganados vs perdidos
-  const ganV = proyectos.filter(p=>p.finalRes==='GANADO').map(p=>p.maxV);
-  const perV = proyectos.filter(p=>p.finalRes==='PERDIDO').map(p=>p.maxV);
-  const avg = arr => arr.length ? (arr.reduce((s,v)=>s+v,0)/arr.length).toFixed(1) : '—';
-
-  // Proyectos con V3+
-  const v3plus = proyectos.filter(p => p.maxV >= 3);
-  const v3plusGan = v3plus.filter(p => p.finalRes === 'GANADO').length;
-
-  // Descuento V1 → final en ganados
-  const ganConV1 = proyectos.filter(p => p.finalRes === 'GANADO' && p.v1Precio > 0 && p.finalPrecio > 0);
-  const descAvg = ganConV1.length ? ganConV1.reduce((s,p)=>s+(1-p.finalPrecio/p.v1Precio),0)/ganConV1.length*100 : 0;
-
-  const se = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  se('kpi-ver-gan', avg(ganV));
-  se('kpi-ver-per', avg(perV));
-  se('kpi-v3plus', `${v3plus.length} (${v3plusGan} gan.)`);
-  se('kpi-descuento', descAvg ? descAvg.toFixed(1) + '%' : '—');
-
-  // Distribución de versiones
-  const distMax = {};
-  proyectos.forEach(p => { distMax[p.maxV] = (distMax[p.maxV]||0) + 1; });
-  const verLabels = Object.keys(distMax).sort((a,b)=>parseInt(a)-parseInt(b));
-  pygs_mkChart('ch-ver-dist', 'bar', {
-    labels: verLabels.map(v => 'V' + v),
-    datasets: [{ label:'Proyectos', data: verLabels.map(v=>distMax[v]), backgroundColor:'#5080f0', borderRadius:6 }]
-  }, { plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#6b7494',stepSize:1},grid:{color:'rgba(255,255,255,.04)'}}}});
-
-  // Hit rate por # versiones
-  const hrByV = {};
-  proyectos.forEach(p => {
-    if (!hrByV[p.maxV]) hrByV[p.maxV] = { gan:0, per:0 };
-    if (p.finalRes === 'GANADO') hrByV[p.maxV].gan++;
-    if (p.finalRes === 'PERDIDO') hrByV[p.maxV].per++;
-  });
-  const hrLabels = Object.keys(hrByV).sort((a,b)=>parseInt(a)-parseInt(b));
-  pygs_mkChart('ch-ver-hr', 'bar', {
-    labels: hrLabels.map(v => 'V' + v),
-    datasets: [{ label:'Hit Rate %', data: hrLabels.map(v => {
-      const d = hrByV[v]; const tot = d.gan+d.per;
-      return tot > 0 ? (d.gan/tot*100).toFixed(1) : 0;
-    }), backgroundColor:'#40d080', borderRadius:6 }]
-  }, { plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
-       scales:{x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'},max:100}}});
-
-  // Tabla riesgo: en revisión con V3+
-  const riesgo = proyectos.filter(p => p.finalRes === 'EN REVISION' && p.maxV >= 3).sort((a,b)=>b.maxV-a.maxV);
-  const tblEl = document.getElementById('pygs-tbl-versiones-riesgo');
-  if (tblEl) {
-    if (riesgo.length === 0) {
-      tblEl.innerHTML = '<tbody><tr><td style="text-align:center;padding:20px;color:var(--muted)">Sin proyectos en riesgo (V3+ en revisión).</td></tr></tbody>';
-    } else {
-      tblEl.innerHTML = `<thead><tr><th>COD</th><th>Proyecto</th><th>Comercial</th><th>Versiones</th><th>Precio Final</th><th>Δ vs V1</th></tr></thead><tbody>` +
-        riesgo.slice(0,15).map(p => {
-          const delta = (p.v1Precio>0 && p.finalPrecio>0) ? ((p.finalPrecio/p.v1Precio - 1)*100).toFixed(1) + '%' : '—';
-          return `<tr>
-            <td style="font-family:'Bebas Neue',sans-serif;color:var(--muted)">${p.cod}</td>
-            <td style="color:var(--text)">${p.proyecto}</td>
-            <td>${p.director||'—'}</td>
-            <td><span class="badge ${p.maxV>=5?'badge-r':'badge-y'}">V${p.maxV}</span></td>
-            <td style="font-family:'Bebas Neue',sans-serif;color:var(--cyan)">${pygs_fmt(p.finalPrecio)}</td>
-            <td style="color:${delta.startsWith('-')?'var(--green)':'var(--red)'}">${delta}</td>
-          </tr>`;
-        }).join('') + `</tbody>`;
-    }
-  }
-
-  // ─── Velocidad de decisión ───
-  const calcDays = (a, b) => (a && b) ? Math.round((b - a) / 86400000) : null;
-  const proyConFechas = proyectos.filter(p => p.fechaV1 && p.fechaFinal && p.maxV >= 1);
-  const diasGan = proyConFechas.filter(p => p.finalRes === 'GANADO').map(p => calcDays(p.fechaV1, p.fechaFinal)).filter(d => d !== null && d >= 0);
-  const diasPer = proyConFechas.filter(p => p.finalRes === 'PERDIDO').map(p => calcDays(p.fechaV1, p.fechaFinal)).filter(d => d !== null && d >= 0);
-  const diasRev = proyConFechas.filter(p => p.finalRes === 'EN REVISION').map(p => calcDays(p.fechaV1, p.fechaFinal)).filter(d => d !== null && d >= 0);
-  const avgD = arr => arr.length ? Math.round(arr.reduce((s,v)=>s+v,0)/arr.length) : null;
-  const avgGan = avgD(diasGan), avgPer = avgD(diasPer), avgRev = avgD(diasRev);
-
-  // Umbral de fuga: punto donde el hit rate cae fuerte
-  // Calculamos hit rate por bucket de días
-  const bucketsD = [0, 7, 15, 30, 45, 60, 90, 120, 180, 365];
-  const bucketStats = bucketsD.slice(0,-1).map((b,i) => {
-    const lo = b, hi = bucketsD[i+1];
-    const inGan = diasGan.filter(d => d >= lo && d < hi).length;
-    const inPer = diasPer.filter(d => d >= lo && d < hi).length;
-    const tot = inGan + inPer;
-    return { lo, hi, gan: inGan, per: inPer, hr: tot ? (inGan/tot*100) : null };
-  });
-  const hrGlobal = (diasGan.length + diasPer.length) > 0 ? diasGan.length/(diasGan.length+diasPer.length)*100 : 0;
-  // umbral = primer bucket donde hr < (hrGlobal * 0.5) y tiene al menos 3 proyectos
-  const fuga = bucketStats.find(b => b.hr !== null && b.hr < hrGlobal*0.5 && (b.gan + b.per) >= 3);
-  const umbral = fuga ? `${fuga.lo}+ días` : '—';
-
-  se('kpi-vel-gan', avgGan !== null ? avgGan + ' días' : '—');
-  se('kpi-vel-per', avgPer !== null ? avgPer + ' días' : '—');
-  se('kpi-vel-rev', avgRev !== null ? avgRev + ' días' : '—');
-  se('kpi-umbral', umbral);
-
-  // Gráfica de velocidad: barras stacked por bucket de días
-  pygs_mkChart('ch-velocidad', 'bar', {
-    labels: bucketStats.map(b => `${b.lo}-${b.hi} días`),
-    datasets: [
-      { label:'Ganados', data: bucketStats.map(b => b.gan), backgroundColor:'#40d080', borderRadius:4 },
-      { label:'Perdidos', data: bucketStats.map(b => b.per), backgroundColor:'#e05060', borderRadius:4 }
-    ]
-  }, {
-    plugins: {
-      legend: { labels: { color:'#8b90a8', font:{ size:10 }}},
-      tooltip: { callbacks: { afterLabel: (ctx) => {
-        const b = bucketStats[ctx.dataIndex];
-        return b.hr !== null ? `Hit Rate: ${b.hr.toFixed(0)}%` : '';
-      }}}
-    },
-    scales: {
-      x: { ticks:{ color:'#6b7494', font:{ size:9 }}, grid:{ color:'rgba(255,255,255,.04)' }},
-      y: { ticks:{ color:'#6b7494' }, grid:{ color:'rgba(255,255,255,.04)' }, title:{ display:true, text:'Proyectos', color:'#6b7494', font:{ size:10 }}}
-    }
-  });
-}
-function pygs_renderComerciales() {
-  const data = pygs_getFiltered();
-  const proyectos = pygs_uniqueProjects(data);
-  const finalP = pygs_finalVersion(data);
-
-  const byCom = {};
-  proyectos.forEach(p => {
-    const c = p.director || '—';
-    if (!byCom[c]) byCom[c] = { c, prop:0, gan:0, per:0, rev:0, valGan:0, tipos:{} };
-    byCom[c].prop++;
-    if (p.resultado === 'GANADO') byCom[c].gan++;
-    if (p.resultado === 'PERDIDO') byCom[c].per++;
-    if (p.resultado === 'EN REVISION') byCom[c].rev++;
-    byCom[c].tipos[p.tipo||'—'] = (byCom[c].tipos[p.tipo||'—']||0) + 1;
-  });
-  // Valor ganado por comercial (de versión final ganada)
-  finalP.filter(p => p.resultado === 'GANADO').forEach(p => {
-    const c = p.director || '—';
-    if (byCom[c]) byCom[c].valGan += p.precio || 0;
-  });
-  const all = Object.values(byCom).filter(b => b.c !== '—');
-
-  // Hit rate (mín 5 propuestas)
-  const validHR = all.filter(b => b.prop >= 5).map(b => {
-    const comp = b.gan + b.per;
-    return { c: b.c, hr: comp > 0 ? (b.gan/comp*100) : 0, prop: b.prop };
-  }).sort((a,b) => b.hr - a.hr);
-
-  pygs_mkChart('ch-com-hr', 'bar', {
-    labels: validHR.map(x => x.c),
-    datasets: [{ label:'Hit Rate %', data: validHR.map(x => x.hr.toFixed(1)),
-      backgroundColor: validHR.map(x => x.hr>=40?'#40d080':x.hr>=25?'#f0c040':'#e05060'), borderRadius:6 }]
-  }, { indexAxis:'y', plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
-       scales:{x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'},max:100},
-               y:{ticks:{color:'#6b7494',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'}}}});
-
-  // Valor ganado
-  const valSorted = all.filter(b => b.valGan > 0).sort((a,b) => b.valGan - a.valGan);
-  pygs_mkChart('ch-com-val', 'bar', {
-    labels: valSorted.map(x => x.c),
-    datasets: [{ label:'M COP', data: valSorted.map(x => (x.valGan/1e6).toFixed(0)),
-      backgroundColor:'#4de0c0', borderRadius:6 }]
-  }, { indexAxis:'y', plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' $'+c.raw+'M'}}},
-       scales:{x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-               y:{ticks:{color:'#6b7494',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'}}}});
-
-  // Especialización: tipo top por comercial
-  const tipoTbl = document.getElementById('pygs-tbl-com-tipo');
-  if (tipoTbl) {
-    const allTipos = [...new Set(proyectos.map(p=>p.tipo).filter(Boolean))].sort();
-    tipoTbl.innerHTML = `<thead><tr><th>Comercial</th>${allTipos.map(t=>`<th>${t}</th>`).join('')}<th>Total</th></tr></thead><tbody>` +
-      all.sort((a,b)=>b.prop-a.prop).slice(0,12).map(b =>
-        `<tr><td style="color:var(--text);font-weight:500">${b.c}</td>` +
-        allTipos.map(t => `<td>${b.tipos[t]||'—'}</td>`).join('') +
-        `<td style="color:var(--cyan);font-weight:600">${b.prop}</td></tr>`).join('') + `</tbody>`;
-  }
-
-  // Tabla detallada
-  const tblEl = document.getElementById('pygs-tbl-comerciales');
-  if (tblEl) {
-    const sorted = all.sort((a,b) => b.valGan - a.valGan);
-    tblEl.innerHTML = `<thead><tr><th>Comercial</th><th>Propuestas</th><th>Ganadas</th><th>Perdidas</th><th>En Revisión</th><th>Hit Rate</th><th>Valor Ganado</th><th>Ticket Promedio</th></tr></thead><tbody>` +
-      sorted.map(b => {
-        const comp = b.gan + b.per;
-        const hr = comp > 0 ? (b.gan/comp*100) : 0;
-        const ticket = b.gan > 0 ? b.valGan / b.gan : 0;
-        return `<tr><td style="color:var(--text);font-weight:500">${b.c}</td>
-          <td>${b.prop}</td><td style="color:var(--green)">${b.gan}</td>
-          <td style="color:var(--red)">${b.per}</td><td style="color:var(--yellow)">${b.rev}</td>
-          <td><span class="badge ${hr>=40?'badge-g':hr>=25?'badge-y':'badge-r'}">${comp>0?hr.toFixed(0)+'%':'—'}</span></td>
-          <td style="color:var(--cyan);font-family:'Bebas Neue',sans-serif">${pygs_fmt(b.valGan)}</td>
-          <td style="color:var(--muted2);font-family:'Bebas Neue',sans-serif">${pygs_fmt(ticket)}</td>
-        </tr>`;
-      }).join('') + `</tbody>`;
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════
-// TAB 5 — PIPELINE & TENDENCIAS
-// ═══════════════════════════════════════════════════════════════
-function pygs_renderPipelineTrends() {
-  const data = pygs_getFiltered();
-  const proyectos = pygs_uniqueProjects(data);
-  const finalP = pygs_finalVersion(data);
-
-  // Series mensuales: hit rate y volumen
-  const MM = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-  const byMes = {};
-  proyectos.forEach(p => {
-    const m = (p.mes || '').toLowerCase().trim();
-    if (!byMes[m]) byMes[m] = { gan:0, per:0, rev:0, total:0 };
-    byMes[m].total++;
-    if (p.resultado === 'GANADO') byMes[m].gan++;
-    if (p.resultado === 'PERDIDO') byMes[m].per++;
-    if (p.resultado === 'EN REVISION') byMes[m].rev++;
-  });
-  const labels = MM.filter(m => byMes[m]);
-  const hrSerie = labels.map(m => {
-    const d = byMes[m]; const comp = d.gan+d.per;
-    return comp > 0 ? (d.gan/comp*100).toFixed(1) : 0;
-  });
-  pygs_mkChart('ch-trend-hr', 'line', {
-    labels: labels.map(l => l.charAt(0).toUpperCase()+l.slice(1,3)),
-    datasets: [{ label:'Hit Rate %', data: hrSerie, borderColor:'#40d080',
-      backgroundColor:'rgba(64,208,128,.1)', borderWidth:2, fill:true, tension:.3, pointRadius:4 }]
-  }, { plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
-       scales:{x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-               y:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'},max:100}}});
-
-  pygs_mkChart('ch-trend-vol', 'bar', {
-    labels: labels.map(l => l.charAt(0).toUpperCase()+l.slice(1,3)),
-    datasets: [
-      { label:'Ganados', data: labels.map(m=>byMes[m].gan), backgroundColor:'#40d080', stack:'s' },
-      { label:'Perdidos', data: labels.map(m=>byMes[m].per), backgroundColor:'#e05060', stack:'s' },
-      { label:'Revisión', data: labels.map(m=>byMes[m].rev), backgroundColor:'#f0c040', stack:'s' }
-    ]
-  }, { plugins:{legend:{labels:{color:'#8b90a8',font:{size:10}}}},
-       scales:{x:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
-               y:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}}});
-
-  // Pipeline activo
-  const pipeEl = document.getElementById('pygs-pipeline-list');
-  if (pipeEl) {
-    const revisiones = finalP.filter(p => p.resultado === 'EN REVISION' && p.precio > 0)
-      .sort((a,b) => b.precio - a.precio).slice(0, 20);
-    if (revisiones.length === 0) {
-      pipeEl.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:8px;">Sin pipeline activo.</div>';
-    } else {
-      pipeEl.innerHTML = revisiones.map(p => `
-        <div class="pipe-row">
-          <div class="pipe-dot" style="background:${p.precio>500e6?'#e05060':p.precio>100e6?'#f09040':'#f0c040'}"></div>
-          <div class="pipe-cod">${p.cod}</div>
-          <div class="pipe-name">${p.proyecto}</div>
-          <div class="pipe-dir">${p.director||'—'}</div>
-          <div class="pipe-tipo"><span class="badge badge-b">${p.tipo||'—'}</span></div>
-          <div class="pipe-val">${pygs_fmt(p.precio)}</div>
-        </div>`).join('');
-    }
-  }
-
-  // Por sector — hit rate
-  const bySec = {};
-  proyectos.forEach(p => {
-    const s = p.sector || '—';
-    if (!bySec[s]) bySec[s] = { gan:0, per:0 };
-    if (p.resultado === 'GANADO') bySec[s].gan++;
-    if (p.resultado === 'PERDIDO') bySec[s].per++;
-  });
-  const secLabels = Object.keys(bySec).filter(s => s!=='—' && (bySec[s].gan+bySec[s].per)>=2);
-  pygs_mkChart('ch-sector-hr', 'bar', {
+  // Valor por sector
+  const secs = pygs_groupBy(withPrice, 'sector');
+  const secLabels = Object.keys(secs).filter(s=>s&&s!=='—').sort((a,b)=>pygs_sumBy(secs[b],'precio')-pygs_sumBy(secs[a],'precio'));
+  pygs_mkChart('ch-sector-valor', 'bar', {
     labels: secLabels,
-    datasets: [{ label:'Hit Rate %', data: secLabels.map(s => {
-      const d = bySec[s]; const t = d.gan+d.per;
-      return t>0?(d.gan/t*100).toFixed(1):0;
-    }), backgroundColor: secLabels.map(s => {
-      const d = bySec[s]; const t = d.gan+d.per;
-      const hr = t>0?d.gan/t*100:0;
-      return hr>=40?'#40d080':hr>=25?'#f0c040':'#e05060';
-    }), borderRadius:6 }]
-  }, { plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
-       scales:{x:{ticks:{color:'#6b7494',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}},
-               y:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'},max:100}}});
+    datasets: [{
+      label: 'Valor M COP',
+      data: secLabels.map(s => pygs_sumBy(secs[s],'precio')/1e6),
+      backgroundColor: secLabels.map(s => PYGS_SECTOR_COLORS[s]||'#6b7494'),
+      borderRadius:6,
+    }]
+  }, {
+    indexAxis:'y',
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{callback:v=>'$'+v+'M',color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+      y:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
+    }
+  });
 
-  // Por país — volumen
-  const byPais = pygs_groupBy(proyectos, 'pais');
-  const paisLabels = Object.keys(byPais).filter(k=>k && k!=='—').sort((a,b)=>byPais[b].length-byPais[a].length).slice(0,8);
-  pygs_mkChart('ch-pais-vol', 'doughnut', {
-    labels: paisLabels,
-    datasets: [{ data: paisLabels.map(p=>byPais[p].length),
-      backgroundColor:['#5080f0','#f09040','#40d080','#a060f0','#4de0c0','#f0c040','#e05060','#6b7494'],
-      borderWidth: 2, borderColor:'#0f1421' }]
-  }, { plugins:{legend:{labels:{color:'#8b90a8',font:{size:10}}}}});
+  // Precio/m2 heatmap — sector × tipo como scatter
+  const pm2Data = PYGS_DATA.filter(p=>p.precio_m2>0&&p.precio_m2<500000&&p.sector&&p.tipo);
+  const pm2ByST = {};
+  pm2Data.forEach(p => {
+    const k = p.sector + '×' + p.tipo;
+    if (!pm2ByST[k]) pm2ByST[k] = {sector:p.sector,tipo:p.tipo,vals:[]};
+    pm2ByST[k].vals.push(p.precio_m2);
+  });
+  const pm2Labels = Object.values(pm2ByST).sort((a,b)=>(pygs_sumBy(b.vals,v=>v)/b.vals.length)-(pygs_sumBy(a.vals,v=>v)/a.vals.length)).slice(0,10);
+  pygs_mkChart('ch-pm2-heatmap', 'bar', {
+    labels: pm2Labels.map(d => d.sector.substring(0,8)+'\n×'+d.tipo.substring(0,8)),
+    datasets:[{
+      label:'Precio/m² promedio ($)',
+      data: pm2Labels.map(d => Math.round(pygs_sumBy(d.vals,v=>v)/d.vals.length)),
+      backgroundColor: pm2Labels.map(d => PYGS_SECTOR_COLORS[d.sector]||'#6b7494'),
+      borderRadius:6,
+    }]
+  }, {
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#6b7494',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}},
+      y:{ticks:{callback:v=>'$'+Math.round(v/1000)+'K',color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
+    }
+  });
+
+  // M2 por complejidad
+  const compM2 = pygs_groupBy(PYGS_DATA.filter(p=>p.m2>0&&p.complejidad), 'complejidad');
+  const compLabels = ['ESTANDAR','MEDIA','ALTA','BAJA'];
+  const compColors = {ESTANDAR:'#6b7494',MEDIA:'#f09040',ALTA:'#e05060',BAJA:'#40d080'};
+  pygs_mkChart('ch-m2-comp', 'doughnut', {
+    labels: compLabels.filter(c=>compM2[c]),
+    datasets:[{
+      data: compLabels.filter(c=>compM2[c]).map(c=>pygs_sumBy(compM2[c],'m2')),
+      backgroundColor: compLabels.filter(c=>compM2[c]).map(c=>compColors[c]),
+      borderWidth:0, hoverOffset:6
+    }]
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════
-// TAB ROUTER
+// TAB EFICIENCIA
 // ═══════════════════════════════════════════════════════════════
-let PYGS__rendered = {};
+function pygs_renderEficiencia() {
+  const validDias = PYGS_DATA.filter(p=>p.dias_real>0&&p.dias_real<100);
+  const diasAvg = validDias.length ? (pygs_sumBy(validDias,'dias_real')/validDias.length).toFixed(1) : '—';
+  const diasMin = validDias.length ? Math.min(...validDias.map(p=>p.dias_real)) : '—';
+  const diasMax = validDias.length ? Math.max(...validDias.map(p=>p.dias_real)) : '—';
+  const validRen = PYGS_DATA.filter(p=>p.renders>0);
+  const renAvg = validRen.length ? (pygs_sumBy(validRen,'renders')/validRen.length).toFixed(1) : '—';
+
+  document.getElementById('kpi-ef-dias').textContent = diasAvg;
+  document.getElementById('kpi-ef-min').textContent = diasMin;
+  document.getElementById('kpi-ef-max').textContent = diasMax;
+  document.getElementById('kpi-ef-renders').textContent = renAvg;
+
+  // Velocidad por complejidad
+  const compLabels = ['BAJA','ESTANDAR','MEDIA','ALTA'];
+  const compColors = {BAJA:'#40d080',ESTANDAR:'#6b7494',MEDIA:'#f09040',ALTA:'#e05060'};
+  const compDias = pygs_groupBy(PYGS_DATA.filter(p=>p.dias_real>0&&p.dias_real<100&&p.complejidad), 'complejidad');
+  const velData = compLabels.filter(c=>compDias[c]).map(c => ({
+    label: c,
+    avg: pygs_sumBy(compDias[c],'dias_real')/compDias[c].length,
+    max: Math.max(...compDias[c].map(p=>p.dias_real)),
+    n: compDias[c].length
+  }));
+  pygs_mkChart('ch-vel-comp', 'bar', {
+    labels: velData.map(d=>d.label),
+    datasets:[
+      { label:'Días Promedio', data:velData.map(d=>+d.avg.toFixed(1)), backgroundColor:velData.map(d=>compColors[d.label]), borderRadius:6 },
+      { label:'Días Máximo', data:velData.map(d=>d.max), backgroundColor:velData.map(d=>compColors[d.label]+'55'), borderRadius:6 }
+    ]
+  });
+
+  // Iteraciones por tipo
+  const maxVers = {};
+  const tipoPorCod = {};
+  PYGS_DATA.forEach(p => {
+    const n = p.cod;
+    if (!maxVers[n] || p.version > maxVers[n]) { maxVers[n] = p.version; tipoPorCod[n] = p.tipo; }
+  });
+  const tipoIters = {};
+  Object.entries(maxVers).forEach(([cod,v]) => {
+    const t = tipoPorCod[cod]||'—';
+    if (!tipoIters[t]) tipoIters[t] = [];
+    tipoIters[t].push(v);
+  });
+  const tipoLabels = Object.keys(tipoIters).filter(t=>t&&t!=='—');
+  pygs_mkChart('ch-iters-tipo', 'bar', {
+    labels: tipoLabels,
+    datasets:[{
+      label:'Versiones promedio',
+      data: tipoLabels.map(t => +(pygs_sumBy(tipoIters[t],v=>v)/tipoIters[t].length).toFixed(2)),
+      backgroundColor: tipoLabels.map(t=>PYGS_TIPO_COLORS[t]||'#6b7494'),
+      borderRadius:6,
+    }]
+  }, {
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+      y:{ticks:{color:'#6b7494',stepSize:0.5},grid:{color:'rgba(255,255,255,.04)'},min:1}
+    }
+  });
+
+  // Renders bubble: x=dias, y=renders, r=precio
+  const bubbleData = PYGS_DATA.filter(p=>p.renders>0&&p.dias_real>0&&p.dias_real<50&&p.precio>0);
+  const compBubble = {};
+  bubbleData.forEach(p => {
+    if (!compBubble[p.complejidad]) compBubble[p.complejidad] = [];
+    compBubble[p.complejidad].push({ x:p.dias_real, y:p.renders, r:Math.max(4,Math.min(20,p.precio/50e6)) });
+  });
+  pygs_mkChart('ch-renders-bubble', 'bubble', {
+    datasets: Object.entries(compBubble).map(([comp,pts]) => ({
+      label: comp,
+      data: pts,
+      backgroundColor: (compColors[comp]||'#6b7494')+'99',
+      borderColor: compColors[comp]||'#6b7494',
+    }))
+  }, {
+    scales:{
+      x:{title:{display:true,text:'Días de cotización',color:'#6b7494'},ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+      y:{title:{display:true,text:'# Renders',color:'#6b7494'},ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
+    }
+  });
+
+  // Scatter dias vs precio
+  const scatterData = PYGS_DATA.filter(p=>p.dias_real>0&&p.dias_real<60&&p.precio>0&&p.precio<500e6);
+  const tiposScatter = [...new Set(scatterData.map(p=>p.tipo))].filter(Boolean);
+  pygs_mkChart('ch-dias-precio-scatter', 'scatter', {
+    datasets: tiposScatter.map(t => ({
+      label:t,
+      data: scatterData.filter(p=>p.tipo===t).map(p=>({x:p.dias_real,y:p.precio/1e6})),
+      backgroundColor: (PYGS_TIPO_COLORS[t]||'#6b7494')+'bb',
+      pointRadius:5,
+    }))
+  }, {
+    scales:{
+      x:{title:{display:true,text:'Días reales',color:'#6b7494'},ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+      y:{title:{display:true,text:'Valor M COP',color:'#6b7494'},ticks:{callback:v=>'$'+v+'M',color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TAB DIRECTORES
+// ═══════════════════════════════════════════════════════════════
+function pygs_renderComerciales() {
+  const dirData = {};
+  PYGS_DATA.filter(p=>p.director).forEach(p => {
+    if (!dirData[p.director]) dirData[p.director] = {n:0,valor:0,dias:[],tipos:{},sectores:{},complejidades:{},resultados:{GANADO:0,PERDIDO:0,'EN REVISION':0,PENDIENTE:0}};
+    const d = dirData[p.director];
+    d.n++; d.valor+=p.precio;
+    if(p.dias_real>0&&p.dias_real<100) d.dias.push(p.dias_real);
+    d.tipos[p.tipo]=(d.tipos[p.tipo]||0)+1;
+    d.sectores[p.sector]=(d.sectores[p.sector]||0)+1;
+    d.complejidades[p.complejidad]=(d.complejidades[p.complejidad]||0)+1;
+    if(p.resultado&&d.resultados[p.resultado]!==undefined) d.resultados[p.resultado]++;
+  });
+
+  const dirs = Object.entries(dirData).sort((a,b)=>b[1].valor-a[1].valor).filter(([n])=>n&&n!=='—');
+
+  // Ranking — dual axis: bars=valor, line=count
+  const dirLabels = dirs.map(([n])=>n.split(' ')[0]+'\n'+n.split(' ').slice(1).join(' '));
+  pygs_mkChart('ch-dir-ranking', 'bar', {
+    labels: dirLabels,
+    datasets:[
+      { label:'Valor M COP', data:dirs.map(([,d])=>d.valor/1e6), backgroundColor:PYGS_COLORS.slice(0,dirs.length), borderRadius:6, yAxisID:'y' },
+      { label:'# PYGs', data:dirs.map(([,d])=>d.n), type:'line', borderColor:'#4de0c0', backgroundColor:'transparent', pointBackgroundColor:'#4de0c0', yAxisID:'y2', tension:0.3 }
+    ]
+  }, {
+    scales:{
+      y:{ticks:{callback:v=>'$'+v+'M',color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+      y2:{position:'right',ticks:{color:'#4de0c0'},grid:{display:false}}
+    }
+  });
+
+  // Mix de tipos por director
+  const tipos = ['INVITACION','RECOMPRA','CONCURSO','LICITACION','OTROS'];
+  pygs_mkChart('ch-dir-tipos', 'bar', {
+    labels: dirs.map(([n])=>n.split(' ')[0]),
+    datasets: tipos.map(t=>({
+      label:t,
+      data: dirs.map(([,d])=>d.tipos[t]||0),
+      backgroundColor: PYGS_TIPO_COLORS[t]||'#6b7494',
+      borderRadius:4,
+    }))
+  }, {
+    scales:{
+      x:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+      y:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
+    }
+  });
+
+  // Eficiencia: días prom + renders prom por director
+  pygs_mkChart('ch-dir-eficiencia', 'bar', {
+    labels: dirs.map(([n])=>n.split(' ')[0]),
+    datasets:[
+      { label:'Días promedio', data:dirs.map(([,d])=>d.dias.length?+(pygs_sumBy(d.dias,v=>v)/d.dias.length).toFixed(1):0), backgroundColor:'#f09040aa', borderRadius:4, yAxisID:'y' },
+    ]
+  }, {
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+      y:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
+    }
+  });
+
+  // Resultados por director
+  pygs_mkChart('ch-dir-resultados', 'bar', {
+    labels: dirs.map(([n])=>n.split(' ')[0]),
+    datasets:[
+      {label:'Ganado',data:dirs.map(([,d])=>d.resultados.GANADO),backgroundColor:'#40d080',borderRadius:4},
+      {label:'Perdido',data:dirs.map(([,d])=>d.resultados.PERDIDO),backgroundColor:'#e05060',borderRadius:4},
+      {label:'En Revisión',data:dirs.map(([,d])=>d.resultados['EN REVISION']),backgroundColor:'#f0c040',borderRadius:4},
+    ]
+  }, {
+    scales:{
+      x:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+      y:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
+    }
+  });
+
+  // Tabla
+  const tbl = document.getElementById('tbl-directores');
+  tbl.innerHTML = `<thead><tr>
+    <th>Director</th><th>PYGs</th><th>Valor Total</th><th>Ticket Prom</th>
+    <th>Días Prom</th><th>Top Tipo</th><th>Top Sector</th>
+    <th>Ganados</th><th>Perdidos</th><th>En Revisión</th>
+  </tr></thead><tbody>` +
+  dirs.map(([name,d]) => {
+    const topTipo = Object.entries(d.tipos).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
+    const topSec = Object.entries(d.sectores).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
+    const diasAvg = d.dias.length ? (pygs_sumBy(d.dias,v=>v)/d.dias.length).toFixed(1) : '—';
+    return `<tr>
+      <td style="color:var(--text);font-weight:500">${name}</td>
+      <td style="text-align:right">${d.n}</td>
+      <td style="text-align:right;color:var(--yellow)">${pygs_fmtM(d.valor)}</td>
+      <td style="text-align:right">${d.n?pygs_fmtM(d.valor/d.n):'—'}</td>
+      <td style="text-align:right">${diasAvg}d</td>
+      <td><span class="badge badge-b">${topTipo}</span></td>
+      <td>${topSec}</td>
+      <td style="text-align:right;color:var(--green)">${d.resultados.GANADO}</td>
+      <td style="text-align:right;color:var(--red)">${d.resultados.PERDIDO}</td>
+      <td style="text-align:right;color:var(--yellow)">${d.resultados['EN REVISION']}</td>
+    </tr>`;
+  }).join('') + '</tbody>';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TAB MERCADO
+// ═══════════════════════════════════════════════════════════════
+function pygs_renderMercado() {
+  // Top ciudades
+  const ciudades = {};
+  PYGS_DATA.filter(p=>p.ciudad).forEach(p => {
+    if (!ciudades[p.ciudad]) ciudades[p.ciudad] = {n:0,valor:0};
+    ciudades[p.ciudad].n++;
+    ciudades[p.ciudad].valor += p.precio;
+  });
+  const topCiudades = Object.entries(ciudades).sort((a,b)=>b[1].valor-a[1].valor).slice(0,8);
+  pygs_mkChart('ch-ciudades', 'bar', {
+    labels: topCiudades.map(([c])=>c),
+    datasets:[
+      {label:'Valor M COP', data:topCiudades.map(([,d])=>d.valor/1e6), backgroundColor:PYGS_COLORS, borderRadius:6, yAxisID:'y'},
+      {label:'# PYGs', data:topCiudades.map(([,d])=>d.n), type:'line', borderColor:'#4de0c0', backgroundColor:'transparent', pointBackgroundColor:'#4de0c0', yAxisID:'y2', tension:0.3}
+    ]
+  }, {
+    scales:{
+      y:{ticks:{callback:v=>'$'+v+'M',color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+      y2:{position:'right',ticks:{color:'#4de0c0'},grid:{display:false}}
+    }
+  });
+
+  // Precio/m2 por sector
+  const secPM2 = {};
+  PYGS_DATA.filter(p=>p.precio_m2>0&&p.precio_m2<500000&&p.sector).forEach(p => {
+    if (!secPM2[p.sector]) secPM2[p.sector] = [];
+    secPM2[p.sector].push(p.precio_m2);
+  });
+  const secLabels = Object.keys(secPM2).sort((a,b)=>(pygs_sumBy(secPM2[b],v=>v)/secPM2[b].length)-(pygs_sumBy(secPM2[a],v=>v)/secPM2[a].length));
+  pygs_mkChart('ch-sector-pm2', 'bar', {
+    labels: secLabels,
+    datasets:[{
+      label:'Precio/m² promedio',
+      data: secLabels.map(s => Math.round(pygs_sumBy(secPM2[s],v=>v)/secPM2[s].length)),
+      backgroundColor: secLabels.map(s=>PYGS_SECTOR_COLORS[s]||'#6b7494'),
+      borderRadius:6,
+    }]
+  }, {
+    indexAxis:'y',
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{callback:v=>'$'+Math.round(v/1000)+'K',color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+      y:{ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
+    }
+  });
+
+  // Distribución geográfica por sector (ciudad × sector)
+  const topCiuds = topCiudades.slice(0,5).map(([c])=>c);
+  const secs = ['CORPORATIVO','HOSPITALITY','RETAIL','SALUD','EDUCATIVO','RESIDENCIAL'];
+  const geoData = {};
+  PYGS_DATA.filter(p=>topCiuds.includes(p.ciudad)&&p.sector).forEach(p => {
+    if (!geoData[p.ciudad]) geoData[p.ciudad] = {};
+    geoData[p.ciudad][p.sector] = (geoData[p.ciudad][p.sector]||0) + 1;
+  });
+  pygs_mkChart('ch-geo-sector', 'bar', {
+    labels: topCiuds,
+    datasets: secs.map(s=>({
+      label:s,
+      data: topCiuds.map(c=>(geoData[c]||{})[s]||0),
+      backgroundColor: PYGS_SECTOR_COLORS[s]||'#6b7494',
+      borderRadius:4,
+    }))
+  }, {
+    scales:{
+      x:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}},
+      y:{stacked:true,ticks:{color:'#6b7494'},grid:{color:'rgba(255,255,255,.04)'}}
+    }
+  });
+
+  // Colombia vs Internacional
+  const col = PYGS_DATA.filter(p=>p.pais==='COLOMBIA');
+  const intl = PYGS_DATA.filter(p=>p.pais&&p.pais!=='COLOMBIA');
+  pygs_mkChart('ch-intl', 'doughnut', {
+    labels: ['Colombia','Internacional'],
+    datasets:[{
+      data:[pygs_sumBy(col,'precio')/1e6, pygs_sumBy(intl,'precio')/1e6],
+      backgroundColor:['#5080f0','#f09040'],
+      borderWidth:0, hoverOffset:8
+    }]
+  }, {
+    plugins:{
+      legend:{labels:{color:'#8b90a8',font:{size:11}}},
+      tooltip:{callbacks:{label:ctx=>' $'+ctx.raw+'M ('+ctx.label+')'}}
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TAB DISPATCHER
+// ═══════════════════════════════════════════════════════════════
+const PYGS__rendered = {};
 function pygs_renderTab(id) {
   if (PYGS__rendered[id]) return;
   PYGS__rendered[id] = true;
-  if (id === 'resumen')      pygs_renderResumen();
-  else if (id === 'sweetspot')   pygs_renderSweetSpot();
-  else if (id === 'versiones')   pygs_renderVersiones();
-  else if (id === 'comerciales') pygs_renderComerciales();
-  else if (id === 'pipeline')    pygs_renderPipelineTrends();
+  if (id === 'pipeline')    pygs_renderPipeline();
+  if (id === 'financiero')  pygs_renderFinanciero();
+  if (id === 'eficiencia')  pygs_renderEficiencia();
+  if (id === 'comerciales')  pygs_renderComerciales();
+  if (id === 'mercado')     pygs_renderMercado();
 }
 
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
-pygs_initComercialesDropdown();
 pygs_renderHeader();
-pygs_renderResumen();
-
-
+pygs_renderPipeline();
 
 // === ING Dashboard JS ===
 // ═══════════════════════════════════════════════════════════════
@@ -10288,6 +9050,288 @@ function ingRenderTimeline() {
 // ═══════════════════════════════════════════════════════════════
 ingRenderHeader();
 ingRenderActivos();
+
+
+// ════════════════════════════════════════════════════════════════
+// HORAS PLANEADAS VS EJECUTADAS
+// Fuente planeadas: hoja "Horas" (días × 8 × dedicación)
+// Fuente ejecutadas: hoja "Registro 25-26" (Position="DISEÑO", QtyTotal=horas reales)
+// Cruce de proyectos: por código de proyecto (sufijo tipo DISEÑ-1611)
+// ════════════════════════════════════════════════════════════════
+let HORAS_PLAN = [];      // [{codigo, proyecto, etapa, horas_plan}]
+let HORAS_EJEC = [];      // [{codigo, proyecto, etapa, anio, horas_ejec, disenador}]
+let HORAS_CRUCE = [];     // merged data, one row per proyecto+etapa
+let _horasFilters = { anio: 'TODOS', etapa: 'TODOS' };
+
+const HORAS_ETAPA_MAP = {
+  'ANALISIS Y ENTENDIMIENTO REQUERIMIENTOS DE PROCESO': 'AE',
+  'DISEÑO ESQUEMATICO': 'EB',
+  'ANTEPROYECTO': 'AP',
+  'PLANOS CONSTRUCTIVOS': 'PC'
+};
+const HORAS_ETAPA_LABELS = { AE:'Análisis y Entendimiento', EB:'Diseño Esquemático', AP:'Anteproyecto', PC:'Planos Constructivos' };
+
+// Extract trailing project code, e.g. "MARAWA 2-DISEÑ-1599" -> "DISEÑ-1599"
+function horasExtractCode(name) {
+  if (!name) return null;
+  const m = name.toUpperCase().match(/([A-ZÑ]{2,}E?-?\d+)$/);
+  return m ? m[1] : null;
+}
+function horasNormName(name) {
+  return (name||'').toString().trim().replace(/\s+/g,' ').toUpperCase();
+}
+
+// ── Parse "Horas" sheet (planeadas) ───────────────────────────────────────
+function parseHorasRows(rows) {
+  if (!rows || rows.length < 2) return [];
+  const hdrs = rows[0].map(h=>(h||'').toString().trim());
+  // Columns: Proyecto, Perfil, [Etapa1-Dias, Dedicacion]x4, Total Horas
+  const stageCols = [
+    {label:'AE', diasCol:2, dedCol:3},
+    {label:'EB', diasCol:4, dedCol:5},
+    {label:'AP', diasCol:6, dedCol:7},
+    {label:'PC', diasCol:8, dedCol:9},
+  ];
+  const cn = v => { const n=parseFloat(String(v||'').replace(',','.').replace('%','')); return isNaN(n)?0:n; };
+  const result = [];
+  let currentProy = '';
+  for (let i=1;i<rows.length;i++){
+    const row = rows[i];
+    if (!row || row.length===0) continue;
+    const proyCell = (row[0]||'').toString().trim();
+    if (proyCell) currentProy = proyCell; // forward-fill merged project name
+    if (!currentProy) continue;
+    const codigo = horasExtractCode(currentProy);
+    if (!codigo) continue;
+    stageCols.forEach(sc => {
+      const dias = cn(row[sc.diasCol]);
+      const dedRaw = (row[sc.dedCol]||'').toString();
+      const ded = dedRaw.includes('%') ? cn(dedRaw)/100 : (cn(dedRaw) > 3 ? cn(dedRaw)/100 : cn(dedRaw));
+      if (dias > 0 && ded > 0) {
+        const existing = result.find(r=>r.codigo===codigo && r.etapa===sc.label);
+        const horasPlan = dias * 8 * ded;
+        if (existing) existing.horas_plan += horasPlan;
+        else result.push({ codigo, proyecto: currentProy, etapa: sc.label, horas_plan: horasPlan });
+      }
+    });
+  }
+  return result;
+}
+
+// ── Parse "Registro 25-26" sheet (ejecutadas) ─────────────────────────────
+function parseRegistroRows(rows) {
+  if (!rows || rows.length < 2) return [];
+  const hdrs = rows[0].map(h=>(h||'').toString().trim());
+  const idx = {};
+  hdrs.forEach((h,i)=>{ idx[h.trim()] = i; });
+  const gi = (row,key) => { const i=idx[key]; return i!==undefined ? row[i] : undefined; };
+  const cn = v => { const n=parseFloat(String(v||'').replace(/[.\s]/g,'').replace(',','.')); return isNaN(n)?0:n; };
+  const cnDot = v => { const n=parseFloat(String(v||'').trim().replace(',','.')); return isNaN(n)?0:n; };
+  const result = [];
+  for (let i=1;i<rows.length;i++){
+    const row = rows[i];
+    if (!row || row.length===0) continue;
+    const position = (gi(row,'Position')||'').toString().trim().toUpperCase();
+    if (!position.includes('DISE')) continue; // Solo Diseño (columna R)
+    const itemName = (gi(row,'ItemName')||'').toString().trim().toUpperCase();
+    const etapa = HORAS_ETAPA_MAP[itemName];
+    if (!etapa) continue; // solo las 4 etapas de diseño
+    const projectName = (gi(row,'ProjectName')||'').toString().trim();
+    const projectCode = (gi(row,'ProjectCode')||'').toString().trim();
+    const codigo = horasExtractCode(projectCode) || horasExtractCode(projectName);
+    if (!codigo) continue;
+    const anio = parseInt(gi(row,'año')||'0') || 0;
+    const horasEjec = cnDot(gi(row,'QtyTotal'));
+    const disenador = (gi(row,'EmployeeName')||'').toString().trim();
+    result.push({ codigo, proyecto: projectName, etapa, anio, horas_ejec: horasEjec, disenador });
+  }
+  return result;
+}
+
+// ── Cruce: agrupar ejecutadas por codigo+etapa+anio, unir con planeadas ──
+function horasBuildCruce() {
+  if (!HORAS_PLAN.length || !HORAS_EJEC.length) { HORAS_CRUCE = []; return; }
+  // Group ejecutadas by codigo+etapa (sum horas, collect años y diseñadores)
+  const ejecGroup = {};
+  HORAS_EJEC.forEach(e => {
+    const key = e.codigo + '|' + e.etapa;
+    if (!ejecGroup[key]) ejecGroup[key] = { horas_ejec:0, anios:new Set(), disenadores:new Set() };
+    ejecGroup[key].horas_ejec += e.horas_ejec;
+    if (e.anio) ejecGroup[key].anios.add(e.anio);
+    if (e.disenador) ejecGroup[key].disenadores.add(e.disenador);
+  });
+  const planCodes = new Set(HORAS_PLAN.map(p=>p.codigo));
+  const cruce = [];
+  HORAS_PLAN.forEach(p => {
+    const key = p.codigo + '|' + p.etapa;
+    const ejec = ejecGroup[key];
+    if (!ejec) return; // solo proyectos presentes en AMBAS hojas
+    const diff = ejec.horas_ejec - p.horas_plan;
+    const pctCump = p.horas_plan > 0 ? (ejec.horas_ejec / p.horas_plan * 100) : 0;
+    cruce.push({
+      codigo: p.codigo, proyecto: p.proyecto, etapa: p.etapa,
+      horas_plan: p.horas_plan, horas_ejec: ejec.horas_ejec,
+      diff, pct_cumplimiento: pctCump,
+      anios: [...ejec.anios], disenadores: [...ejec.disenadores]
+    });
+  });
+  HORAS_CRUCE = cruce;
+}
+
+// ── Fetch from Excel ──────────────────────────────────────────────────────
+async function fetchHorasFromExcel(token) {
+  if (!token || !SP_CONFIG.driveItemId) return null;
+  try {
+    const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetNameHoras||'Horas')}')/usedRange`;
+    const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!r.ok) throw new Error(r.statusText);
+    return parseHorasRows((await r.json()).values);
+  } catch(e) { console.warn('Horas fetch:', e); return null; }
+}
+async function fetchRegistroFromExcel(token) {
+  if (!token || !SP_CONFIG.driveItemId) return null;
+  try {
+    const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetNameRegistro||'Registro 25-26')}')/usedRange`;
+    const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!r.ok) throw new Error(r.statusText);
+    return parseRegistroRows((await r.json()).values);
+  } catch(e) { console.warn('Registro fetch:', e); return null; }
+}
+
+// ── UI: filtros ────────────────────────────────────────────────────────────
+function horasFilter(btn) {
+  const f = btn.dataset.f, v = btn.dataset.v;
+  _horasFilters[f] = v;
+  const wrap = btn.closest('#tab-horas');
+  if (wrap) wrap.querySelectorAll(`.horas-filter-btn[data-f="${f}"]`).forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderHoras();
+}
+function horasGetFiltered() {
+  return HORAS_CRUCE.filter(r => {
+    const aOk = _horasFilters.anio==='TODOS' || r.anios.includes(parseInt(_horasFilters.anio));
+    const eOk = _horasFilters.etapa==='TODOS' || r.etapa===_horasFilters.etapa;
+    const sel = document.getElementById('horas-proy-select');
+    const pOk = !sel || !sel.value || r.proyecto===sel.value;
+    return aOk && eOk && pOk;
+  });
+}
+
+// ── Render principal ───────────────────────────────────────────────────────
+function renderHoras() {
+  const noDataEl = document.getElementById('horas-nodata');
+  const contentEl = document.getElementById('horas-content');
+  if (!HORAS_CRUCE.length) {
+    if (noDataEl) noDataEl.style.display = 'block';
+    if (contentEl) contentEl.style.display = 'none';
+    const kEl = document.getElementById('kpis-horas'); if (kEl) kEl.innerHTML='';
+    return;
+  }
+  if (noDataEl) noDataEl.style.display = 'none';
+  if (contentEl) contentEl.style.display = 'block';
+
+  // Populate project selector once
+  const sel = document.getElementById('horas-proy-select');
+  if (sel && sel.options.length <= 1) {
+    const proys = [...new Set(HORAS_CRUCE.map(r=>r.proyecto))].sort();
+    proys.forEach(p => { const o=document.createElement('option'); o.value=p; o.textContent=p; sel.appendChild(o); });
+  }
+
+  const data = horasGetFiltered();
+
+  // KPIs
+  const totalPlan = data.reduce((s,r)=>s+r.horas_plan,0);
+  const totalEjec = data.reduce((s,r)=>s+r.horas_ejec,0);
+  const diffTotal = totalEjec - totalPlan;
+  const pctGeneral = totalPlan>0 ? (totalEjec/totalPlan*100).toFixed(1) : '0';
+  const numProys = new Set(data.map(r=>r.proyecto)).size;
+  const worstProj = [...data].sort((a,b)=>Math.abs(b.diff)-Math.abs(a.diff))[0];
+  const etapaDesv = {};
+  data.forEach(r=>{ if(!etapaDesv[r.etapa]) etapaDesv[r.etapa]={plan:0,ejec:0}; etapaDesv[r.etapa].plan+=r.horas_plan; etapaDesv[r.etapa].ejec+=r.horas_ejec; });
+  let worstEtapa = '—', worstEtapaPct = 0;
+  Object.entries(etapaDesv).forEach(([et,v])=>{ const dev=Math.abs(v.ejec-v.plan)/(v.plan||1); if(dev>worstEtapaPct){worstEtapaPct=dev;worstEtapa=HORAS_ETAPA_LABELS[et]||et;} });
+
+  const kEl = document.getElementById('kpis-horas');
+  if (kEl) kEl.innerHTML = `
+    <div class="kpi-card"><div class="kpi-label">Horas Planeadas</div><div class="kpi-value" style="color:var(--cyan)">${N(totalPlan)}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Horas Ejecutadas</div><div class="kpi-value" style="color:var(--yellow)">${N(totalEjec)}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Diferencia</div><div class="kpi-value" style="color:${diffTotal>0?'var(--red)':'var(--green)'}">${diffTotal>0?'+':''}${N(diffTotal)}</div></div>
+    <div class="kpi-card"><div class="kpi-label">% Cumplimiento</div><div class="kpi-value" style="color:${pctGeneral>110||pctGeneral<90?'var(--red)':'var(--green)'}">${pctGeneral}%</div></div>
+    <div class="kpi-card"><div class="kpi-label">Proyectos comparados</div><div class="kpi-value" style="color:var(--orange)">${numProys}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Mayor desviación</div><div class="kpi-value" style="font-size:13px;color:var(--red)">${worstProj?worstProj.proyecto.slice(0,20):'—'}</div></div>
+  `;
+
+  // Chart 1: comparativo por proyecto (top 15 by total hours)
+  const byProy = {};
+  data.forEach(r=>{ if(!byProy[r.proyecto]) byProy[r.proyecto]={plan:0,ejec:0}; byProy[r.proyecto].plan+=r.horas_plan; byProy[r.proyecto].ejec+=r.horas_ejec; });
+  const proyNames = Object.keys(byProy).sort((a,b)=>(byProy[b].plan+byProy[b].ejec)-(byProy[a].plan+byProy[a].ejec)).slice(0,15);
+  mkChartGeneric('chart-horas-comparativo','bar',{
+    labels: proyNames.map(n=>n.length>25?n.slice(0,25)+'…':n),
+    datasets: [
+      {label:'Planeadas', data:proyNames.map(n=>Math.round(byProy[n].plan)), backgroundColor:'#4de0c0aa', borderRadius:4},
+      {label:'Ejecutadas', data:proyNames.map(n=>Math.round(byProy[n].ejec)), backgroundColor:'#f0c040aa', borderRadius:4},
+    ]
+  },{
+    plugins:{legend:{position:'top',labels:{color:'#8b90a8',font:{size:10}}}},
+    scales:{
+      x:{ticks:{color:'#6b7494',font:{size:9}},grid:{display:false}},
+      y:{ticks:{color:'#6b7494',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}}
+    }
+  });
+
+  // Chart 2: cumplimiento por etapa
+  const etapaKeys = ['AE','EB','AP','PC'];
+  mkChartGeneric('chart-horas-etapa','bar',{
+    labels: etapaKeys.map(k=>HORAS_ETAPA_LABELS[k]),
+    datasets:[
+      {label:'Planeadas', data:etapaKeys.map(k=>Math.round(etapaDesv[k]?.plan||0)), backgroundColor:'#4de0c0aa', borderRadius:6},
+      {label:'Ejecutadas', data:etapaKeys.map(k=>Math.round(etapaDesv[k]?.ejec||0)), backgroundColor:'#f0c040aa', borderRadius:6},
+    ]
+  },{
+    plugins:{legend:{position:'top',labels:{color:'#8b90a8',font:{size:9}}}},
+    scales:{x:{ticks:{color:'#6b7494',font:{size:9}},grid:{display:false}},y:{ticks:{color:'#6b7494',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}}}
+  });
+
+  // Chart 3: top 10 mayor desviación
+  const topDesv = [...data].sort((a,b)=>Math.abs(b.diff)-Math.abs(a.diff)).slice(0,10);
+  mkChartGeneric('chart-horas-desviacion','bar',{
+    labels: topDesv.map(r=>(r.proyecto.length>18?r.proyecto.slice(0,18)+'…':r.proyecto)+' ('+r.etapa+')'),
+    datasets:[{label:'Desviación (h)', data:topDesv.map(r=>Math.round(r.diff)), backgroundColor:topDesv.map(r=>r.diff>0?'#e05060aa':'#40d080aa'), borderRadius:4}]
+  },{
+    indexAxis:'y',
+    plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:'#6b7494',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#8b90a8',font:{size:9}},grid:{display:false}}}
+  });
+
+  // Tabla detalle
+  const tbl = document.getElementById('tbl-horas-detalle');
+  if (tbl) {
+    const sorted = [...data].sort((a,b)=>Math.abs(b.diff)-Math.abs(a.diff));
+    tbl.innerHTML = '<thead><tr><th>Proyecto</th><th>Etapa</th><th>Año</th><th>H. Planeadas</th><th>H. Ejecutadas</th><th>Diferencia</th><th>% Cumpl.</th><th>Diseñadores</th></tr></thead><tbody>' +
+      sorted.map(r => `<tr>
+        <td style="color:var(--text);font-weight:500;font-size:11px">${r.proyecto}</td>
+        <td style="font-size:10px;color:var(--cyan)">${HORAS_ETAPA_LABELS[r.etapa]||r.etapa}</td>
+        <td style="font-size:10px;color:var(--muted)">${r.anios.join(', ')||'—'}</td>
+        <td style="font-size:11px">${N(r.horas_plan)}</td>
+        <td style="font-size:11px">${N(r.horas_ejec)}</td>
+        <td style="font-size:11px;color:${r.diff>0?'var(--red)':'var(--green)'}">${r.diff>0?'+':''}${N(r.diff)}</td>
+        <td style="font-size:11px;color:${r.pct_cumplimiento>110||r.pct_cumplimiento<90?'var(--red)':'var(--green)'}">${r.pct_cumplimiento.toFixed(0)}%</td>
+        <td style="font-size:9px;color:var(--muted2)">${r.disenadores.slice(0,2).join(', ')}${r.disenadores.length>2?' +'+(r.disenadores.length-2):''}</td>
+      </tr>`).join('') + '</tbody>';
+  }
+}
+
+// Generic chart helper (avoids collision with dashboard-specific mkChart fns)
+function mkChartGeneric(canvasId, type, data, extraOptions) {
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return;
+  if (ctx._chart) ctx._chart.destroy();
+  ctx._chart = new Chart(ctx, {
+    type, data,
+    options: Object.assign({ responsive:true, maintainAspectRatio:false }, extraOptions||{})
+  });
+}
+
 
 // ══════════════════════════════════════════════════════════════════
 // INIT UNIFICADO
