@@ -357,19 +357,20 @@ body::after {
 .gantt-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:6px; max-width:100%; contain:layout inline-size; }
 .gantt-inner { min-width:900px; width:max-content; min-width:100%; }
 .gantt-header-row {
-  display:flex; border-bottom:1px solid var(--border);
+  display:flex; border-bottom:1px solid var(--border); min-width:max-content;
   margin-bottom:2px;
 }
 .gcol-label { width:230px; min-width:230px; padding:6px 12px;
-  font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
-.gcol-time { flex:1; display:flex; }
+  font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:1px;
+  position:sticky; left:0; z-index:11; background:var(--bg1); }
+.gcol-time { flex:1; display:flex; min-width:max-content; }
 .gmonth {
-  flex:1; text-align:center; font-size:9px; color:var(--muted);
+  flex:1; min-width:64px; text-align:center; font-size:9px; color:var(--muted);
   padding:6px 2px; border-left:1px solid rgba(255,255,255,.04);
   text-transform:uppercase; letter-spacing:.5px;
 }
 .gantt-row {
-  display:flex; align-items:center;
+  display:flex; align-items:center; min-width:max-content;
   padding:3px 0; border-bottom:1px solid rgba(255,255,255,.03);
   transition:background .1s;
 }
@@ -377,10 +378,11 @@ body::after {
 .grow-label {
   width:230px; min-width:230px; padding:0 12px;
   display:flex; flex-direction:column; gap:1px;
+  position:sticky; left:0; z-index:10; background:var(--bg1);
 }
 .grow-name { font-size:11px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:206px; }
 .grow-meta { font-size:9px; color:var(--muted); }
-.grow-timeline { flex:1; position:relative; height:36px; }
+.grow-timeline { flex:1; position:relative; height:36px; min-width:max-content; }
 .gbar {
   position:absolute; border-radius:3px;
   display:flex; align-items:center; overflow:hidden;
@@ -1334,7 +1336,7 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
       <button class="chip" data-anio="2023" onclick="toggleAnio('2023',this)">2023</button>
       <button class="chip" data-anio="2024" onclick="toggleAnio('2024',this)">2024</button>
       <button class="chip" data-anio="2025" onclick="toggleAnio('2025',this)">2025</button>
-      <button class="dbi-active filter-btn" data-anio="2026" onclick="setAnioInnov(2026,this)">2026</button>
+      <button class="chip" data-anio="2026" onclick="toggleAnio('2026',this)">2026</button>
     </div>
     <div class="filter-sep"></div>
     <div class="filter-actions">
@@ -4329,6 +4331,17 @@ function renderGantt() {
   });
 
   document.getElementById('gantt-container').innerHTML=html;
+
+  // Auto-scroll para que HOY quede visible cerca del inicio del viewport (no oculto muy a la derecha)
+  setTimeout(() => {
+    const cont = document.getElementById('gantt-container');
+    if (!cont || todayPct===null) return;
+    const labelW = 230;
+    const timelineW = cont.scrollWidth - labelW;
+    const todayPx = timelineW * (todayPct/100);
+    const viewportW = cont.clientWidth - labelW;
+    cont.scrollLeft = Math.max(0, todayPx - viewportW*0.25);
+  }, 30);
 }
 
 // ===================== RENDER CARGABILIDAD =====================
@@ -5819,11 +5832,17 @@ function ciProyectoRango(p) {
 
   const estado = (p.estado || '').toUpperCase().trim();
   let fin;
+  const hoy = new Date(); hoy.setHours(23, 59, 59, 999);
 
   if (estado === 'ACTIVO' || estado === 'EN CURSO' || estado === 'HOLD' || estado === '') {
-    // PROYECTO ACTIVO/EN CURSO: ignora fechas fin (no son confiables) y asume hasta HOY
-    fin = new Date();
-    fin.setHours(23, 59, 59, 999);
+    // PROYECTO ACTIVO/EN CURSO: usa la fecha PROGRAMADA de fin para poder proyectar semanas futuras.
+    // Si no hay fecha programada confiable, usa hoy + 90 días como estimado razonable.
+    const finProyStr = p.fecha_fin_prog || p.fecha_ic || p.fecha_ic_r || p.fecha_pc || p.fecha_pc_r;
+    let finProy = ciParseDate(finProyStr);
+    if (!finProy || finProy < hoy) {
+      finProy = new Date(hoy.getTime() + 90 * 86400000);
+    }
+    fin = finProy;
   } else {
     // PROYECTO CERRADO/TERMINADO: usa fecha real, o programada como fallback
     const finStr = p.fecha_fin_real || p.fecha_fin_prog || p.fecha_ic_r || p.fecha_ic || p.fecha_pc_r || p.fecha_pc;
@@ -6613,7 +6632,8 @@ function innovRefresh(){
   // KPI Dpto. Innovación: solo Ganados ÷ (Ganados + Perdidos)
   const compHR=gan+perH;
   const hr=compHR>0?(gan/compHR*100).toFixed(1)+'%':'—';
-  const anStr=selAnios.has('todos')?'2023–2025':[...selAnios].sort().join(', ');
+  const _allYears=[...new Set(INNOV_RAW.map(r=>String(r.anio)))].sort();
+  const anStr=selAnios.has('todos')?(_allYears.length?_allYears[0]+'–'+_allYears[_allYears.length-1]:'—'):[...selAnios].sort().join(', ');
   document.getElementById('hr-general').textContent=hr;
   document.getElementById('hr-total').textContent=total;
   document.getElementById('hr-periodo').textContent=anStr;
