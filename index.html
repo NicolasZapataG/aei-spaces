@@ -3391,17 +3391,18 @@ async function fetchProyectosFromExcel(token) {
   if (!token || !SP_CONFIG.driveItemId) return null;
   try {
     // Para OneDrive personal usar /me/drive; para SharePoint de equipo usar /drives/{driveId}
-  const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetName)}')/usedRange`;
+  const sheetName = await resolveSheetName(token, [SP_CONFIG.sheetName, 'Analisis ocupación', 'Analisis ocupacion', 'Análisis ocupación']);
+  const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(sheetName)}')/usedRange`;
     const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     if (!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
     const data = await r.json();
     const parsed = parseExcelRows(data.values);
-    if(!parsed || !parsed.length){ setSheetStatus('diseno', false, 'sin filas válidas', SP_CONFIG.sheetName); return null; }
-    setSheetStatus('diseno', true, null, SP_CONFIG.sheetName);
+    if(!parsed || !parsed.length){ setSheetStatus('diseno', false, 'sin filas válidas', sheetName); return null; }
+    setSheetStatus('diseno', true, null, sheetName);
     return parsed;
   } catch(e) {
     console.warn('Excel fetch error:', e);
-    setSheetStatus('diseno', false, e.message, SP_CONFIG.sheetName);
+    setSheetStatus('diseno', false, e.message, sheetName);
     return null;
   }
 }
@@ -3502,26 +3503,68 @@ function getEtapa(p) {
 // ════════════════════════════════════════════════════════════════
 // FETCH FUNCTIONS — SharePoint Live Data
 // ════════════════════════════════════════════════════════════════
+
+// ── Resolver el nombre REAL de una hoja probando variantes, en vez de adivinar uno solo ──
+let _sheetListCache = null;
+async function _getSheetList(token) {
+  if (_sheetListCache) return _sheetListCache;
+  try {
+    const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets`;
+    const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!r.ok) return null;
+    const data = await r.json();
+    _sheetListCache = (data.value || []).map(s => s.name);
+    return _sheetListCache;
+  } catch(e) { return null; }
+}
+function _normSheetName(s) { return (s||'').toString().toLowerCase().replace(/[\s._-]+/g,''); }
+// Busca entre las hojas reales del libro una que coincida con alguno de los candidatos dados
+// (ignorando espacios, guiones y mayúsculas). Devuelve el nombre REAL tal como está en el Excel.
+async function resolveSheetName(token, candidates) {
+  const list = await _getSheetList(token);
+  if (!list) return candidates[0]; // sin lista disponible, usar el primer candidato tal cual
+  const normCands = candidates.map(_normSheetName);
+  for (const real of list) {
+    const normReal = _normSheetName(real);
+    if (normCands.includes(normReal)) return real; // coincidencia exacta (ignorando formato)
+  }
+  for (const real of list) {
+    const normReal = _normSheetName(real);
+    if (normCands.some(c => normReal.includes(c) || c.includes(normReal))) return real; // coincidencia parcial
+  }
+  return candidates[0]; // no se encontró nada parecido — devolver el primero para que el error sea claro
+}
+
 async function fetchInnovFromExcel(token) {
   if(!token||!SP_CONFIG.driveItemId||!SP_CONFIG.sheetNameInnov) return null;
   try {
-    const url=`https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetNameInnov)}')/usedRange`;
+    const sheetName = await resolveSheetName(token, [SP_CONFIG.sheetNameInnov, 'Seguimiento Innovacion', 'Seguimiento Innovación', 'Innovacion', 'Innovación']);
+    const url=`https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(sheetName)}')/usedRange`;
     const r=await fetch(url,{headers:{Authorization:`Bearer ${token}`}});
     if(!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
     const parsed = parseInnovRows((await r.json()).values);
-    if(!parsed || !parsed.length){ setSheetStatus('innov', false, 'la hoja respondió pero no se encontraron filas válidas (revisa columnas AÑO/TIPO/RESULTADO)', SP_CONFIG.sheetNameInnov); return null; }
-    setSheetStatus('innov', true, null, SP_CONFIG.sheetNameInnov);
+    if(!parsed || !parsed.length){ setSheetStatus('innov', false, 'la hoja respondió pero no se encontraron filas válidas (revisa columnas AÑO/TIPO/RESULTADO)', sheetName); return null; }
+    setSheetStatus('innov', true, null, sheetName);
     return parsed;
-  } catch(e){ console.warn('Innov:',e); setSheetStatus('innov', false, e.message, SP_CONFIG.sheetNameInnov); return null; }
+  } catch(e){ console.warn('Innov:',e); setSheetStatus('innov', false, e.message, sheetName); return null; }
 }
 function parseInnovRows(rows) {
   if(!rows||rows.length<2) return null;
-  const hdrs=rows[0].map(h=>(h||'').toString().toUpperCase().trim());
-  const g=(row,k)=>{const i=hdrs.indexOf(k);return i>=0?(row[i]||'').toString().trim():'';};
+  const normH=s=>(s||'').toString().toUpperCase().trim().replace(/\s+/g,' ');
+  // Buscar la fila de encabezado real (contiene AÑO y PROYECTO), en vez de asumir que es la fila 0
+  let hdrIdx=-1, hdrs=[];
+  for(let i=0;i<Math.min(rows.length,40);i++){
+    const rowNorm=(rows[i]||[]).map(normH);
+    if(rowNorm.some(v=>v==='AÑO'||v==='ANIO'||v==='ANO')&&rowNorm.some(v=>v.includes('PROYECTO'))){
+      hdrIdx=i; hdrs=rowNorm; break;
+    }
+  }
+  if(hdrIdx===-1) return null; // no se encontró un encabezado reconocible
+  const g=(row,k)=>{const i=hdrs.indexOf(k);return i>=0&&i<row.length?(row[i]||'').toString().trim():'';};
   const cn=v=>{const n=parseFloat(v.replace(',','.'));return isNaN(n)?0:n;};
   const MM={enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,octubre:10,noviembre:11,diciembre:12};
   const result=[];
-  for(let i=1;i<rows.length;i++){
+  for(let i=hdrIdx+1;i<rows.length;i++){
     const row=rows[i];
     const anio=parseInt(g(row,'AÑO')||g(row,'ANIO')||'0');
     if(!anio||anio<2020) continue;
@@ -3542,8 +3585,8 @@ function parseInnovRows(rows) {
 
 async function fetchPYGsFromExcel(token) {
   if(!token||!SP_CONFIG.driveItemId) return null;
-  const sheetName = SP_CONFIG.sheetNamePYGs||'Seguimiento PYGS';
   try {
+    const sheetName = await resolveSheetName(token, [SP_CONFIG.sheetNamePYGs||'Seguimiento PYGS', 'Seguimiento PYGs', 'PYGS', 'PYGs', 'Seguimiento PYG']);
     const url=`https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(sheetName)}')/usedRange`;
     const r=await fetch(url,{headers:{Authorization:`Bearer ${token}`}});
     if(!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
@@ -3559,7 +3602,7 @@ function parsePYGsRows(rows) {
   const norm=s=>(s||'').toString().toUpperCase().trim().replace(/\s+/g,' ');
   // Buscar la fila de encabezado real (contiene 'COD' y 'PROYECTO' o 'RESULTADO'), en vez de asumir una fila fija
   let hdrIdx=-1, hdrs=[];
-  for(let i=0;i<Math.min(rows.length,20);i++){
+  for(let i=0;i<Math.min(rows.length,40);i++){
     const rowNorm=(rows[i]||[]).map(norm);
     if(rowNorm.some(v=>v.startsWith('COD'))&&rowNorm.some(v=>v.includes('RESULTADO'))){
       hdrIdx=i; hdrs=rowNorm; break;
@@ -10225,8 +10268,8 @@ function horasBuildCruce() {
 // ── Fetch from Excel ──────────────────────────────────────────────────────
 async function fetchHorasFromExcel(token) {
   if (!token || !SP_CONFIG.driveItemId) return null;
-  const sheetName = SP_CONFIG.sheetNameHoras||'Horas';
   try {
+    const sheetName = await resolveSheetName(token, [SP_CONFIG.sheetNameHoras||'Horas', 'HORAS', 'Horas Planeadas']);
     const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(sheetName)}')/usedRange`;
     const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     if (!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
@@ -10238,8 +10281,8 @@ async function fetchHorasFromExcel(token) {
 }
 async function fetchRegistroFromExcel(token) {
   if (!token || !SP_CONFIG.driveItemId) return null;
-  const sheetName = SP_CONFIG.sheetNameRegistro||'Registro 25-26';
   try {
+    const sheetName = await resolveSheetName(token, [SP_CONFIG.sheetNameRegistro||'Registro 25-26', 'Registro25-26', 'Registro 25 26', 'REGISTRO 25-26', 'Registro25_26', 'Registro 25-26 ']);
     const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(sheetName)}')/usedRange`;
     const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     if (!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
