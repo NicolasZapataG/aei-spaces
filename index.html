@@ -742,6 +742,7 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
   <button class="ribbon-btn" onclick="switchDashboard('ing')" id="rb-ing">Ingeniería</button>
   <div class="ribbon-spacer"></div>
   <div id="ribbon-sync-badge"><span>💾</span> Datos locales</div>
+  <div id="sheet-status-detail" style="font-size:9px;margin-left:6px"></div>
   <button class="ribbon-settings" onclick="toggleConfig()">⚙ SharePoint</button>
 </div>
 
@@ -2883,6 +2884,27 @@ function switchDashboard(id) {
 }
 
 // Sync the ribbon badge with the spaces badge
+
+// ── Diagnóstico por hoja: registra si cada hoja del Excel se leyó bien ────
+const SHEET_STATUS = {};
+function setSheetStatus(key, ok, detail, sheetName) {
+  SHEET_STATUS[key] = { ok, detail: detail||null, sheet: sheetName, ts: new Date() };
+  renderSheetStatusDetail();
+}
+function renderSheetStatusDetail() {
+  const el = document.getElementById('sheet-status-detail');
+  if (!el) return;
+  const entries = Object.entries(SHEET_STATUS);
+  if (!entries.length) { el.innerHTML=''; return; }
+  const failed = entries.filter(([,v])=>!v.ok);
+  if (failed.length===0) {
+    el.innerHTML = '<span style="color:var(--green)" title="'+entries.map(([k,v])=>k+": '"+v.sheet+"' ✓").join('\n')+'">✓ '+entries.length+' hojas OK</span>';
+  } else {
+    const tip = failed.map(([k,v])=>k+": hoja '"+(v.sheet||'?')+"' → "+v.detail).join('\n');
+    el.innerHTML = '<span style="color:var(--red);cursor:help" title="'+tip.replace(/"/g,'&quot;')+'">⚠ '+failed.length+' hoja(s) con error (pasa el mouse)</span>';
+  }
+}
+
 function updateSyncBadge(status, lastSync) {
   const configs = {
     local:      { color:'#6b7494', icon:'💾', text:'Datos locales' },
@@ -3371,11 +3393,15 @@ async function fetchProyectosFromExcel(token) {
     // Para OneDrive personal usar /me/drive; para SharePoint de equipo usar /drives/{driveId}
   const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetName)}')/usedRange`;
     const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-    if (!r.ok) throw new Error(r.statusText);
+    if (!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
     const data = await r.json();
-    return parseExcelRows(data.values);
+    const parsed = parseExcelRows(data.values);
+    if(!parsed || !parsed.length){ setSheetStatus('diseno', false, 'sin filas válidas', SP_CONFIG.sheetName); return null; }
+    setSheetStatus('diseno', true, null, SP_CONFIG.sheetName);
+    return parsed;
   } catch(e) {
     console.warn('Excel fetch error:', e);
+    setSheetStatus('diseno', false, e.message, SP_CONFIG.sheetName);
     return null;
   }
 }
@@ -3481,9 +3507,12 @@ async function fetchInnovFromExcel(token) {
   try {
     const url=`https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetNameInnov)}')/usedRange`;
     const r=await fetch(url,{headers:{Authorization:`Bearer ${token}`}});
-    if(!r.ok) throw new Error(r.statusText);
-    return parseInnovRows((await r.json()).values);
-  } catch(e){console.warn('Innov:',e);return null;}
+    if(!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
+    const parsed = parseInnovRows((await r.json()).values);
+    if(!parsed || !parsed.length){ setSheetStatus('innov', false, 'la hoja respondió pero no se encontraron filas válidas (revisa columnas AÑO/TIPO/RESULTADO)', SP_CONFIG.sheetNameInnov); return null; }
+    setSheetStatus('innov', true, null, SP_CONFIG.sheetNameInnov);
+    return parsed;
+  } catch(e){ console.warn('Innov:',e); setSheetStatus('innov', false, e.message, SP_CONFIG.sheetNameInnov); return null; }
 }
 function parseInnovRows(rows) {
   if(!rows||rows.length<2) return null;
@@ -3513,12 +3542,16 @@ function parseInnovRows(rows) {
 
 async function fetchPYGsFromExcel(token) {
   if(!token||!SP_CONFIG.driveItemId) return null;
+  const sheetName = SP_CONFIG.sheetNamePYGs||'Seguimiento PYGS';
   try {
-    const url=`https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetNamePYGs||'Seguimiento PYGS')}')/usedRange`;
+    const url=`https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(sheetName)}')/usedRange`;
     const r=await fetch(url,{headers:{Authorization:`Bearer ${token}`}});
-    if(!r.ok) throw new Error(r.statusText);
-    return parsePYGsRows((await r.json()).values);
-  } catch(e){console.warn('PYGs:',e);return null;}
+    if(!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
+    const parsed = parsePYGsRows((await r.json()).values);
+    if(!parsed || !parsed.length){ setSheetStatus('pygs', false, 'la hoja respondió pero no se encontró la fila de encabezado (busca columnas COD + RESULTADO)', sheetName); return null; }
+    setSheetStatus('pygs', true, null, sheetName);
+    return parsed;
+  } catch(e){ console.warn('PYGs:',e); setSheetStatus('pygs', false, e.message, sheetName); return null; }
 }
 function parsePYGsRows(rows) {
   if(!rows||rows.length<2) return null;
@@ -10192,21 +10225,29 @@ function horasBuildCruce() {
 // ── Fetch from Excel ──────────────────────────────────────────────────────
 async function fetchHorasFromExcel(token) {
   if (!token || !SP_CONFIG.driveItemId) return null;
+  const sheetName = SP_CONFIG.sheetNameHoras||'Horas';
   try {
-    const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetNameHoras||'Horas')}')/usedRange`;
+    const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(sheetName)}')/usedRange`;
     const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-    if (!r.ok) throw new Error(r.statusText);
-    return parseHorasRows((await r.json()).values);
-  } catch(e) { console.warn('Horas fetch:', e); return null; }
+    if (!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
+    const parsed = parseHorasRows((await r.json()).values);
+    if(!parsed || !parsed.length){ setSheetStatus('horas', false, 'sin filas válidas', sheetName); return null; }
+    setSheetStatus('horas', true, null, sheetName);
+    return parsed;
+  } catch(e) { console.warn('Horas fetch:', e); setSheetStatus('horas', false, e.message, sheetName); return null; }
 }
 async function fetchRegistroFromExcel(token) {
   if (!token || !SP_CONFIG.driveItemId) return null;
+  const sheetName = SP_CONFIG.sheetNameRegistro||'Registro 25-26';
   try {
-    const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(SP_CONFIG.sheetNameRegistro||'Registro 25-26')}')/usedRange`;
+    const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(sheetName)}')/usedRange`;
     const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-    if (!r.ok) throw new Error(r.statusText);
-    return parseRegistroRows((await r.json()).values);
-  } catch(e) { console.warn('Registro fetch:', e); return null; }
+    if (!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
+    const parsed = parseRegistroRows((await r.json()).values);
+    if(!parsed || !parsed.length){ setSheetStatus('registro', false, 'sin filas de Diseño (columna Position)', sheetName); return null; }
+    setSheetStatus('registro', true, null, sheetName);
+    return parsed;
+  } catch(e) { console.warn('Registro fetch:', e); setSheetStatus('registro', false, e.message, sheetName); return null; }
 }
 
 // ── UI: filtros ────────────────────────────────────────────────────────────
