@@ -3500,7 +3500,7 @@ function parseInnovRows(rows) {
     const mes=MM[mesStr]||parseInt(g(row,'MES_N')||'0')||0;
     const tipo=g(row,'TIPO'); const res=g(row,'RESULTADO');
     if(!tipo||!res) continue;
-    result.push({anio,mes,dir:g(row,'COMERCIAL')||g(row,'DIRECTOR'),
+    result.push({anio,mes,dir:g(row,'DIRECTOR COMERCIAL')||g(row,'COMERCIAL')||g(row,'DIRECTOR'),
       equipo:g(row,'EQUIPO_DISEÑO')||g(row,'EQUIPO_DISENO')||g(row,'EQUIPO'),
       tipo,resultado:res,precio:cn(g(row,'PRECIO_COP')||g(row,'PRECIO')||'0'),
       dias:cn(g(row,'DIAS')||'0'),dis:cn(g(row,'NUM_DISENADORES')||'1')||1,
@@ -3521,22 +3521,71 @@ async function fetchPYGsFromExcel(token) {
   } catch(e){console.warn('PYGs:',e);return null;}
 }
 function parsePYGsRows(rows) {
-  if(!rows||rows.length<9) return null;
+  if(!rows||rows.length<2) return null;
   const cn=v=>{const n=parseFloat(String(v||'').replace(/[$. ]/g,'').replace(',','.'));return isNaN(n)?0:n;};
+  const norm=s=>(s||'').toString().toUpperCase().trim().replace(/\s+/g,' ');
+  // Buscar la fila de encabezado real (contiene 'COD' y 'PROYECTO' o 'RESULTADO'), en vez de asumir una fila fija
+  let hdrIdx=-1, hdrs=[];
+  for(let i=0;i<Math.min(rows.length,20);i++){
+    const rowNorm=(rows[i]||[]).map(norm);
+    if(rowNorm.some(v=>v.startsWith('COD'))&&rowNorm.some(v=>v.includes('RESULTADO'))){
+      hdrIdx=i; hdrs=rowNorm; break;
+    }
+  }
+  if(hdrIdx===-1) return null; // no se encontró un encabezado reconocible
+  const findCol=(...keys)=>{
+    for(const k of keys){
+      const i=hdrs.findIndex(h=>h.includes(k));
+      if(i!==-1) return i;
+    }
+    return -1;
+  };
+  const col={
+    cod:      findCol('COD'),
+    anio:     findCol('AÑO','ANO','ANIO'),
+    mes:      findCol('MES'),
+    version:  findCol('VERSION'),
+    cliente:  findCol('CLIENTE'),
+    proyecto: findCol('PROYECTO'),
+    ciudad:   findCol('CIUDAD'),
+    pais:     findCol('PAIS'),
+    estado:   findCol('ESTADO'),
+    f_ini:    findCol('FECHA INICIO','F. INICIO','FECHA_INICIO'),
+    f_fin:    findCol('FECHA ENTREGA','FECHA FIN','F. ENTREGA','FECHA_FIN'),
+    tipo:     findCol('TIPO'),
+    sector:   findCol('SECTOR'),
+    alcance:  findCol('ALCANCE'),
+    complejidad: findCol('COMPLEJIDAD'),
+    renders:  findCol('RENDER'),
+    m2:       findCol('AREA','M2','ÁREA'),
+    precio:   findCol('PRECIO/PESOS','PRECIO PESOS','PRECIO TOTAL','VALOR'),
+    arq:      findCol('ARQUITECTURA'),
+    imp_arq:  findCol('IMPREVISTOS ARQ'),
+    tec:      findCol('TECNICO','TÉCNICO'),
+    imp_tec:  findCol('IMPREVISTOS TEC'),
+    precio_m2:findCol('PRECIO X M2','PRECIO/M2','PRECIO M2'),
+    dias:     findCol('TIEMPO','DIAS','DÍAS'),
+    director: findCol('DIRECTOR'),
+    resultado:findCol('RESULTADO'),
+  };
+  const g=(row,key)=>{const i=col[key];return i>=0&&i<row.length?row[i]:'';};
   const res=[];
-  for(let i=9;i<rows.length;i++){
-    const row=rows[i]; const cod=String(row[0]||'').trim();
-    if(!cod.startsWith('PYG')) continue;
-    res.push({cod,año:String(row[1]||''),mes:String(row[2]||'').toLowerCase(),
-      version:parseInt(String(row[3]||'1').replace(/[^0-9]/g,''))||1,
-      cliente:String(row[4]||''),proyecto:String(row[5]||''),
-      ciudad:String(row[6]||''),pais:String(row[7]||''),estado:String(row[8]||''),
-      f_ini:String(row[9]||''),f_fin:String(row[10]||''),tipo:String(row[11]||''),
-      sector:String(row[12]||''),alcance:String(row[14]||''),complejidad:String(row[15]||''),
-      renders:cn(row[16]),m2:cn(String(row[17]||'').replace('m2','')),
-      precio:cn(row[18]),arq:cn(row[19]),imp_arq:cn(row[20]),tec:cn(row[21]),
-      imp_tec:cn(row[22]),precio_m2:cn(row[23]),dias:cn(row[24]),
-      director:String(row[25]||''),resultado:String(row[26]||''),dias_real:cn(row[24])});
+  for(let i=hdrIdx+1;i<rows.length;i++){
+    const row=rows[i];
+    const cod=String(g(row,'cod')||'').trim();
+    if(!cod || !cod.toUpperCase().startsWith('PYG')) continue;
+    res.push({cod,año:String(g(row,'anio')||''),mes:String(g(row,'mes')||'').toLowerCase(),
+      version:parseInt(String(g(row,'version')||'1').replace(/[^0-9]/g,''))||1,
+      cliente:String(g(row,'cliente')||''),proyecto:String(g(row,'proyecto')||''),
+      ciudad:String(g(row,'ciudad')||''),pais:String(g(row,'pais')||''),estado:String(g(row,'estado')||''),
+      f_ini:String(g(row,'f_ini')||''),f_fin:String(g(row,'f_fin')||''),tipo:String(g(row,'tipo')||''),
+      sector:String(g(row,'sector')||''),alcance:String(g(row,'alcance')||''),complejidad:String(g(row,'complejidad')||''),
+      renders:cn(g(row,'renders')),m2:cn(String(g(row,'m2')||'').replace('m2','')),
+      precio:cn(g(row,'precio')),arq:cn(g(row,'arq')),imp_arq:cn(g(row,'imp_arq')),tec:cn(g(row,'tec')),
+      imp_tec:cn(g(row,'imp_tec')),precio_m2:cn(g(row,'precio_m2')),dias:cn(g(row,'dias')),
+      director:String(g(row,'director')||''),
+      resultado:String(g(row,'resultado')||'').toUpperCase().trim(),
+      dias_real:cn(g(row,'dias'))});
   }
   return res.length?res:null;
 }
@@ -3956,18 +4005,22 @@ function renderGeneral() {
     const f_ic  = d(p.fecha_ic);
     const f_fin = d(p.fecha_fin_prog);
 
-    // Proyecto terminado antes de esta semana
-    const finEfectivo = f_fin || f_ic;
+    // Proyecto terminado antes de esta semana (usa fin programado, o último hito conocido)
+    const finEfectivo = f_fin || f_ic || f_pc || f_ap || f_eb || f_ae;
     if (finEfectivo && finEfectivo < iniW) return 0.0;
+    // Proyecto que aún no ha comenzado esta semana
+    if (f_ae && iniW < f_ae) return 0.0;
 
-    // Determinar en qué etapa está esta semana según fechas programadas
-    let etapaSem = '';
-    if      (!f_ae  || iniW <= f_ae)  etapaSem = 'AE';
-    else if (!f_eb  || iniW <= f_eb)  etapaSem = 'EB';
-    else if (!f_ap  || iniW <= f_ap)  etapaSem = 'AP';
-    else if (!f_pc  || iniW <= f_pc)  etapaSem = 'PC';
-    else if (!f_ic  || iniW <= f_ic)  etapaSem = 'IC';
-    else etapaSem = 'AO';
+    // Determinar etapa: solo considera hitos con fecha conocida (los que faltan se saltan,
+    // en vez de dejar el proyecto "atascado" en la última etapa con fecha).
+    const hitos = [
+      { cod: 'AE', f: f_ae }, { cod: 'EB', f: f_eb }, { cod: 'AP', f: f_ap },
+      { cod: 'PC', f: f_pc }, { cod: 'IC', f: f_ic },
+    ].filter(h => h.f);
+    let etapaSem = 'AE';
+    for (const h of hitos) { if (h.f <= iniW) etapaSem = h.cod; }
+    // Si ya pasó el último hito conocido pero el proyecto sigue "activo" (fin prog. futuro), es acompañamiento
+    if (hitos.length && iniW > hitos[hitos.length-1].f) etapaSem = 'AO';
 
     // Aplicar override de complejidad sobre el peso de etapa
     return (ETAPA_PESO_SEM[etapaSem] ?? 1.0) * compMult(p);
