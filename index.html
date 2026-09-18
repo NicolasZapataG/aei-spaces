@@ -3389,9 +3389,10 @@ async function getToken() {
 
 async function fetchProyectosFromExcel(token) {
   if (!token || !SP_CONFIG.driveItemId) return null;
+  let sheetName = SP_CONFIG.sheetName;
   try {
     // Para OneDrive personal usar /me/drive; para SharePoint de equipo usar /drives/{driveId}
-  const sheetName = await resolveSheetName(token, [SP_CONFIG.sheetName, 'Analisis ocupación', 'Analisis ocupacion', 'Análisis ocupación']);
+  sheetName = await resolveSheetName(token, [sheetName, 'Analisis ocupación', 'Analisis ocupacion', 'Análisis ocupación']);
   const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(sheetName)}')/usedRange`;
     const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     if (!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
@@ -3537,8 +3538,9 @@ async function resolveSheetName(token, candidates) {
 
 async function fetchInnovFromExcel(token) {
   if(!token||!SP_CONFIG.driveItemId||!SP_CONFIG.sheetNameInnov) return null;
+  let sheetName = SP_CONFIG.sheetNameInnov;
   try {
-    const sheetName = await resolveSheetName(token, [SP_CONFIG.sheetNameInnov, 'Seguimiento Innovacion', 'Seguimiento Innovación', 'Innovacion', 'Innovación']);
+    sheetName = await resolveSheetName(token, [sheetName, 'Seguimiento Innovacion', 'Seguimiento Innovación', 'Innovacion', 'Innovación']);
     const url=`https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(sheetName)}')/usedRange`;
     const r=await fetch(url,{headers:{Authorization:`Bearer ${token}`}});
     if(!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
@@ -3585,8 +3587,9 @@ function parseInnovRows(rows) {
 
 async function fetchPYGsFromExcel(token) {
   if(!token||!SP_CONFIG.driveItemId) return null;
+  let sheetName = SP_CONFIG.sheetNamePYGs||'Seguimiento PYGS';
   try {
-    const sheetName = await resolveSheetName(token, [SP_CONFIG.sheetNamePYGs||'Seguimiento PYGS', 'Seguimiento PYGs', 'PYGS', 'PYGs', 'Seguimiento PYG']);
+    sheetName = await resolveSheetName(token, [sheetName, 'Seguimiento PYGs', 'PYGS', 'PYGs', 'Seguimiento PYG']);
     const url=`https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(sheetName)}')/usedRange`;
     const r=await fetch(url,{headers:{Authorization:`Bearer ${token}`}});
     if(!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
@@ -10268,8 +10271,9 @@ function horasBuildCruce() {
 // ── Fetch from Excel ──────────────────────────────────────────────────────
 async function fetchHorasFromExcel(token) {
   if (!token || !SP_CONFIG.driveItemId) return null;
+  let sheetName = SP_CONFIG.sheetNameHoras||'Horas';
   try {
-    const sheetName = await resolveSheetName(token, [SP_CONFIG.sheetNameHoras||'Horas', 'HORAS', 'Horas Planeadas']);
+    sheetName = await resolveSheetName(token, [sheetName, 'HORAS', 'Horas Planeadas']);
     const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(sheetName)}')/usedRange`;
     const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     if (!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
@@ -10281,8 +10285,9 @@ async function fetchHorasFromExcel(token) {
 }
 async function fetchRegistroFromExcel(token) {
   if (!token || !SP_CONFIG.driveItemId) return null;
+  let sheetName = SP_CONFIG.sheetNameRegistro||'Registro 25-26';
   try {
-    const sheetName = await resolveSheetName(token, [SP_CONFIG.sheetNameRegistro||'Registro 25-26', 'Registro25-26', 'Registro 25 26', 'REGISTRO 25-26', 'Registro25_26', 'Registro 25-26 ']);
+    sheetName = await resolveSheetName(token, [sheetName, 'Registro25-26', 'Registro 25 26', 'REGISTRO 25-26', 'Registro25_26']);
     const url = `https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(sheetName)}')/usedRange`;
     const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     if (!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
