@@ -742,7 +742,7 @@ footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);font-
   <button class="ribbon-btn" onclick="switchDashboard('ing')" id="rb-ing">Ingeniería</button>
   <div class="ribbon-spacer"></div>
   <div id="ribbon-sync-badge"><span>💾</span> Datos locales</div>
-  <div id="sheet-status-detail" style="font-size:9px;margin-left:6px"></div>
+  <div id="sheet-status-detail" style="font-size:9px;margin-left:6px;position:relative"></div>
   <button class="ribbon-settings" onclick="toggleConfig()">⚙ SharePoint</button>
 </div>
 
@@ -2891,6 +2891,19 @@ function setSheetStatus(key, ok, detail, sheetName) {
   SHEET_STATUS[key] = { ok, detail: detail||null, sheet: sheetName, ts: new Date() };
   renderSheetStatusDetail();
 }
+function escHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toggleSheetStatusPanel() {
+  const panel = document.getElementById('sheet-status-panel');
+  if (!panel) return;
+  panel.style.display = (panel.style.display === 'none' || !panel.style.display) ? 'block' : 'none';
+}
+document.addEventListener('click', function(ev) {
+  const panel = document.getElementById('sheet-status-panel');
+  const trigger = document.getElementById('sheet-status-detail');
+  if (panel && panel.style.display === 'block' && trigger && !trigger.contains(ev.target)) {
+    panel.style.display = 'none';
+  }
+});
 function renderSheetStatusDetail() {
   const el = document.getElementById('sheet-status-detail');
   if (!el) return;
@@ -2898,10 +2911,20 @@ function renderSheetStatusDetail() {
   if (!entries.length) { el.innerHTML=''; return; }
   const failed = entries.filter(([,v])=>!v.ok);
   if (failed.length===0) {
-    el.innerHTML = '<span style="color:var(--green)" title="'+entries.map(([k,v])=>k+": '"+v.sheet+"' ✓").join('\n')+'">✓ '+entries.length+' hojas OK</span>';
+    el.innerHTML = '<span style="color:var(--green);cursor:pointer" onclick="toggleSheetStatusPanel()">✓ '+entries.length+' hojas OK</span>'
+      + '<div id="sheet-status-panel" style="display:none;position:absolute;right:0;top:28px;background:#0f1421;border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:10px;color:var(--text);z-index:3000;min-width:280px;box-shadow:0 8px 24px rgba(0,0,0,.5)">'
+      + entries.map(([k,v]) => '<div style="padding:3px 0;color:var(--green)">✓ <b>'+escHtml(k)+'</b>: '+escHtml(v.sheet)+'</div>').join('')
+      + '</div>';
   } else {
-    const tip = failed.map(([k,v])=>k+": hoja '"+(v.sheet||'?')+"' → "+v.detail).join('\n');
-    el.innerHTML = '<span style="color:var(--red);cursor:help" title="'+tip.replace(/"/g,'&quot;')+'">⚠ '+failed.length+' hoja(s) con error (pasa el mouse)</span>';
+    el.innerHTML = '<span style="color:var(--red);cursor:pointer" onclick="toggleSheetStatusPanel()">⚠ '+failed.length+' hoja(s) con error — clic para ver</span>'
+      + '<div id="sheet-status-panel" style="display:none;position:absolute;right:0;top:28px;background:#0f1421;border:1px solid var(--red);border-radius:10px;padding:12px 16px;font-size:10px;color:var(--text);z-index:3000;min-width:320px;max-width:90vw;box-shadow:0 8px 24px rgba(0,0,0,.5)">'
+      + entries.map(([k,v]) => {
+          const color = v.ok ? 'var(--green)' : 'var(--red)';
+          const icon  = v.ok ? '✓' : '⚠';
+          const line2 = v.ok ? '' : '<div style="color:var(--muted);margin:2px 0 8px 16px;line-height:1.4">'+escHtml(v.detail)+'</div>';
+          return '<div style="padding:3px 0;color:'+color+'">'+icon+' <b>'+escHtml(k)+'</b>: hoja "'+escHtml(v.sheet)+'"</div>'+line2;
+        }).join('')
+      + '</div>';
   }
 }
 
