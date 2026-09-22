@@ -3616,8 +3616,13 @@ async function fetchPYGsFromExcel(token) {
     const url=`https://graph.microsoft.com/v1.0/me/drive/items/${SP_CONFIG.driveItemId}/workbook/worksheets('${encodeURIComponent(sheetName)}')/usedRange`;
     const r=await fetch(url,{headers:{Authorization:`Bearer ${token}`}});
     if(!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
-    const parsed = parsePYGsRows((await r.json()).values);
-    if(!parsed || !parsed.length){ setSheetStatus('pygs', false, 'la hoja respondió pero no se encontró la fila de encabezado (busca columnas COD + RESULTADO)', sheetName); return null; }
+    const rawValues = (await r.json()).values;
+    const parsed = parsePYGsRows(rawValues);
+    if(!parsed || !parsed.length){
+      const preview = window._lastPYGsRawPreview ? window._lastPYGsRawPreview.join(' || ') : 'sin datos';
+      setSheetStatus('pygs', false, 'no se encontró la fila de encabezado (COD + RESULTADO) en las primeras '+(rawValues?rawValues.length:0)+' filas. Primeras filas: '+preview, sheetName);
+      return null;
+    }
     setSheetStatus('pygs', true, null, sheetName);
     return parsed;
   } catch(e){ console.warn('PYGs:',e); setSheetStatus('pygs', false, e.message, sheetName); return null; }
@@ -3626,15 +3631,19 @@ function parsePYGsRows(rows) {
   if(!rows||rows.length<2) return null;
   const cn=v=>{const n=parseFloat(String(v||'').replace(/[$. ]/g,'').replace(',','.'));return isNaN(n)?0:n;};
   const norm=s=>(s||'').toString().toUpperCase().trim().replace(/\s+/g,' ');
-  // Buscar la fila de encabezado real (contiene 'COD' y 'PROYECTO' o 'RESULTADO'), en vez de asumir una fila fija
+  // Buscar la fila de encabezado real (contiene 'COD' y 'RESULTADO'), en vez de asumir una fila fija
   let hdrIdx=-1, hdrs=[];
-  for(let i=0;i<Math.min(rows.length,40);i++){
+  for(let i=0;i<Math.min(rows.length,150);i++){
     const rowNorm=(rows[i]||[]).map(norm);
     if(rowNorm.some(v=>v.startsWith('COD'))&&rowNorm.some(v=>v.includes('RESULTADO'))){
       hdrIdx=i; hdrs=rowNorm; break;
     }
   }
-  if(hdrIdx===-1) return null; // no se encontró un encabezado reconocible
+  if(hdrIdx===-1){
+    // Diagnóstico: guardar cómo se ven las primeras filas para poder ver qué llegó realmente
+    window._lastPYGsRawPreview = rows.slice(0,5).map(r=>(r||[]).slice(0,6).join(' | '));
+    return null;
+  }
   const findCol=(...keys)=>{
     for(const k of keys){
       const i=hdrs.findIndex(h=>h.includes(k));
@@ -3676,6 +3685,7 @@ function parsePYGsRows(rows) {
     const row=rows[i];
     const cod=String(g(row,'cod')||'').trim();
     if(!cod || !cod.toUpperCase().startsWith('PYG')) continue;
+    if(!String(g(row,'proyecto')||'').trim() && !String(g(row,'cliente')||'').trim()) continue; // fila placeholder vacía
     res.push({cod,año:String(g(row,'anio')||''),mes:String(g(row,'mes')||'').toLowerCase(),
       version:parseInt(String(g(row,'version')||'1').replace(/[^0-9]/g,''))||1,
       cliente:String(g(row,'cliente')||''),proyecto:String(g(row,'proyecto')||''),
