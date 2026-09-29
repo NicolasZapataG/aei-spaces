@@ -3617,10 +3617,13 @@ async function fetchPYGsFromExcel(token) {
     const r=await fetch(url,{headers:{Authorization:`Bearer ${token}`}});
     if(!r.ok){ const body=await r.text().catch(()=>''); throw new Error(r.status+' '+r.statusText+(body?' — '+body.substring(0,150):'')); }
     const rawValues = (await r.json()).values;
+    window._lastPYGsRawPreview = null;
     const parsed = parsePYGsRows(rawValues);
     if(!parsed || !parsed.length){
-      const preview = window._lastPYGsRawPreview ? window._lastPYGsRawPreview.join(' || ') : 'sin datos';
-      setSheetStatus('pygs', false, 'no se encontró la fila de encabezado (COD + RESULTADO) en las primeras '+(rawValues?rawValues.length:0)+' filas. Primeras filas: '+preview, sheetName);
+      const diag = window._lastPYGsRawPreview
+        ? (Array.isArray(window._lastPYGsRawPreview) ? window._lastPYGsRawPreview.join(' || ') : window._lastPYGsRawPreview)
+        : ('sin diagnóstico adicional. Total filas recibidas: '+(rawValues?rawValues.length:0));
+      setSheetStatus('pygs', false, diag, sheetName);
       return null;
     }
     setSheetStatus('pygs', true, null, sheetName);
@@ -3633,7 +3636,7 @@ function parsePYGsRows(rows) {
   const norm=s=>(s||'').toString().toUpperCase().trim().replace(/\s+/g,' ');
   // Buscar la fila de encabezado real (contiene 'COD' y 'RESULTADO'), en vez de asumir una fila fija
   let hdrIdx=-1, hdrs=[];
-  for(let i=0;i<Math.min(rows.length,150);i++){
+  for(let i=0;i<rows.length;i++){
     const rowNorm=(rows[i]||[]).map(norm);
     if(rowNorm.some(v=>v.startsWith('COD'))&&rowNorm.some(v=>v.includes('RESULTADO'))){
       hdrIdx=i; hdrs=rowNorm; break;
@@ -3641,7 +3644,8 @@ function parsePYGsRows(rows) {
   }
   if(hdrIdx===-1){
     // Diagnóstico: guardar cómo se ven las primeras filas para poder ver qué llegó realmente
-    window._lastPYGsRawPreview = rows.slice(0,5).map(r=>(r||[]).slice(0,6).join(' | '));
+    const preview = rows.slice(0,5).map(r=>(r||[]).slice(0,6).join(' | ')).join(' || ');
+    window._lastPYGsRawPreview = 'no se encontró fila con COD + RESULTADO en '+rows.length+' filas. Primeras filas: '+preview;
     return null;
   }
   const findCol=(...keys)=>{
@@ -3681,11 +3685,15 @@ function parsePYGsRows(rows) {
   };
   const g=(row,key)=>{const i=col[key];return i>=0&&i<row.length?row[i]:'';};
   const res=[];
+  let vistosConCod=0, descartadosPorVacio=0;
+  const sampleCods=[];
   for(let i=hdrIdx+1;i<rows.length;i++){
     const row=rows[i];
     const cod=String(g(row,'cod')||'').trim();
     if(!cod || !cod.toUpperCase().startsWith('PYG')) continue;
-    if(!String(g(row,'proyecto')||'').trim() && !String(g(row,'cliente')||'').trim()) continue; // fila placeholder vacía
+    vistosConCod++;
+    if(sampleCods.length<5) sampleCods.push(cod);
+    if(!String(g(row,'proyecto')||'').trim() && !String(g(row,'cliente')||'').trim()){ descartadosPorVacio++; continue; } // fila placeholder vacía
     res.push({cod,año:String(g(row,'anio')||''),mes:String(g(row,'mes')||'').toLowerCase(),
       version:parseInt(String(g(row,'version')||'1').replace(/[^0-9]/g,''))||1,
       cliente:String(g(row,'cliente')||''),proyecto:String(g(row,'proyecto')||''),
@@ -3698,6 +3706,9 @@ function parsePYGsRows(rows) {
       director:String(g(row,'director')||''),
       resultado:String(g(row,'resultado')||'').toUpperCase().trim(),
       dias_real:cn(g(row,'dias'))});
+  }
+  if(!res.length){
+    window._lastPYGsRawPreview = 'encabezado hallado en fila '+(hdrIdx+1)+' de '+rows.length+'. Columnas resueltas: cod='+col.cod+' proyecto='+col.proyecto+' cliente='+col.cliente+' resultado='+col.resultado+'. Filas con código PYG vistas: '+vistosConCod+' (descartadas por vacías: '+descartadosPorVacio+'). Ejemplos de código: '+(sampleCods.join(', ')||'ninguno');
   }
   return res.length?res:null;
 }
